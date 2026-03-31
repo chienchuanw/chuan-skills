@@ -6,7 +6,7 @@ description: >
   says "suggest a commit message", "help me write a commit message", "what commit message should I use?",
   "give me commit message options", or any similar request to summarize their changes into a commit message.
   Also trigger when the user has just made code changes and seems ready to commit.
-  Always present exactly 3 options plus a 4th "write your own" option. Never run git commit.
+  Always present exactly 3 options plus a 4th "write your own" option, then commit with the chosen message.
 ---
 
 # commit-msg
