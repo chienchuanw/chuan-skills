@@ -56,40 +56,21 @@ Craft three options that genuinely differ from each other — not minor word swa
 
 All three must follow the project's conventions. If the project uses conventional commits, every option must use the correct type prefix. If scopes are common, use them when appropriate. If the project always uses imperative mood, do that.
 
-## Step 4: Present options and wait for selection
+## Step 4: Present options and prompt for selection
 
-Output exactly this structure — clean, copyable, no extra commentary cluttering the options themselves:
+Format the three options as a clear numbered list. After the options, you may add one brief line of context if it would be genuinely useful — for example, explaining why you chose a particular type prefix if it was a judgment call. Keep it short. Don't explain the obvious.
 
-```
-Here are 3 commit message suggestions based on your changes:
+Then immediately use the `AskUserQuestion` tool to ask:
 
-**1.**
-```
-<message>
-```
+> Which would you like to use? Select an option — or type your own commit message.
 
-**2.**
-```
-<message>
-```
-
-**3.**
-```
-<message>
-```
-
-**4. Write your own** — type a custom message below.
-
-Which would you like to use? (Enter 1–3 or type your own message)
-```
-
-After the options, you may add one brief line of context if it would be genuinely useful — for example, explaining why you chose a particular type prefix if it was a judgment call. Keep it short. Don't explain the obvious.
+Do not wait for the user to respond on their own. The `AskUserQuestion` tool call is required after presenting the options every time.
 
 ## Step 5: Commit with the chosen message
 
-Wait for the user to reply. Then:
+Based on the user's reply:
 
-- If they enter **1**, **2**, or **3**, use the corresponding message exactly as shown.
+- If they select an **option**, use the corresponding message exactly as shown.
 - If they type a **custom message**, use that exactly as typed.
 
 Run:
