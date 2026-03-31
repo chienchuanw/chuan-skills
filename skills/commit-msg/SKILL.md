@@ -18,10 +18,7 @@ Generate thoughtful commit message suggestions by reading the actual changes in 
 Run all of these in one shot:
 
 ```bash
-# What's changed (staged + unstaged)
-git diff HEAD
-
-# Staged-only (in case HEAD diff misses staged-only changes on a fresh repo)
+# Staged changes only — this is the sole source for generating commit messages
 git diff --cached
 
 # Recent history — your primary source for convention patterns
@@ -33,7 +30,7 @@ cat .github/CONTRIBUTING.md 2>/dev/null || true
 cat CONTRIBUTING.md 2>/dev/null || true
 ```
 
-If there's no diff at all (clean working tree and no staged changes), tell the user and stop — there's nothing to describe.
+If there are no staged changes (`git diff --cached` is empty), tell the user there is nothing staged to commit and stop. Do not consider unstaged changes at any point.
 
 ## Step 2: Understand the conventions
 
@@ -49,6 +46,8 @@ If a CONTRIBUTING or CLAUDE.md file explicitly defines conventions, those take p
 
 ## Step 3: Generate 3 commit message options
 
+Base all suggestions **only on the staged diff** (`git diff --cached`). Ignore any unstaged changes entirely.
+
 Craft three options that genuinely differ from each other — not minor word swaps. Useful axes of variation:
 
 - **Scope of description**: broad summary vs. specific technical detail
@@ -57,36 +56,53 @@ Craft three options that genuinely differ from each other — not minor word swa
 
 All three must follow the project's conventions. If the project uses conventional commits, every option must use the correct type prefix. If scopes are common, use them when appropriate. If the project always uses imperative mood, do that.
 
-## Step 4: Present options
+## Step 4: Present options and wait for selection
 
 Output exactly this structure — clean, copyable, no extra commentary cluttering the options themselves:
 
 ```
 Here are 3 commit message suggestions based on your changes:
 
-**Option 1**
+**1.**
 ```
 <message>
 ```
 
-**Option 2**
+**2.**
 ```
 <message>
 ```
 
-**Option 3**
+**3.**
 ```
 <message>
 ```
 
-**Option 4 — Write your own**
-None of these feel right? Use them as a starting point and adapt freely.
+**4. Write your own** — type a custom message below.
+
+Which would you like to use? (Enter 1–3 or type your own message)
 ```
 
 After the options, you may add one brief line of context if it would be genuinely useful — for example, explaining why you chose a particular type prefix if it was a judgment call. Keep it short. Don't explain the obvious.
 
+## Step 5: Commit with the chosen message
+
+Wait for the user to reply. Then:
+
+- If they enter **1**, **2**, or **3**, use the corresponding message exactly as shown.
+- If they type a **custom message**, use that exactly as typed.
+
+Run:
+
+```bash
+git commit -m "<chosen message>"
+```
+
+Use the message text verbatim — no additions, no signature, no "Co-Authored-By" line, no attribution of any kind. The commit message must be exactly what was presented or typed by the user, nothing more.
+
 ## Hard rules
 
-- **Never run `git commit`**, `git add`, or any command that modifies the repo state. Your job ends at presenting suggestions.
-- Don't ask the user to pick an option or confirm anything — just present all four and let them take it from there.
+- **Never run `git add`** or any command that modifies the staging area.
+- **Never append any signature**, attribution, or "Co-Authored-By" line to the commit message.
+- The commit message must be **exactly** the text from the selected option or the user's own input — no modifications.
 - Don't add boilerplate like "I hope these help!" or "Let me know if you'd like changes." The suggestions speak for themselves.
