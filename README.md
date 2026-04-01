@@ -26,9 +26,10 @@ Claude Code supports a plugin system that lets users install and invoke custom s
 |--------|--------|-------------|
 | `commit-msg` | local | Suggests 3 commit message options based on git diff and project conventions |
 | `readme` | local | Write a new README.md or improve an existing one for any repository |
+| `branch-report` | local | Generates a branch comparison report with simple explanations and senior developer review |
 | `skill-creator` | external | Create, test, evaluate, and iteratively improve Claude Code skills |
 
-Local plugins have their skill definitions under `skills/`. External plugins reference an upstream repository (e.g., [anthropics/skills](https://github.com/anthropics/skills)) in `marketplace.json`.
+Local plugins have their skill definitions under `plugins/<name>/skills/<name>/`. External plugins reference an upstream repository (e.g., [anthropics/skills](https://github.com/anthropics/skills)) in `marketplace.json`.
 
 ## Getting Started
 
@@ -40,15 +41,16 @@ Local plugins have their skill definitions under `skills/`. External plugins ref
 
 Add this repository as a marketplace (one-time setup):
 
-```
+```bash
 /plugin marketplace add chienchuanw/chuan-skills
 ```
 
 Then install any plugin you want:
 
-```
+```bash
 /plugin install commit-msg@chuan-skills
 /plugin install readme@chuan-skills
+/plugin install branch-report@chuan-skills
 /plugin install skill-creator@chuan-skills
 ```
 
@@ -58,6 +60,7 @@ Once installed, invoke a skill as a slash command inside Claude Code:
 
 - `/commit-msg` -- Analyzes your staged changes and presents 3 commit message suggestions that match your project's conventions. Pick one or write your own, and it commits for you.
 - `/readme` -- Explores the current repository and generates or improves a README.md with accurate, well-structured content.
+- `/branch-report` -- Compares the current branch against the default branch and generates a report explaining all changes in plain language, followed by a senior developer review with concerns, suggestions, and praise.
 - `/skill-creator` -- Walks you through creating, testing, and refining a new Claude Code skill.
 
 ## Project Structure
@@ -65,24 +68,36 @@ Once installed, invoke a skill as a slash command inside Claude Code:
 ```text
 chuan-skills/
 ├── .claude-plugin/
-│   └── marketplace.json   # Plugin registry (lists all available plugins)
-├── skills/
+│   └── marketplace.json        # Plugin registry (lists all available plugins)
+├── plugins/
+│   ├── branch-report/
+│   │   └── skills/
+│   │       └── branch-report/
+│   │           ├── agents/     # Sub-agent definitions (analyst, checker, explainer, scout)
+│   │           ├── assets/     # Report templates (English, Traditional Chinese)
+│   │           └── SKILL.md
 │   ├── commit-msg/
-│   │   └── SKILL.md       # Commit message generation skill
+│   │   └── skills/
+│   │       └── commit-msg/
+│   │           └── SKILL.md
 │   └── readme/
-│       └── SKILL.md       # README generation skill
-├── CLAUDE.md              # Project conventions for Claude Code
-└── .gitignore
+│       └── skills/
+│           └── readme/
+│               ├── assets/     # README template
+│               ├── scripts/    # Tree generation, screenshot capture, asset prep
+│               └── SKILL.md
+├── CLAUDE.md                   # Project conventions for Claude Code
+└── README.md
 ```
 
 - **`.claude-plugin/marketplace.json`** -- The marketplace manifest. Defines each plugin's name, description, source, and skill paths.
-- **`skills/`** -- Contains local skill definitions. Each subdirectory is one skill.
+- **`plugins/`** -- Contains local skill definitions. Each plugin follows the `plugins/<name>/skills/<name>/` directory convention.
 - **`CLAUDE.md`** -- Instructions that Claude Code follows when working in this repository.
 
 ## Adding a New Skill
 
 1. Use the `/skill-creator` skill to scaffold and iterate on your new skill.
-2. Copy the resulting skill directory into `skills/` (omit the `evals/` subfolder).
+2. Copy the resulting skill directory into `plugins/<name>/skills/<name>/` (omit the `evals/` subfolder).
 3. Register the skill in `.claude-plugin/marketplace.json`.
 
 ### Skill Format
@@ -98,13 +113,13 @@ description: When and why to trigger this skill
 Instructions that Claude follows when the skill is invoked...
 ```
 
-Skills may optionally include subdirectories for scripts, reference files, or assets.
+Skills may optionally include subdirectories for agents, scripts, reference files, or assets.
 
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/your-skill-name`)
-3. Add your skill under `skills/` and register it in `marketplace.json`
+3. Add your skill under `plugins/<name>/skills/<name>/` and register it in `marketplace.json`
 4. Commit your changes
 5. Push to the branch and open a Pull Request
 
