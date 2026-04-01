@@ -11,3 +11,6 @@
 
 # Claude Code local state (not skills)
 .claude/
+
+# Skill evaluation workspaces
+*-workspace/
