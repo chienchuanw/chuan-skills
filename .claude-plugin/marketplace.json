@@ -27,6 +27,15 @@
       "skills": [
         "./skills/skill-creator"
       ]
+    },
+    {
+      "name": "readme",
+      "description": "Write a new README.md or improve an existing one for any repository",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/readme"
+      ]
     }
   ]
 }
