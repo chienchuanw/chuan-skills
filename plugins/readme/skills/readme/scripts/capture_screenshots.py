@@ -6,27 +6,28 @@ Detects the dev server command, starts it, waits for it to be ready,
 then captures screenshots of specified pages using Playwright.
 
 Usage:
-    python capture_screenshots.py [project_root] [assets_file]
+    python capture_screenshots.py [project_root] [assets_file] [options]
 
 Arguments:
     project_root  Path to the project (default: current directory)
     assets_file   Path to a JSON file listing pages to capture (optional)
 
-If no assets_file is provided, captures a single screenshot of the root URL.
+Options:
+    --viewport WIDTHxHEIGHT   Screenshot viewport (default: 1280x720)
+    --timeout MS              Navigation timeout in ms (default: 60000)
+    --delay SECONDS           Post-render delay in seconds (default: 3.0)
+    --wait-until STRATEGY     Playwright wait strategy (default: domcontentloaded)
+    --storage-state PATH      Playwright storage state JSON for auth sessions
+    --results-path PATH       Where to write capture_results.json (default: /tmp/)
+    --no-results              Skip writing capture_results.json
 
-JSON format:
+JSON format for assets_file:
 [
   {
     "filename": "dashboard.png",
     "description": "Main dashboard with sample data loaded",
     "type": "screenshot",
     "url_or_context": "/dashboard"
-  },
-  {
-    "filename": "setup-flow.gif",
-    "description": "Walkthrough of the initial setup wizard",
-    "type": "screenshot",
-    "url_or_context": "/setup"
   }
 ]
 
@@ -37,6 +38,7 @@ Requirements:
     pip install playwright && playwright install chromium
 """
 
+import argparse
 import json
 import os
 import re
@@ -44,29 +46,17 @@ import signal
 import socket
 import subprocess
 import sys
+import tempfile
 import time
+import urllib.error
+import urllib.request
 from pathlib import Path
+from typing import Literal
 
 
 # ---------------------------------------------------------------------------
 # Dev server detection
 # ---------------------------------------------------------------------------
-
-DEV_SERVER_PATTERNS = [
-    # (file, key/command, port hint)
-    # Node.js / Next.js / Vite / etc.
-    ("package.json", "dev"),
-    ("package.json", "start"),
-    ("package.json", "serve"),
-    # Python
-    ("pyproject.toml", None),
-    ("manage.py", None),
-    ("app.py", None),
-    # Ruby
-    ("Gemfile", None),
-    # Go
-    ("go.mod", None),
-]
 
 DEFAULT_PORTS = {
     "next": 3000,
@@ -118,6 +108,15 @@ def detect_dev_server(project_root: Path) -> tuple[str, int] | None:
     return None
 
 
+def _detect_package_manager(project_root: Path) -> str:
+    """Detect npm/yarn/pnpm from lock files."""
+    if (project_root / "pnpm-lock.yaml").exists():
+        return "pnpm"
+    if (project_root / "yarn.lock").exists():
+        return "yarn"
+    return "npm"
+
+
 def _detect_from_package_json(pkg_json: Path) -> tuple[str, int] | None:
     """Extract dev server command and port from package.json."""
     try:
@@ -126,13 +125,29 @@ def _detect_from_package_json(pkg_json: Path) -> tuple[str, int] | None:
         return None
 
     scripts = data.get("scripts", {})
+    project_root = pkg_json.parent
+    pkg_manager = _detect_package_manager(project_root)
 
-    # Try common script names in priority order
+    # Priority 1: exact matches
     for script_name in ["dev", "start", "serve"]:
         if script_name in scripts:
-            cmd = f"npm run {script_name}"
+            cmd = f"{pkg_manager} run {script_name}"
             port = _guess_port_from_script(scripts[script_name], data)
             return (cmd, port)
+
+    # Priority 2: prefixed variants (dev:web, dev:frontend, start:app, etc.)
+    for prefix in ["dev:", "start:", "serve:"]:
+        for script_name, script_cmd in scripts.items():
+            if script_name.startswith(prefix):
+                # If it delegates to a workspace, try to follow it for port detection
+                delegated = _follow_workspace_delegation(
+                    script_cmd, project_root, data
+                )
+                if delegated:
+                    return delegated
+                cmd = f"{pkg_manager} run {script_name}"
+                port = _guess_port_from_script(script_cmd, data)
+                return (cmd, port)
 
     return None
 
@@ -167,12 +182,67 @@ def _guess_port_from_script(script_cmd: str, pkg_data: dict) -> int:
     return 3000  # Default fallback for Node.js
 
 
+def _follow_workspace_delegation(
+    script_cmd: str, project_root: Path, root_pkg_data: dict
+) -> tuple[str, int] | None:
+    """Follow pnpm/yarn workspace filter delegation to find the actual command."""
+    # Match: pnpm --filter <package> <script>
+    filter_match = re.search(r"pnpm\s+--filter\s+(\S+)\s+(\w+)", script_cmd)
+    if not filter_match:
+        return None
+
+    pkg_name = filter_match.group(1)
+    script_name = filter_match.group(2)
+
+    # Find the workspace package directory
+    workspace_dir = _find_workspace_package(project_root, pkg_name)
+    if not workspace_dir:
+        return None
+
+    ws_pkg_json = workspace_dir / "package.json"
+    if not ws_pkg_json.exists():
+        return None
+
+    try:
+        ws_data = json.loads(ws_pkg_json.read_text())
+    except (json.JSONDecodeError, OSError):
+        return None
+
+    ws_scripts = ws_data.get("scripts", {})
+    if script_name in ws_scripts:
+        port = _guess_port_from_script(ws_scripts[script_name], ws_data)
+        # Run from root using the original command
+        cmd = f"pnpm --filter {pkg_name} {script_name}"
+        return (cmd, port)
+
+    return None
+
+
+def _find_workspace_package(project_root: Path, pkg_name: str) -> Path | None:
+    """Find a workspace package directory by name."""
+    for ws_dir in ["packages", "apps", "libs", "services"]:
+        ws_path = project_root / ws_dir
+        if not ws_path.is_dir():
+            continue
+        for child in ws_path.iterdir():
+            if not child.is_dir():
+                continue
+            child_pkg = child / "package.json"
+            if child_pkg.exists():
+                try:
+                    child_data = json.loads(child_pkg.read_text())
+                    if child_data.get("name") == pkg_name:
+                        return child
+                except (json.JSONDecodeError, OSError):
+                    continue
+    return None
+
+
 def _detect_from_pyproject(pyproject: Path) -> tuple[str, int] | None:
     """Detect dev server from pyproject.toml."""
     content = pyproject.read_text()
 
     if "uvicorn" in content:
-        # Try to find the app module
         app_match = re.search(r'(\w+\.app)', content)
         module = app_match.group(1) if app_match else "main:app"
         return (f"uvicorn {module} --reload", 8000)
@@ -191,11 +261,30 @@ def _detect_from_pyproject(pyproject: Path) -> tuple[str, int] | None:
 # ---------------------------------------------------------------------------
 
 def is_port_open(port: int, host: str = "localhost") -> bool:
-    """Check if a port is accepting connections."""
+    """Fast TCP check -- does something listen on this port?"""
     try:
         with socket.create_connection((host, port), timeout=1):
             return True
     except (ConnectionRefusedError, OSError, TimeoutError):
+        return False
+
+
+def is_server_ready(port: int, host: str = "localhost") -> bool:
+    """HTTP-level check -- is the server actually responding to requests?
+
+    A process can bind a port before it is ready to serve HTTP. This function
+    sends a real GET request and accepts any response with status < 500,
+    including 401/403 (which mean the server is up but requires auth).
+    """
+    try:
+        url = f"http://{host}:{port}/"
+        req = urllib.request.Request(url, method="GET")
+        resp = urllib.request.urlopen(req, timeout=3)
+        return resp.status < 500
+    except urllib.error.HTTPError as e:
+        # 4xx responses (including 401/403) mean the server is up
+        return e.code < 500
+    except (urllib.error.URLError, OSError, TimeoutError):
         return False
 
 
@@ -224,7 +313,7 @@ def start_dev_server(
         preexec_fn=os.setsid,  # Create process group for clean shutdown
     )
 
-    # Wait for the port to become available
+    # Wait for the server to be ready (HTTP-level, not just TCP)
     start_time = time.time()
     while time.time() - start_time < timeout:
         if proc.poll() is not None:
@@ -236,9 +325,7 @@ def start_dev_server(
                 f"stderr: {stderr[:500]}"
             )
 
-        if is_port_open(port):
-            # Give the server a moment to finish initialization
-            time.sleep(1)
+        if is_port_open(port) and is_server_ready(port):
             print(f"Dev server is ready on port {port}")
             return proc
 
@@ -258,7 +345,6 @@ def stop_server(proc: subprocess.Popen) -> None:
         return
 
     try:
-        # Send SIGTERM to the entire process group
         os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
         proc.wait(timeout=5)
     except (ProcessLookupError, ChildProcessError):
@@ -281,6 +367,10 @@ def capture_screenshots(
     output_dir: Path,
     viewport: tuple[int, int] = (1280, 720),
     full_page: bool = True,
+    wait_strategy: Literal["commit", "domcontentloaded", "load", "networkidle"] = "domcontentloaded",
+    post_render_delay: float = 3.0,
+    nav_timeout: int = 60000,
+    storage_state: str | None = None,
 ) -> list[dict]:
     """Capture screenshots using Playwright.
 
@@ -300,10 +390,15 @@ def capture_screenshots(
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        context = browser.new_context(
-            viewport={"width": viewport[0], "height": viewport[1]},
-            device_scale_factor=2,  # Retina-quality screenshots
-        )
+
+        context_kwargs = {
+            "viewport": {"width": viewport[0], "height": viewport[1]},
+            "device_scale_factor": 2,  # Retina-quality screenshots
+        }
+        if storage_state:
+            context_kwargs["storage_state"] = storage_state
+
+        context = browser.new_context(**context_kwargs)
         page = context.new_page()
 
         for asset in assets:
@@ -322,9 +417,9 @@ def capture_screenshots(
 
             try:
                 print(f"Capturing: {url} -> {output_path}")
-                page.goto(url, wait_until="networkidle", timeout=15000)
-                # Wait a bit for any animations to settle
-                page.wait_for_timeout(500)
+                page.goto(url, wait_until=wait_strategy, timeout=nav_timeout)
+                # Wait for rendering to settle (animations, lazy loading, etc.)
+                page.wait_for_timeout(int(post_render_delay * 1000))
                 page.screenshot(path=str(output_path), full_page=full_page)
                 results.append({
                     "filename": filename,
@@ -350,8 +445,71 @@ def capture_screenshots(
 # ---------------------------------------------------------------------------
 
 def main():
-    project_root = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path.cwd()
-    assets_file = Path(sys.argv[2]) if len(sys.argv) > 2 else None
+    parser = argparse.ArgumentParser(
+        description="Capture screenshots of a web project automatically."
+    )
+    parser.add_argument(
+        "project_root",
+        nargs="?",
+        default=".",
+        help="Path to the project (default: current directory)",
+    )
+    parser.add_argument(
+        "assets_file",
+        nargs="?",
+        default=None,
+        help="Path to a JSON file listing pages to capture",
+    )
+    parser.add_argument(
+        "--viewport",
+        default="1280x720",
+        help="Viewport size as WIDTHxHEIGHT (default: 1280x720)",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=60000,
+        help="Navigation timeout in milliseconds (default: 60000)",
+    )
+    parser.add_argument(
+        "--delay",
+        type=float,
+        default=3.0,
+        help="Post-render delay in seconds (default: 3.0)",
+    )
+    parser.add_argument(
+        "--wait-until",
+        default="domcontentloaded",
+        choices=["domcontentloaded", "load", "networkidle", "commit"],
+        help="Playwright wait strategy (default: domcontentloaded)",
+    )
+    parser.add_argument(
+        "--storage-state",
+        default=None,
+        help="Path to Playwright storage state JSON for authenticated sessions",
+    )
+    parser.add_argument(
+        "--results-path",
+        default=None,
+        help="Path to write capture_results.json (default: /tmp/capture_results.json)",
+    )
+    parser.add_argument(
+        "--no-results",
+        action="store_true",
+        help="Do not write capture_results.json",
+    )
+
+    args = parser.parse_args()
+    project_root = Path(args.project_root).resolve()
+    assets_file = Path(args.assets_file) if args.assets_file else None
+
+    # Parse viewport
+    try:
+        w, h = args.viewport.split("x")
+        viewport = (int(w), int(h))
+    except ValueError:
+        print(f"Invalid viewport format: {args.viewport}. Use WIDTHxHEIGHT (e.g., 1280x720).")
+        sys.exit(1)
 
     # Load asset list
     if assets_file and assets_file.exists():
@@ -384,9 +542,19 @@ def main():
     if detection:
         command, port = detection
 
-        if is_port_open(port):
+        if is_port_open(port) and is_server_ready(port):
             print(f"Dev server already running on port {port}")
             server_already_running = True
+        elif is_port_open(port):
+            print(f"Port {port} is bound but not responding to HTTP. It may be stale.")
+            print("Attempting to start a fresh dev server...")
+            try:
+                proc = start_dev_server(command, port, project_root)
+            except (RuntimeError, TimeoutError) as e:
+                print(f"Error starting dev server: {e}")
+                print("Falling back to asset checklist.")
+                _run_checklist_fallback(project_root, assets_file)
+                return
         else:
             try:
                 proc = start_dev_server(command, port, project_root)
@@ -398,7 +566,7 @@ def main():
     else:
         # Check common ports in case something is already running
         for port in [3000, 5173, 8080, 5000, 8000]:
-            if is_port_open(port):
+            if is_port_open(port) and is_server_ready(port):
                 print(f"Found running server on port {port}")
                 server_already_running = True
                 break
@@ -411,7 +579,16 @@ def main():
     base_url = f"http://localhost:{port}"
 
     try:
-        results = capture_screenshots(base_url, assets, output_dir)
+        results = capture_screenshots(
+            base_url,
+            assets,
+            output_dir,
+            viewport=viewport,
+            wait_strategy=args.wait_until,
+            post_render_delay=args.delay,
+            nav_timeout=args.timeout,
+            storage_state=args.storage_state,
+        )
     finally:
         if proc and not server_already_running:
             print("Stopping dev server...")
@@ -435,11 +612,15 @@ def main():
         for r in failed:
             print(f"  - {r['filename']}: {r.get('reason', 'unknown')}")
 
-    # Write results to JSON for downstream use
-    results_path = output_dir / "capture_results.json"
-    with open(results_path, "w") as f:
-        json.dump(results, f, indent=2)
-    print(f"\nResults saved to: {results_path}")
+    # Write results JSON (to /tmp/ by default, not the project directory)
+    if not args.no_results:
+        if args.results_path:
+            results_path = Path(args.results_path)
+        else:
+            results_path = Path(tempfile.gettempdir()) / "capture_results.json"
+        with open(results_path, "w") as f:
+            json.dump(results, f, indent=2)
+        print(f"\nResults saved to: {results_path}")
 
 
 def _run_checklist_fallback(project_root: Path, assets_file: Path | None):

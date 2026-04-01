@@ -151,6 +151,14 @@ Write the final README.md to the project root. If you replaced an existing READM
 
 If the README references images that do not exist yet, try to capture them automatically. If automatic capture is not possible, fall back to a manual checklist.
 
+Before writing image references in the README, check whether Playwright is available so you can decide upfront whether to include real screenshot paths or TODO placeholders:
+
+```bash
+python3 -c "from playwright.sync_api import sync_playwright; print('ready')" 2>/dev/null || echo "not installed"
+```
+
+If Playwright is not installed, prefer writing image placeholders with TODO comments rather than referencing files that will not exist.
+
 ### 6a. Write the asset list
 
 Create a JSON file listing every missing asset. Use a path (e.g., `/dashboard`) for the `url_or_context` field -- the capture script resolves it against the dev server URL automatically.
@@ -176,18 +184,32 @@ Save this file to a temporary location (e.g., `/tmp/readme-assets.json`).
 
 ### 6b. Try automatic capture
 
-For web application projects, run the capture script. It auto-detects the dev server command from project files (package.json, manage.py, pyproject.toml, etc.), starts the server, takes screenshots with Playwright, and stops the server when done.
+For web application projects, run the capture script. It auto-detects the dev server command, starts it, captures screenshots with Playwright, and stops it when done.
 
 ```bash
 python3 <skill-path>/scripts/capture_screenshots.py . /tmp/readme-assets.json
 ```
 
-The script:
-- Detects the dev server command and port from package.json scripts, Django manage.py, Flask app.py, or pyproject.toml
-- Starts the dev server if it is not already running
-- Waits for the server to be ready
+The script supports these flags for common edge cases:
+
+```bash
+python3 <skill-path>/scripts/capture_screenshots.py . /tmp/readme-assets.json \
+  --timeout 90000 \
+  --delay 5.0 \
+  --viewport 1440x900 \
+  --storage-state auth-state.json
+```
+
+What the script does:
+- Detects the dev server command and port from package.json scripts (including `dev:web` and similar monorepo patterns), Django manage.py, Flask app.py, or pyproject.toml
+- Detects the package manager (npm/yarn/pnpm) from lock files
+- Follows `pnpm --filter` workspace delegation to determine the correct port
+- Verifies server readiness with an HTTP health check (not just TCP)
+- Uses `domcontentloaded` wait strategy to avoid hanging on HMR WebSocket connections
+- Allows 60 seconds for cold-start compilation by default
 - Captures each page as a high-resolution (2x) PNG screenshot
-- Saves results to `assets/screenshots/` in the project root
+- Saves screenshots to `assets/screenshots/` in the project root
+- Writes metadata to `/tmp/capture_results.json` (not into the project directory)
 - Stops the dev server when done
 
 If Playwright is not installed, the script prints installation instructions and falls back to the manual checklist automatically.
@@ -213,3 +235,15 @@ This creates the `assets/screenshots/` directory and prints a checklist with fil
 ### Skip conditions
 
 If the README has no image placeholders, skip this step entirely.
+
+## Gotchas
+
+Common failure modes with screenshot capture and how to handle them:
+
+- **Playwright not installed** -- The script falls back to the manual checklist silently. Run `pip install playwright && playwright install chromium` (the browser download is a separate step after pip install).
+- **Navigation hangs on dev servers** -- Dev servers with HMR (Next.js, Vite, Nuxt) keep WebSocket connections open, which prevents the `networkidle` strategy from resolving. The script defaults to `domcontentloaded` to avoid this. If it still hangs, try `--wait-until load`.
+- **First page times out** -- Cold-start compilation in Next.js/Vite can take 30+ seconds, especially in monorepos. The default timeout is 60 seconds. For large projects, use `--timeout 90000`.
+- **"Server already running" but pages fail** -- A process can bind a port without serving HTTP. The script now does an HTTP health check, but if a stale process is stuck, kill it with `lsof -ti :3000 | xargs kill -9` and retry.
+- **Monorepo dev server not detected** -- Scripts like `dev:web` or `pnpm --filter @scope/pkg dev` are now supported, but deeply nested workspaces may still fail. Start the dev server manually before running the script as a workaround.
+- **Auth-gated pages** -- Screenshots will show a login page instead of the actual app. Use `--storage-state auth-state.json` with a pre-saved Playwright auth session.
+- **Artifact left in project** -- Earlier versions wrote `capture_results.json` into `assets/screenshots/`. The script now writes to `/tmp/` by default. Use `--no-results` to suppress it entirely.
