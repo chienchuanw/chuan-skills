@@ -15,11 +15,22 @@ description: >
 
 Generate a structured report comparing the current branch against the default branch. The report serves two audiences: someone with zero technical background (the "simple version") and a senior developer doing a pre-merge review.
 
+This skill uses multiple sub-agents to ensure accuracy. Each agent has a dedicated role defined in the `agents/` directory:
+
+| Agent | File | Purpose | Runs |
+|-------|------|---------|------|
+| Project Context Scout | `agents/scout.md` | Explores codebase to understand architecture and conventions | First |
+| Simple Explainer | `agents/explainer.md` | Writes toddler-friendly change summary | Parallel with Analyst |
+| Change Analyst | `agents/analyst.md` | Produces senior developer review with confidence tags | Parallel with Explainer |
+| Cross-Checker | `agents/checker.md` | Verifies every technical claim against actual source code | Last |
+
 ## Language
 
 By default, write the report in English. If the user asks for the report in another language (e.g., "用中文", "Chinese", "繁體中文"), write the entire report in that language instead — including section headings, metadata labels, bullet points, and the senior developer review. The only things that stay in their original form are git output (commit hashes, branch names, file paths, code snippets) since those are language-neutral.
 
 When the user asks for "Chinese" without specifying, default to **Traditional Chinese (繁體中文)**.
+
+Determine the target language now and pass it to all sub-agents as REPORT_LANGUAGE (either "English" or "Traditional Chinese").
 
 ## Step 1: Detect branches
 
@@ -81,71 +92,64 @@ git status --short
 
 If the commit log is empty (no commits ahead of the default branch), tell the user: "This branch has no commits ahead of {default_branch}. Nothing to report." and stop.
 
-## Step 3: Analyze and generate the report
+Store these results — they will be passed to sub-agents in the following steps.
+
+## Step 3: Gather project context
+
+Read `<skill-path>/agents/scout.md` for the full agent definition.
+
+Use the Agent tool to spawn the **Project Context Scout**. This agent explores the codebase to build a project profile BEFORE anyone looks at the diff. The Change Analyst needs this profile to understand the project's conventions and avoid flagging intentional design choices as problems.
+
+Pass no diff data to this agent — it should only explore the baseline codebase.
+
+Store the agent's response as PROJECT_CONTEXT.
+
+## Step 4: Analyze changes (two sub-agents in parallel)
+
+Read `<skill-path>/agents/explainer.md` and `<skill-path>/agents/analyst.md` for the full agent definitions.
+
+Use the Agent tool to spawn **two sub-agents in parallel** (in a single message with two Agent tool calls):
+
+**Sub-agent A — Simple Explainer:** Pass the commit log and diff stat (NOT the full diff). Replace `{REPORT_LANGUAGE}`, `{commit_log}`, and `{diff_stat}` placeholders in the agent definition with the actual data.
+
+**Sub-agent B — Change Analyst:** Pass the PROJECT_CONTEXT, full diff, and commit log. Replace `{REPORT_LANGUAGE}`, `{PROJECT_CONTEXT}`, `{commit_log}`, and `{full_diff}` placeholders in the agent definition with the actual data.
+
+Wait for both to complete. Store the Simple Explainer's response as SIMPLE_EXPLANATION and the Change Analyst's response as ANALYST_REVIEW.
+
+## Step 5: Cross-check the review
+
+Read `<skill-path>/agents/checker.md` for the full agent definition.
+
+Use the Agent tool to spawn the **Cross-Checker**. This is the quality gate — it verifies every factual claim the Change Analyst made by reading actual source files.
+
+Replace `{REPORT_LANGUAGE}`, `{ANALYST_REVIEW}`, `{PROJECT_CONTEXT}`, and `{full_diff}` placeholders in the agent definition with the actual data.
+
+Store the response as VERIFIED_REVIEW. Extract the Concerns, Suggestions, and What Looks Good sections (excluding the Cross-Check Summary) for use in the final report.
+
+## Step 6: Assemble and write the report
 
 Read the appropriate report template:
 - English: `<skill-path>/assets/template.md`
 - Traditional Chinese: `<skill-path>/assets/template-zh-TW.md`
 
-Choose the template that matches the language the user requested (default: English).
-
 Fill in each section of the template:
 
-### Metadata
+- **Metadata**: branch_name, default_branch, commit_count, files_changed, date from Steps 1-2.
+- **uncommitted_warning**: If `git status --short` showed changes, add the appropriate warning. Otherwise leave blank.
+- **commit_list**: Each commit as a bullet point with short hash and message.
+- **simple_explanation**: From the Simple Explainer (Step 4).
+- **concerns / suggestions / praise**: From the Cross-Checker's verified review (Step 5), excluding the Cross-Check Summary.
 
-- **branch_name**: The current branch name.
-- **default_branch**: The default branch being compared against.
-- **commit_count**: Number of commits ahead.
-- **files_changed**: Number of files changed (from `--stat` output).
-- **date**: Today's date.
-- **uncommitted_warning**: If `git status --short` shows changes, add: "> **Note:** There are uncommitted changes in the working tree. This report only covers committed changes." Otherwise leave blank.
+Save the completed report to `branch-report.md` in the project root directory. Tell the user the file path.
 
-### Commit list
-
-List each commit as a bullet point with its short hash and message.
-
-### What Changed — The Simple Version
-
-This section is for someone who knows absolutely nothing about programming. Imagine explaining to a curious toddler what you did today at work.
-
-Write 3-5 bullet points that describe the changes using everyday language and analogies. Frame changes in terms of what the app does for people, not how the code works.
-
-**Guidelines for this section:**
-- Use words a child would know: "fixed", "added", "changed", "removed", "moved"
-- Use analogies to physical things: doors, buttons, drawers, labels, signs, roads
-- Talk about what users see or experience, not implementation details
-- Never use these words: refactor, endpoint, schema, migration, dependency, API, module, component, middleware, handler, config, parameter, initialize, deploy, render, callback, async, sync, database, query, index, cache, interface, abstract, polymorphism, inheritance
-
-**Good examples:**
-- "Added a new button that lets people save their favorite items, like putting a bookmark in a book."
-- "Fixed a problem where the app sometimes forgot who you were after you logged in, like a door that kept locking itself."
-- "Changed how the app sorts the list of items so the newest ones show up first, like putting the freshest cookies on top of the jar."
-
-**Bad examples (too technical):**
-- "Refactored the authentication middleware to use JWT tokens."
-- "Added a new REST API endpoint for user preferences."
-- "Migrated the database schema to support polymorphic associations."
-
-### Senior Developer Review
-
-This section speaks to an experienced developer. Be specific and reference actual changes from the diff. Every point must trace back to something visible in the code.
-
-**Concerns:** Issues that could cause bugs, security vulnerabilities, performance problems, or maintenance headaches. Be direct about what the risk is and where it lives. If there are no real concerns, say so — don't manufacture them.
-
-**Suggestions:** Improvements that would make the code better — cleaner structure, better naming, missing tests, error handling gaps, opportunities to simplify. Each suggestion should be actionable: say what to change and where.
-
-**What Looks Good:** Genuine praise for things done well — good patterns, clean abstractions, thoughtful error handling, well-written tests. This section matters because it reinforces good habits and makes the review feel balanced rather than purely critical.
-
-## Step 4: Write the report
-
-Save the completed report to `branch-report.md` in the project root directory. Tell the user the file path so they can find it.
-
-If a `branch-report.md` already exists, overwrite it — the report is meant to reflect the current state of the branch.
+If a `branch-report.md` already exists, overwrite it — the report reflects the current state of the branch.
 
 ## Hard rules
 
 - Never run any command that modifies the working tree, staging area, or repository state. No `git checkout`, `git add`, `git stash`, `git reset`, `git commit`, or `git push`.
 - The "Simple Version" section must contain zero technical jargon. If a bullet point would not make sense to a five-year-old, rewrite it until it does.
 - Every item in the "Senior Developer Review" must reference a specific change from the diff or commit log. Never give generic advice like "consider adding more tests" without pointing to what specifically lacks test coverage.
-- Never fabricate changes. Every claim in the report must be traceable to the actual diff.
-- If the diff touches more than 50 files, note that the analysis focuses on the most significant changes and list the remaining files briefly without detailed analysis.
+- Never fabricate changes. Every claim in the report must be traceable to the actual diff and verified by the Cross-Checker.
+- If the diff touches more than 50 files, note that the analysis focuses on the most significant changes and list the remaining files briefly without detailed analysis. Pass only the most impactful file diffs to sub-agents to avoid overwhelming their context.
+- Always spawn the Project Context Scout before the Change Analyst. The analyst cannot produce accurate results without understanding the project first.
+- Always spawn the Cross-Checker after the Change Analyst. The report must not include unverified technical claims.
