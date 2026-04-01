@@ -34,6 +34,17 @@ Skills may optionally include subdirectories for scripts, references, or assets 
 | Skill | Description |
 |-------|-------------|
 | [commit-msg](skills/commit-msg/SKILL.md) | Suggests 3 commit message options based on git diff and project conventions |
+| [skill-creator](skills/skill-creator/SKILL.md) | Create, test, evaluate, and iteratively improve Claude Code skills (via submodule) |
+
+## Submodules
+
+Some skills are sourced from external repos via git submodules and symlinked into `skills/`:
+
+| Submodule | Source | Skills provided |
+|-----------|--------|-----------------|
+| `vendor/anthropic-skills` | [anthropics/skills](https://github.com/anthropics/skills) | skill-creator |
+
+After cloning this repo, run `git submodule update --init` to fetch submodule contents.
 
 ## Installing a skill
 
