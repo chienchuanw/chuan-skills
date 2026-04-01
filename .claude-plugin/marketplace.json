@@ -36,6 +36,15 @@
       "skills": [
         "./skills/readme"
       ]
+    },
+    {
+      "name": "branch-report",
+      "description": "Generates a branch comparison report with simple explanations and senior developer review",
+      "source": "./skills/branch-report",
+      "strict": false,
+      "skills": [
+        "./skills/branch-report"
+      ]
     }
   ]
 }

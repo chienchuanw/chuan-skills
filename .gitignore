@@ -14,3 +14,6 @@
 
 # Skill evaluation workspaces
 *-workspace/
+
+# Skill eval test cases (development only)
+skills/*/evals/

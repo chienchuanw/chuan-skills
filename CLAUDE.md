@@ -35,8 +35,9 @@ Skills may optionally include subdirectories for scripts, references, or assets.
 
 | Plugin        | Source   | Description                                                                 |
 |---------------|----------|-----------------------------------------------------------------------------|
-| commit-msg    | local    | Suggests 3 commit message options based on git diff and project conventions |
-| skill-creator | external | Create, test, evaluate, and iteratively improve Claude Code skills          |
+| commit-msg     | local    | Suggests 3 commit message options based on git diff and project conventions        |
+| skill-creator  | external | Create, test, evaluate, and iteratively improve Claude Code skills                 |
+| branch-report  | local    | Generates a branch comparison report with simple explanations and senior dev review |
 
 Local plugins have their skills under `skills/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
 
