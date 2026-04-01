@@ -11,9 +11,11 @@ This is a personal plugin marketplace of Claude Code skills (slash commands), ho
 ```text
 .claude-plugin/
 └── marketplace.json      # Marketplace manifest (plugin registry)
-skills/
-└── commit-msg/
-    └── SKILL.md          # Local skill
+plugins/
+└── commit-msg/           # One directory per plugin
+    └── skills/
+        └── commit-msg/
+            └── SKILL.md  # Skill definition
 ```
 
 ### Skill format
@@ -36,10 +38,11 @@ Skills may optionally include subdirectories for scripts, references, or assets.
 | Plugin        | Source   | Description                                                                 |
 |---------------|----------|-----------------------------------------------------------------------------|
 | commit-msg     | local    | Suggests 3 commit message options based on git diff and project conventions        |
+| readme         | local    | Write a new README.md or improve an existing one for any repository                |
 | skill-creator  | external | Create, test, evaluate, and iteratively improve Claude Code skills                 |
 | branch-report  | local    | Generates a branch comparison report with simple explanations and senior dev review |
 
-Local plugins have their skills under `skills/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
+Local plugins live under `plugins/<name>/skills/<name>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
 
 ## Installing from this marketplace
 
@@ -54,4 +57,4 @@ Local plugins have their skills under `skills/`. External plugins reference an u
 
 ## Adding a new skill
 
-Use the `/skill-creator` skill, then copy the resulting directory into `skills/` (omit the `evals/` subfolder). Register it in `.claude-plugin/marketplace.json`.
+Use the `/skill-creator` skill, then copy the resulting directory into `plugins/<name>/skills/<name>/` (omit the `evals/` subfolder). Register it in `.claude-plugin/marketplace.json`.

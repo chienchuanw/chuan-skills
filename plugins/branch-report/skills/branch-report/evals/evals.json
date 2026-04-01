@@ -1,0 +1,23 @@
+{
+  "skill_name": "branch-report",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I've been working on this feature branch for a few days and I want to understand what I've changed compared to main before I open a PR. Can you summarize my branch?",
+      "expected_output": "A markdown report saved to branch-report.md with metadata table, simple explanation section, and senior developer review with concerns/suggestions/praise",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Hey, I'm on the main branch right now. Can you generate a branch report for me?",
+      "expected_output": "The skill should detect that the user is on the default branch and stop with a clear message telling them to switch to a feature branch first",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "What changed on this branch? I need to explain it to my product manager who doesn't know anything about code, but I also want a technical review before merging.",
+      "expected_output": "A markdown report with a jargon-free simple explanation suitable for a non-technical PM, plus a detailed senior developer review referencing specific code changes",
+      "files": []
+    }
+  ]
+}

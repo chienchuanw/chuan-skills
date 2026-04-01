@@ -11,11 +11,8 @@
     {
       "name": "commit-msg",
       "description": "Suggests 3 commit message options based on git diff and project conventions",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/commit-msg"
-      ]
+      "source": "./plugins/commit-msg",
+      "strict": false
     },
     {
       "name": "skill-creator",
@@ -23,28 +20,19 @@
       "source": {
         "source": "url",
         "url": "https://github.com/anthropics/skills.git"
-      },
-      "skills": [
-        "./skills/skill-creator"
-      ]
+      }
     },
     {
       "name": "readme",
       "description": "Write a new README.md or improve an existing one for any repository",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/readme"
-      ]
+      "source": "./plugins/readme",
+      "strict": false
     },
     {
       "name": "branch-report",
       "description": "Generates a branch comparison report with simple explanations and senior developer review",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/branch-report"
-      ]
+      "source": "./plugins/branch-report",
+      "strict": false
     }
   ]
 }
