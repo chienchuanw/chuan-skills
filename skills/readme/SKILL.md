@@ -147,11 +147,13 @@ Before writing the file, review your draft for:
 
 Write the final README.md to the project root. If you replaced an existing README, briefly tell the user what changed.
 
-## Step 6: Prepare missing assets
+## Step 6: Capture or prepare missing assets
 
-If the README references images that do not exist yet, generate an asset list and run the bundled preparation script so the user has a clear checklist and the directory structure ready to go.
+If the README references images that do not exist yet, try to capture them automatically. If automatic capture is not possible, fall back to a manual checklist.
 
-1. Write a JSON file listing every missing asset:
+### 6a. Write the asset list
+
+Create a JSON file listing every missing asset. Use a path (e.g., `/dashboard`) for the `url_or_context` field -- the capture script resolves it against the dev server URL automatically.
 
 ```json
 [
@@ -159,25 +161,55 @@ If the README references images that do not exist yet, generate an asset list an
     "filename": "dashboard.png",
     "description": "Main dashboard with sample data loaded",
     "type": "screenshot",
-    "url_or_context": "http://localhost:3000/dashboard"
+    "url_or_context": "/dashboard"
   },
   {
-    "filename": "setup-flow.gif",
-    "description": "Walkthrough of the initial setup wizard",
-    "type": "gif",
-    "url_or_context": "http://localhost:3000/setup"
+    "filename": "setup-flow.png",
+    "description": "The initial setup wizard",
+    "type": "screenshot",
+    "url_or_context": "/setup"
   }
 ]
 ```
 
 Save this file to a temporary location (e.g., `/tmp/readme-assets.json`).
 
-2. Run the preparation script:
+### 6b. Try automatic capture
+
+For web application projects, run the capture script. It auto-detects the dev server command from project files (package.json, manage.py, pyproject.toml, etc.), starts the server, takes screenshots with Playwright, and stops the server when done.
+
+```bash
+python3 <skill-path>/scripts/capture_screenshots.py . /tmp/readme-assets.json
+```
+
+The script:
+- Detects the dev server command and port from package.json scripts, Django manage.py, Flask app.py, or pyproject.toml
+- Starts the dev server if it is not already running
+- Waits for the server to be ready
+- Captures each page as a high-resolution (2x) PNG screenshot
+- Saves results to `assets/screenshots/` in the project root
+- Stops the dev server when done
+
+If Playwright is not installed, the script prints installation instructions and falls back to the manual checklist automatically.
+
+**Prerequisite (one-time setup):**
+
+```bash
+pip install playwright && playwright install chromium
+```
+
+Tell the user about this requirement if the script reports that Playwright is missing.
+
+### 6c. Fall back to manual checklist
+
+If the project is not a web app, or if automatic capture fails, run the checklist script instead:
 
 ```bash
 bash <skill-path>/scripts/prepare_assets.sh . /tmp/readme-assets.json
 ```
 
-This creates the `assets/screenshots/` directory and prints a checklist with the exact filenames, descriptions, and suggested capture tools. Share the checklist output with the user so they know exactly what to capture and where to save each file.
+This creates the `assets/screenshots/` directory and prints a checklist with filenames, descriptions, and suggested capture tools.
 
-If the README has no image placeholders, skip this step.
+### Skip conditions
+
+If the README has no image placeholders, skip this step entirely.
