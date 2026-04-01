@@ -1,0 +1,32 @@
+{
+  "name": "chuan-skills",
+  "owner": {
+    "name": "chienchuanw"
+  },
+  "metadata": {
+    "description": "Personal collection of Claude Code skills",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "commit-msg",
+      "description": "Suggests 3 commit message options based on git diff and project conventions",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/commit-msg"
+      ]
+    },
+    {
+      "name": "skill-creator",
+      "description": "Create, test, evaluate, and iteratively improve Claude Code skills",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/anthropics/skills.git"
+      },
+      "skills": [
+        "./skills/skill-creator"
+      ]
+    }
+  ]
+}

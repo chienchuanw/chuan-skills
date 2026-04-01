@@ -4,19 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Purpose
 
-This is a personal collection of Claude Code skills (slash commands) intended for upload to a GitHub repository for reuse and sharing.
+This is a personal plugin marketplace of Claude Code skills (slash commands), hosted as a GitHub repository.
 
-## Skill Structure
+## Repository Structure
 
-Skills are stored as directories under `skills/`, each containing a `SKILL.md` file. The directory name is the skill's identifier.
-
-```
+```text
+.claude-plugin/
+└── marketplace.json      # Marketplace manifest (plugin registry)
 skills/
-└── skill-name/
-    └── SKILL.md          # Required: frontmatter + instructions
+└── commit-msg/
+    └── SKILL.md          # Local skill
 ```
 
-Each `SKILL.md` has YAML frontmatter and a prompt body:
+### Skill format
+
+Each skill directory contains a `SKILL.md` with YAML frontmatter and a prompt body:
 
 ```markdown
 ---
@@ -27,33 +29,28 @@ description: When and why to trigger this skill
 Instructions that Claude follows when the skill is invoked...
 ```
 
-Skills may optionally include subdirectories for scripts, references, or assets — but most skills are just a single `SKILL.md`.
+Skills may optionally include subdirectories for scripts, references, or assets.
 
-## Skills in this collection
+## Plugins in this marketplace
 
-| Skill | Description |
-|-------|-------------|
-| [commit-msg](skills/commit-msg/SKILL.md) | Suggests 3 commit message options based on git diff and project conventions |
-| [skill-creator](skills/skill-creator/SKILL.md) | Create, test, evaluate, and iteratively improve Claude Code skills (via submodule) |
+| Plugin        | Source   | Description                                                                 |
+|---------------|----------|-----------------------------------------------------------------------------|
+| commit-msg    | local    | Suggests 3 commit message options based on git diff and project conventions |
+| skill-creator | external | Create, test, evaluate, and iteratively improve Claude Code skills          |
 
-## Submodules
+Local plugins have their skills under `skills/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
 
-Some skills are sourced from external repos via git submodules and symlinked into `skills/`:
-
-| Submodule | Source | Skills provided |
-|-----------|--------|-----------------|
-| `vendor/anthropic-skills` | [anthropics/skills](https://github.com/anthropics/skills) | skill-creator |
-
-After cloning this repo, run `git submodule update --init` to fetch submodule contents.
-
-## Installing a skill
-
-Copy the skill directory into `~/.claude/skills/`:
+## Installing from this marketplace
 
 ```bash
-cp -r skills/commit-msg ~/.claude/skills/
+# Add as a marketplace (one-time)
+/plugin marketplace add chienchuanw/chuan-skills
+
+# Install a plugin
+/plugin install commit-msg@chuan-skills
+/plugin install skill-creator@chuan-skills
 ```
 
 ## Adding a new skill
 
-Use the `/skill-creator` built-in skill, then copy the resulting directory here (omit the `evals/` subfolder — that's test infrastructure, not part of the skill itself).
+Use the `/skill-creator` skill, then copy the resulting directory into `skills/` (omit the `evals/` subfolder). Register it in `.claude-plugin/marketplace.json`.
