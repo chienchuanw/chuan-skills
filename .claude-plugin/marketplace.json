@@ -11,7 +11,7 @@
     {
       "name": "commit-msg",
       "description": "Suggests 3 commit message options based on git diff and project conventions",
-      "source": "./",
+      "source": "./skills/commit-msg",
       "strict": false,
       "skills": [
         "./skills/commit-msg"
@@ -31,7 +31,7 @@
     {
       "name": "readme",
       "description": "Write a new README.md or improve an existing one for any repository",
-      "source": "./",
+      "source": "./skills/readme",
       "strict": false,
       "skills": [
         "./skills/readme"
