@@ -33,6 +33,12 @@
       "description": "Generates a branch comparison report with simple explanations and senior developer review",
       "source": "./plugins/branch-report",
       "strict": false
+    },
+    {
+      "name": "seo-meta",
+      "description": "Generates SEO metadata (slug, subtitle, tags, SEO title, description) as YAML frontmatter for markdown articles",
+      "source": "./plugins/seo-meta",
+      "strict": false
     }
   ]
 }
