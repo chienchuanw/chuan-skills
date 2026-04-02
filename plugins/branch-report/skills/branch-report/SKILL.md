@@ -34,12 +34,26 @@ Determine the target language now and pass it to all sub-agents as REPORT_LANGUA
 
 ## Step 1: Detect branches
 
-Run these commands to identify the branches:
+### Determine the target branch
+
+If the user specifies a branch name (e.g., "review branch feature/login", "generate report for develop"), use that as the **target branch**. Otherwise, default to the current branch:
 
 ```bash
-# Current branch
+# Current branch (used when user does not specify one)
 git branch --show-current
+```
 
+If the user specified a branch, verify it exists:
+
+```bash
+git rev-parse --verify {target_branch} 2>/dev/null
+```
+
+If the branch does not exist, tell the user: "Branch '{target_branch}' not found. Check the name and try again." and stop.
+
+### Determine the default (base) branch
+
+```bash
 # Default branch (try symbolic ref first, then scan remotes)
 git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'
 ```
@@ -52,22 +66,24 @@ git branch -r | grep -E 'origin/(main|master)' | head -1 | sed 's@.*origin/@@' |
 
 If neither works, check for local `main` or `master` branches. If no default branch can be determined, ask the user which branch to compare against.
 
-**Stop conditions — check these before continuing:**
+### Stop conditions
 
-- If `git branch --show-current` returns empty, the repo is in detached HEAD state. Tell the user: "You are in detached HEAD state. Please check out a branch first." and stop.
-- If the current branch is the same as the default branch, tell the user: "You are already on the default branch ({branch}). Switch to a feature branch to generate a report." and stop.
+- If using the current branch and `git branch --show-current` returns empty, the repo is in detached HEAD state. Tell the user: "You are in detached HEAD state. Please check out a branch or specify one." and stop.
+- If the target branch is the same as the default branch, tell the user: "'{target_branch}' is the default branch. Specify a feature branch to generate a report." and stop.
 
-Once both branches are identified, find the fork point:
+### Find the fork point
 
 ```bash
-git merge-base HEAD origin/{default_branch}
+git merge-base {target_branch} origin/{default_branch}
 ```
 
 If the remote-tracking branch does not exist (e.g., `origin/main` is missing), try the local default branch instead:
 
 ```bash
-git merge-base HEAD {default_branch}
+git merge-base {target_branch} {default_branch}
 ```
+
+Use `{target_branch}` (not `HEAD`) in all subsequent git commands so the report works correctly even when inspecting a branch you haven't checked out.
 
 ## Step 2: Gather diff context
 
@@ -75,22 +91,22 @@ Run all of these in parallel:
 
 ```bash
 # Commit list since fork point
-git log --oneline {merge_base}..HEAD
+git log --oneline {merge_base}..{target_branch}
 
 # Detailed commit messages (for understanding intent)
-git log --format="%h %s%n%b" {merge_base}..HEAD
+git log --format="%h %s%n%b" {merge_base}..{target_branch}
 
 # File change summary
-git diff --stat {merge_base}..HEAD
+git diff --stat {merge_base}..{target_branch}
 
 # Full diff (for detailed analysis)
-git diff {merge_base}..HEAD
+git diff {merge_base}..{target_branch}
 
-# Uncommitted changes check
+# Uncommitted changes check (only relevant when target is the current branch)
 git status --short
 ```
 
-If the commit log is empty (no commits ahead of the default branch), tell the user: "This branch has no commits ahead of {default_branch}. Nothing to report." and stop.
+If the commit log is empty (no commits ahead of the default branch), tell the user: "Branch '{target_branch}' has no commits ahead of {default_branch}. Nothing to report." and stop.
 
 Store these results — they will be passed to sub-agents in the following steps.
 
