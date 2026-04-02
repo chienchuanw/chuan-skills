@@ -39,6 +39,14 @@
       "description": "Generates SEO metadata (slug, subtitle, tags, SEO title, description) as YAML frontmatter for markdown articles",
       "source": "./plugins/seo-meta",
       "strict": false
+    },
+    {
+      "name": "understand-anything",
+      "description": "Transforms codebases into interactive knowledge graphs with visualization, chat, diff analysis, and onboarding guides",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/Lum1104/Understand-Anything.git"
+      }
     }
   ]
 }
