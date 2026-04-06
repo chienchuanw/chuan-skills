@@ -55,6 +55,14 @@
         "source": "url",
         "url": "https://github.com/OthmanAdi/planning-with-files.git"
       }
+    },
+    {
+      "name": "impeccable",
+      "description": "Design skill that guides AI tools toward creating better frontend UI designs by avoiding common pitfalls",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/pbakaus/impeccable.git"
+      }
     }
   ]
 }
