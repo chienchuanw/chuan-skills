@@ -47,6 +47,14 @@
         "source": "url",
         "url": "https://github.com/Lum1104/Understand-Anything.git"
       }
+    },
+    {
+      "name": "planning-with-files",
+      "description": "Implements Manus-style file-based planning to organize and track progress on complex tasks",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/OthmanAdi/planning-with-files.git"
+      }
     }
   ]
 }
