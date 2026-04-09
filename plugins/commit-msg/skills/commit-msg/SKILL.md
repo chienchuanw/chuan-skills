@@ -1,12 +1,8 @@
 ---
 name: commit-msg
 description: >
-  Generates commit message suggestions based on the current git diff and project conventions.
-  Use this skill whenever the user wants commit message ideas, asks "what should I write for the commit message?",
-  says "suggest a commit message", "help me write a commit message", "what commit message should I use?",
-  "give me commit message options", or any similar request to summarize their changes into a commit message.
-  Also trigger when the user has just made code changes and seems ready to commit.
-  Always present exactly 3 options plus a 4th "write your own" option, then commit with the chosen message.
+  Suggests 3 commit messages based on git diff and project conventions. Use when the user asks for
+  commit message ideas, wants help writing a commit message, or has changes ready to commit.
 ---
 
 # commit-msg

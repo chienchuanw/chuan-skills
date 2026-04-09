@@ -1,12 +1,8 @@
 ---
 name: readme
 description: >
-  Write a new README.md or improve an existing one for any repository.
-  Use this skill whenever the user asks to create, generate, write, update, rewrite, or improve a README,
-  says "add a README", "this repo needs a README", "update the README", "clean up the README",
-  "make a better README", or any similar request related to project documentation in README format.
-  Also trigger when the user says "document this project" or "write docs for this repo" and no other
-  documentation skill is more specific.
+  Write a new README.md or improve an existing one. Use when the user asks to create, update, or
+  improve a README, or wants to document a project and no other documentation skill is more specific.
 ---
 
 # readme

@@ -1,12 +1,9 @@
 ---
 name: seo-meta
 description: >
-  Generates SEO metadata for markdown articles and prepends it as YAML frontmatter.
-  Produces a URL slug, subtitle, 5 categorization tags, SEO title, and SEO description — all in the article's language.
-  Use this skill whenever the user asks to "generate metadata", "add SEO info", "create a slug",
-  "add frontmatter", "generate tags for an article", "optimize for SEO", "add meta to this post",
-  "prepare this article for publishing", or anything related to generating article metadata from a markdown file.
-  Also trigger when the user has a markdown blog post or article and wants to prepare it for a website or CMS.
+  Generates SEO metadata (slug, subtitle, tags, title, description) for markdown articles as YAML
+  frontmatter. Use when the user asks to add metadata, SEO info, tags, or frontmatter to an article,
+  or wants to prepare a markdown post for publishing.
 ---
 
 # SEO Meta Generator
