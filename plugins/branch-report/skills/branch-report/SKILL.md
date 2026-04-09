@@ -1,14 +1,9 @@
 ---
 name: branch-report
 description: >
-  Generates a comparison report between the current git branch and the default branch.
-  The report explains changes in plain, simple language anyone can understand, and includes
-  a senior developer review with concerns, suggestions, and praise.
-  Use this skill whenever the user asks to "compare branches", "what changed on this branch",
-  "summarize my branch", "review my changes", "generate a branch report", "diff report",
-  "explain my branch changes", "what did I change", or any similar request to understand
-  the delta between their working branch and the default branch. Also trigger when the user
-  wants a PR summary, a branch overview, or asks someone to look at their changes before merging.
+  Generates a branch-vs-default comparison report with plain-language explanations and senior dev
+  review. Use when the user asks to summarize, compare, review, or explain branch changes, or
+  wants a PR summary before merging.
 ---
 
 # branch-report
