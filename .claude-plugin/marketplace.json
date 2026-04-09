@@ -71,6 +71,14 @@
         "source": "url",
         "url": "https://github.com/Fission-AI/OpenSpec.git"
       }
+    },
+    {
+      "name": "superpowers",
+      "description": "Collection of advanced skills for brainstorming, planning, debugging, TDD, code review, and parallel agent workflows",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/obra/superpowers.git"
+      }
     }
   ]
 }
