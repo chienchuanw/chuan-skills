@@ -27,7 +27,7 @@ Claude Code supports a plugin system that lets users install and invoke custom s
 | `commit-msg` | local | Suggests 3 commit message options based on git diff and project conventions |
 | `readme` | local | Write a new README.md or improve an existing one for any repository |
 | `branch-report` | local | Generates a branch comparison report with simple explanations and senior developer review |
-| `gh` | local | GitHub CLI workflow skills for creating structured issues and developing on linked branches |
+| `gh` | local | GitHub CLI workflow skills for issues, development branches, and pull requests |
 | `skill-creator` | external | Create, test, evaluate, and iteratively improve Claude Code skills |
 
 Local plugins have their skill definitions under `plugins/<name>/skills/<name>/`. External plugins reference an upstream repository (e.g., [anthropics/skills](https://github.com/anthropics/skills)) in `marketplace.json`.
@@ -65,6 +65,7 @@ Once installed, invoke a skill as a slash command inside Claude Code:
 - `/branch-report` -- Compares the current branch against the default branch and generates a report explaining all changes in plain language, followed by a senior developer review with concerns, suggestions, and praise.
 - `/gh-issue` -- Creates a well-structured GitHub issue using type-specific templates (bug, feat, refactor, doc, perf, security) via the `gh` CLI.
 - `/gh-dev` -- Creates an `issues/N` branch linked to a GitHub issue, then develops with regular convention-following commits. Never pushes to remote.
+- `/gh-pr` -- Pushes the branch and creates or updates a pull request using type-specific templates. Optionally updates README, docs, and project tracking files before opening the PR.
 - `/skill-creator` -- Walks you through creating, testing, and refining a new Claude Code skill.
 
 ## Project Structure
@@ -89,7 +90,10 @@ chuan-skills/
 │   │       ├── gh-issue/
 │   │       │   ├── templates/  # Issue templates (EN + zh-TW) for 6 types
 │   │       │   └── SKILL.md
-│   │       └── gh-dev/
+│   │       ├── gh-dev/
+│   │       │   └── SKILL.md
+│   │       └── gh-pr/
+│   │           ├── templates/  # PR templates (EN + zh-TW) for 6 types
 │   │           └── SKILL.md
 │   └── readme/
 │       └── skills/
