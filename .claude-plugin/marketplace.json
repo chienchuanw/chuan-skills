@@ -79,6 +79,12 @@
         "source": "url",
         "url": "https://github.com/obra/superpowers.git"
       }
+    },
+    {
+      "name": "gh",
+      "description": "GitHub CLI workflow skills for creating issues, pull requests, and more with structured templates",
+      "source": "./plugins/gh",
+      "strict": false
     }
   ]
 }

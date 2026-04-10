@@ -41,6 +41,7 @@ Skills may optionally include subdirectories for scripts, references, or assets.
 | readme         | local    | Write a new README.md or improve an existing one for any repository                |
 | skill-creator  | external | Create, test, evaluate, and iteratively improve Claude Code skills                 |
 | branch-report  | local    | Generates a branch comparison report with simple explanations and senior dev review |
+| gh             | local    | GitHub CLI workflow skills for creating issues, pull requests, and more              |
 
 Local plugins live under `plugins/<name>/skills/<name>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
 
