@@ -233,7 +233,7 @@ Report to the user:
 
 ## Gotchas
 
-Before running any `gh` command, verify that the CLI is available and authenticated:
+Before running any `gh` command, verify that the CLI is available, authenticated, **and has the required token scopes**:
 
 ```bash
 gh auth status
@@ -250,7 +250,13 @@ If `gh` is installed but not authenticated, guide the user to log in:
 gh auth login
 ```
 
-Do not proceed until `gh auth status` succeeds.
+A successful `gh auth status` does not guarantee sufficient permissions. The token must include the `repo` scope for creating and updating pull requests. Check the scopes listed in the `gh auth status` output. If the `repo` scope is missing, the user must refresh their token:
+
+```bash
+gh auth refresh -s repo
+```
+
+Do not proceed until `gh auth status` succeeds and confirms the `repo` scope is present.
 
 If the repository has no GitHub remote, inform the user that a remote is required and suggest:
 
@@ -259,6 +265,8 @@ gh repo create
 # or
 git remote add origin https://github.com/{owner}/{repo}.git
 ```
+
+If `git log main..HEAD` (or `master..HEAD`) returns no commits, the branch has nothing to submit. Step 1 already checks for this and stops early. Do not attempt to generate a PR title, body, or template when the diff is empty — the template filling logic in Step 9d depends on non-empty `git log` and `git diff --stat` output, and will fail if both are blank.
 
 When checking for the `readme` or `planning-with-files` skills, do not error or warn if they are absent. These are optional enhancements — the core PR workflow works without them.
 

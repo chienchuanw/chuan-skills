@@ -85,6 +85,12 @@
       "description": "GitHub CLI workflow skills for creating issues, pull requests, and more with structured templates",
       "source": "./plugins/gh",
       "strict": false
+    },
+    {
+      "name": "skill-optimize",
+      "description": "Tools for improving and maintaining Claude Code skills",
+      "source": "./plugins/skill-optimize",
+      "strict": false
     }
   ]
 }

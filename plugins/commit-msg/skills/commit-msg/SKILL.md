@@ -83,3 +83,8 @@ Use the message text verbatim — no additions, no signature, no "Co-Authored-By
 - **Never append any signature**, attribution, or "Co-Authored-By" line to the commit message.
 - The commit message must be **exactly** the text from the selected option or the user's own input — no modifications.
 - Don't add boilerplate like "I hope these help!" or "Let me know if you'd like changes." The suggestions speak for themselves.
+
+## Gotchas
+
+- **Empty staging area**: If the user runs this skill before staging any changes (`git add`), `git diff --cached` returns empty output. The skill must detect this and stop immediately with a clear message (e.g., "Nothing is staged. Run `git add` first."). Never attempt to generate commit messages from an empty diff -- doing so produces meaningless suggestions like "chore: update files" that erode trust.
+- **Shallow clones / missing history**: In CI environments or shallow clones (`git clone --depth=1`), `git log --oneline -20` may fail or return little to no history. When this happens, warn the user explicitly (e.g., "This appears to be a shallow clone with limited history -- commit message style may not match project conventions.") and fall back to widely accepted defaults (conventional commits, imperative mood, lowercase). Do not silently fall back without informing the user.
