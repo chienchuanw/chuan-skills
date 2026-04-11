@@ -191,6 +191,66 @@ Report to the user:
 - Summary of what was implemented
 - Remind the user that nothing has been pushed — they can review, squash, or push when ready
 
+## Multi-issue parallel development
+
+When the user wants to work on multiple issues simultaneously (e.g., "implement issues 17, 18, 19 in parallel"), use this workflow instead of the serial Steps 1-8 above.
+
+### Create all linked branches first
+
+Before dispatching any agents, create all issue branches with the `issues/N` naming convention:
+
+```bash
+gh issue develop 17 --name "issues/17" --base dev --checkout=false
+gh issue develop 18 --name "issues/18" --base dev --checkout=false
+gh issue develop 19 --name "issues/19" --base dev --checkout=false
+```
+
+Key flags:
+- `--name "issues/N"` — enforces the naming convention (without this, GitHub auto-generates names from issue titles)
+- `--checkout=false` — creates the branch on the remote without switching locally (important when creating multiple branches)
+- `--base` — specifies the base branch if not the default
+
+### Dispatch agents on worktrees
+
+After creating the linked branches, dispatch parallel agents using `isolation: "worktree"`. Each agent receives one issue to implement.
+
+**Important**: Agents working in worktrees get their own branch names (`worktree-agent-XXXXX`), not the issue-linked branch names. Include explicit push instructions in each agent's prompt:
+
+```
+After committing, push your work to the issue branch:
+git push origin HEAD:issues/N
+```
+
+Alternatively, have the agent check out the issue branch inside the worktree before starting:
+
+```
+git checkout issues/N
+```
+
+### After agents complete
+
+If agents used worktree branch names, push each to its corresponding issue branch:
+
+```bash
+# From each worktree directory
+git push origin worktree-agent-XXXXX:issues/17
+git push origin worktree-agent-YYYYY:issues/18
+git push origin worktree-agent-ZZZZZ:issues/19
+```
+
+If there are conflicts due to the issue branch having extra commits (e.g., from the base branch), rebase first:
+
+```bash
+git fetch origin
+git rebase origin/issues/N
+# Resolve conflicts if any
+git push origin HEAD:issues/N
+```
+
+### Shared dependencies
+
+If multiple issues share a dependency (e.g., a test framework setup needed by two feature branches), implement the shared work on the base branch first, push it, then create the issue branches. This avoids merge conflicts later.
+
 ## Gotchas
 
 Before running any `gh` command, verify that the CLI is available and authenticated:
@@ -211,6 +271,10 @@ gh auth login
 ```
 
 Do not proceed until `gh auth status` succeeds.
+
+- **Always pass --name to gh issue develop** -- Without `--name`, GitHub auto-generates branch names from issue titles, producing unwieldy names (especially with non-ASCII characters like Chinese). Always use `gh issue develop N --name "issues/N"` to enforce the `issues/N` convention. This was discovered when `gh issue develop 17 --checkout=false` (without `--name`) generated `17-feat-前端新增測試覆蓋率componentintegration-tests` instead of `issues/17`.
+
+- **Worktree agents use their own branch names** -- When dispatching parallel agents with `isolation: "worktree"`, each agent works on a `worktree-agent-XXXXX` branch, not the issue-linked branch. After the agent completes, you must push with an explicit refspec: `git push origin worktree-agent-XXXXX:issues/N`. To avoid this, instruct agents to `git checkout issues/N` inside the worktree before starting work, or include the refspec push command in the agent prompt.
 
 If the repository has no GitHub remote, inform the user that a remote is required and suggest:
 
