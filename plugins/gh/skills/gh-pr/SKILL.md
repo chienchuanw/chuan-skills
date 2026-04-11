@@ -270,6 +270,8 @@ If `git log main..HEAD` (or `master..HEAD`) returns no commits, the branch has n
 
 When checking for the `readme` or `planning-with-files` skills, do not error or warn if they are absent. These are optional enhancements — the core PR workflow works without them.
 
+When creating a PR, prefer `dev` or `develop` as the base branch if one exists, rather than defaulting to `main`/`master`. Check for these branches first: `git branch -r | grep -E 'origin/(dev|develop)$'`. If `dev`/`develop` exists, use it as `--base`. If neither exists, ask the user which branch to merge into before proceeding.
+
 ## Hard rules
 
 - Never append Co-Authored-By, signatures, or attribution of any kind to commit messages.
