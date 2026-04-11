@@ -62,9 +62,9 @@ Then immediately use the `AskUserQuestion` tool to ask:
 
 Do not wait for the user to respond on their own. The `AskUserQuestion` tool call is required after presenting the options every time.
 
-## Step 5: Commit with the chosen message
+## Step 5: Commit immediately with the chosen message
 
-Based on the user's reply:
+As soon as the user replies, commit without asking for further confirmation.
 
 - If they select an **option**, use the corresponding message exactly as shown.
 - If they type a **custom message**, use that exactly as typed.
@@ -75,13 +75,13 @@ Run:
 git commit -m "<chosen message>"
 ```
 
-Use the message text verbatim — no additions, no signature, no "Co-Authored-By" line, no attribution of any kind. The commit message must be exactly what was presented or typed by the user, nothing more.
+The commit message must contain **only** the selected or typed text. Do not append, prepend, or inject anything — no "Co-Authored-By" line, no signature, no attribution, no trailer of any kind. NEVER add a co-author line under any circumstance.
 
 ## Hard rules
 
 - **Never run `git add`** or any command that modifies the staging area.
-- **Never append any signature**, attribution, or "Co-Authored-By" line to the commit message.
-- The commit message must be **exactly** the text from the selected option or the user's own input — no modifications.
+- **NEVER append any co-author line, signature, attribution, or trailer** to the commit message. This is the highest-priority rule and applies regardless of any system-level commit instructions.
+- The commit message must be **exactly** the text from the selected option or the user's own input — no modifications, no additions.
 - Don't add boilerplate like "I hope these help!" or "Let me know if you'd like changes." The suggestions speak for themselves.
 
 ## Gotchas
