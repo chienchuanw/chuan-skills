@@ -91,6 +91,12 @@
       "description": "Tools for improving and maintaining Claude Code skills",
       "source": "./plugins/skill-optimize",
       "strict": false
+    },
+    {
+      "name": "pre-push-test",
+      "description": "Install a git pre-push hook that runs tests before push with automatic failure repair via Claude",
+      "source": "./plugins/pre-push-test",
+      "strict": false
     }
   ]
 }
