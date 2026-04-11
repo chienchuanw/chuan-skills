@@ -42,7 +42,7 @@ Skills may optionally include subdirectories for scripts, references, or assets.
 | skill-creator  | external | Create, test, evaluate, and iteratively improve Claude Code skills                 |
 | branch-report  | local    | Generates a branch comparison report with simple explanations and senior dev review |
 | gh             | local    | GitHub CLI workflow skills (gh-issue, gh-dev, gh-pr) for issues, branches, and PRs       |
-| skill-optimize | local    | Tools for improving skills: gotcha-capture for documenting pitfalls from sessions         |
+| skill-optimize | local    | Tools for improving skills: gotcha-capture for documenting pitfalls, skill-benchmark for scoring skill quality |
 
 Local plugins live under `plugins/<name>/skills/<name>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
 
