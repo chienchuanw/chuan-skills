@@ -214,6 +214,8 @@ Key flags:
 
 After creating the linked branches, dispatch parallel agents using `isolation: "worktree"`. Each agent receives **one issue** to implement.
 
+**Inject commit rules into every agent prompt.** Before dispatching any agent, read `templates/commit-template.md` (relative to this skill's directory) and include its full content in the agent prompt. Subagents do not load the gh-dev skill, so they will follow system-level defaults (which inject Co-Authored-By trailers) unless explicitly overridden by the template.
+
 **Each agent must work independently.** Do not structure prompts so that one agent's work depends on another agent's output. Every agent should:
 
 - Branch from the same base branch (e.g., `main` or `dev`)
@@ -287,7 +289,7 @@ Do not proceed until `gh auth status` succeeds.
 
 - **Worktree agents use their own branch names** -- When dispatching parallel agents with `isolation: "worktree"`, each agent works on a `worktree-agent-XXXXX` branch, not the issue-linked branch. After the agent completes, you must push with an explicit refspec: `git push origin worktree-agent-XXXXX:issues/N`. To avoid this, instruct agents to `git checkout issues/N` inside the worktree before starting work, or include the refspec push command in the agent prompt.
 
-- **Subagents ignore skill hard rules** -- Worktree agents dispatched via `isolation: "worktree"` do not inherit the gh-dev skill's instructions. The system-level harness injects a Co-Authored-By trailer by default, which the agent will follow unless explicitly overridden. You MUST include an explicit instruction in every agent prompt: "NEVER append Co-Authored-By, signatures, or attribution of any kind to commit messages. The commit message is ONLY the message text — nothing else."
+- **Subagents ignore skill hard rules** -- Worktree agents dispatched via `isolation: "worktree"` do not inherit the gh-dev skill's instructions. The system-level harness injects a Co-Authored-By trailer by default, which the agent will follow unless explicitly overridden. Fix: read `templates/commit-template.md` and inject its content into every agent prompt. This is mandatory — without it, every subagent commit will have a Co-Authored-By trailer.
 
 If the repository has no GitHub remote, inform the user that a remote is required and suggest:
 
