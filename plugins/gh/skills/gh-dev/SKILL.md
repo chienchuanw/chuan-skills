@@ -283,7 +283,7 @@ gh auth login
 
 Do not proceed until `gh auth status` succeeds.
 
-- **Always pass --name to gh issue develop** -- Without `--name`, GitHub auto-generates branch names from issue titles, producing unwieldy names (especially with non-ASCII characters like Chinese). Always use `gh issue develop N --name "issues/N"` to enforce the `issues/N` convention. This was discovered when `gh issue develop 17 --checkout=false` (without `--name`) generated `17-feat-前端新增測試覆蓋率componentintegration-tests` instead of `issues/17`.
+- **Always pass --name with exact issues/N value** -- Without `--name`, GitHub auto-generates branch names from issue titles. Even when `--name` is provided, the value must be exactly `issues/N` — never a descriptive name like `6-macro-management` or anything derived from the issue title. The convention is `issues/ISSUE_NUMBER`, no exceptions. Use `gh issue develop N --name "issues/N"` every time. Common mistake: the model passes `--name` but invents a custom name instead of following the `issues/N` pattern.
 
 - **Worktree agents use their own branch names** -- When dispatching parallel agents with `isolation: "worktree"`, each agent works on a `worktree-agent-XXXXX` branch, not the issue-linked branch. After the agent completes, you must push with an explicit refspec: `git push origin worktree-agent-XXXXX:issues/N`. To avoid this, instruct agents to `git checkout issues/N` inside the worktree before starting work, or include the refspec push command in the agent prompt.
 
