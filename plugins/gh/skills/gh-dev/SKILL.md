@@ -212,7 +212,13 @@ Key flags:
 
 ### Dispatch agents on worktrees
 
-After creating the linked branches, dispatch parallel agents using `isolation: "worktree"`. Each agent receives one issue to implement.
+After creating the linked branches, dispatch parallel agents using `isolation: "worktree"`. Each agent receives **one issue** to implement.
+
+**Each agent must work independently.** Do not structure prompts so that one agent's work depends on another agent's output. Every agent should:
+
+- Branch from the same base branch (e.g., `main` or `dev`)
+- Contain all the context it needs in its own prompt — do not reference other issues being developed in parallel
+- Implement its feature as if it were the only change being made to the codebase
 
 **Important**: Agents working in worktrees get their own branch names (`worktree-agent-XXXXX`), not the issue-linked branch names. Include explicit push instructions in each agent's prompt:
 
@@ -247,9 +253,14 @@ git rebase origin/issues/N
 git push origin HEAD:issues/N
 ```
 
-### Shared dependencies
+### Handling shared code
 
-If multiple issues share a dependency (e.g., a test framework setup needed by two feature branches), implement the shared work on the base branch first, push it, then create the issue branches. This avoids merge conflicts later.
+If multiple issues touch the same files or share a dependency, **do not create sequential dependencies between agents**. Instead, choose one of:
+
+- **Pre-land shared work**: Implement the shared piece on the base branch first, push it, then create the issue branches. All agents start from the same updated base.
+- **Duplicate and reconcile**: Let each agent independently implement what it needs (even if overlapping), then resolve conflicts during PR review/merge. This preserves true parallelism at the cost of minor merge work later.
+
+Never make one agent wait for another agent to finish.
 
 ## Gotchas
 
