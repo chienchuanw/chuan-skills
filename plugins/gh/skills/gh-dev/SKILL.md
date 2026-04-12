@@ -287,6 +287,8 @@ Do not proceed until `gh auth status` succeeds.
 
 - **Worktree agents use their own branch names** -- When dispatching parallel agents with `isolation: "worktree"`, each agent works on a `worktree-agent-XXXXX` branch, not the issue-linked branch. After the agent completes, you must push with an explicit refspec: `git push origin worktree-agent-XXXXX:issues/N`. To avoid this, instruct agents to `git checkout issues/N` inside the worktree before starting work, or include the refspec push command in the agent prompt.
 
+- **Subagents ignore skill hard rules** -- Worktree agents dispatched via `isolation: "worktree"` do not inherit the gh-dev skill's instructions. The system-level harness injects a Co-Authored-By trailer by default, which the agent will follow unless explicitly overridden. You MUST include an explicit instruction in every agent prompt: "NEVER append Co-Authored-By, signatures, or attribution of any kind to commit messages. The commit message is ONLY the message text — nothing else."
+
 If the repository has no GitHub remote, inform the user that a remote is required and suggest:
 
 ```bash
