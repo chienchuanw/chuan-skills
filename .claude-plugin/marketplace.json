@@ -97,6 +97,14 @@
       "description": "Install a git pre-push hook that runs tests before push with automatic failure repair via Claude",
       "source": "./plugins/pre-push-test",
       "strict": false
+    },
+    {
+      "name": "graphify",
+      "description": "Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/safishamsi/graphify.git"
+      }
     }
   ]
 }

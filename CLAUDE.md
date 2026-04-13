@@ -43,6 +43,7 @@ Skills may optionally include subdirectories for scripts, references, or assets.
 | branch-report  | local    | Generates a branch comparison report with simple explanations and senior dev review |
 | gh             | local    | GitHub CLI workflow skills (gh-issue, gh-dev, gh-pr, gh-comment) for issues, branches, PRs, and comments |
 | skill-optimize | local    | Tools for improving skills: gotcha-capture for documenting pitfalls, skill-benchmark for scoring skill quality |
+| graphify       | external | Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export            |
 
 Local plugins live under `plugins/<name>/skills/<name>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
 
