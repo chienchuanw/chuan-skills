@@ -210,7 +210,7 @@ Show the user the complete PR title and body in a fenced block. Use `AskUserQues
 ```bash
 gh pr create \
   --title "{title}" \
-  --base "{default_branch}" \
+  --base "{BASE_BRANCH}" \
   --body "$(cat <<'PR_EOF'
 {filled PR body}
 PR_EOF
