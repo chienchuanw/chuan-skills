@@ -56,25 +56,14 @@ Before creating the branch, check whether a `dev` or `develop` branch exists on 
 git ls-remote --heads origin dev develop
 ```
 
-If `dev` or `develop` exists, check it out first so the new branch is based on it:
-
-```bash
-git checkout dev   # or develop, whichever exists
-git pull origin dev
-```
-
-If neither exists, stay on the repo's default branch — no extra action needed.
+Store the result as `BASE_BRANCH` — either `dev`, `develop`, or the repo's default branch (e.g., `main`) if neither exists.
 
 ### Create the branch
 
-```bash
-gh issue develop ISSUE_NUMBER --checkout --name "issues/ISSUE_NUMBER"
-```
-
-If the user wants to branch from a specific base:
+Pass `--base` with the detected `BASE_BRANCH` so the new issue branch is based on the correct branch:
 
 ```bash
-gh issue develop ISSUE_NUMBER --checkout --name "issues/ISSUE_NUMBER" --base main
+gh issue develop ISSUE_NUMBER --checkout --name "issues/ISSUE_NUMBER" --base BASE_BRANCH
 ```
 
 Handle these error cases:
