@@ -209,6 +209,15 @@ APPROVE_EOF
 
 Report success.
 
+### 6d: Offer to merge
+
+After reporting the approval, actively offer:
+
+> "PR approved. Want me to rebase-merge it now?"
+
+- If the user accepts, proceed to Step 7 (Merge workflow).
+- If the user declines or does not respond affirmatively, stop here.
+
 ## Step 7: Merge workflow
 
 This step applies only to PRs. If `TARGET_TYPE` is `issue`, inform the user that issues cannot be merged and stop.
@@ -271,7 +280,30 @@ After successful merge, report:
 
 - The merged PR URL
 - The strategy used
-- Suggest deleting the local branch (but do not delete without explicit user consent)
+
+### 7f: Linked issue follow-up
+
+After a successful merge, check whether the PR is linked to a GitHub issue:
+
+1. Inspect the PR body for `Closes #N`, `Fixes #N`, or `Resolves #N` (case-insensitive).
+2. If not found in the body, check whether the branch name matches the pattern `issues/N`.
+
+If a linked issue is detected, offer:
+
+> "PR merged. Issue #N should auto-close via `Closes #N`. Want me to post a wrap-up comment on the issue?"
+
+- If the user accepts, compose a brief wrap-up comment summarizing what was merged and post it using `gh issue comment N --body "..."`.
+- If the user declines, skip the comment.
+
+### 7g: Local cleanup prompt
+
+After the linked issue follow-up (or immediately after merge if no linked issue was found), offer:
+
+> "Want me to switch back to `dev` and delete the local `issues/N` branch?"
+
+- If the user accepts, run `git checkout dev && git branch -d issues/N`.
+- If the user declines, stop here.
+- Only offer this when the current branch matches `issues/N`. If the branch does not follow this pattern, skip this step.
 
 ## Hard rules
 
