@@ -39,6 +39,22 @@ If there are no commits ahead of the default branch, tell the user there is noth
 
 Store the current branch name as `BRANCH_NAME`.
 
+### Determine base branch
+
+Detect whether the repository uses a development branch:
+
+```bash
+git branch -r | grep -E 'origin/(dev|develop)$'
+```
+
+If `dev` or `develop` exists, set `BASE_BRANCH` to that branch. Show the target to the user:
+
+> This PR will target `dev`. Correct?
+
+Use `AskUserQuestion` to confirm. Do not proceed until the user confirms the base branch. If the user wants a different base, use the branch they specify.
+
+If neither `dev` nor `develop` exists, default to `main` (or `master` if `main` does not exist). Still confirm with the user before proceeding.
+
 ## Step 2: Detect the linked issue
 
 Extract the issue number from the branch name. If the branch follows the `issues/N` convention:
@@ -222,6 +238,10 @@ PR_EOF
 
 Report the PR URL to the user.
 
+If the update includes fix commits (e.g., addressing review feedback), prompt the user after the push:
+
+> Want me to comment on the PR to confirm the fixes? I can run `/gh-comment`.
+
 ## Step 10: Final summary
 
 Report to the user:
@@ -230,6 +250,12 @@ Report to the user:
 - Whether the PR was created or updated
 - Which optional documentation steps were performed (README, docs, planning)
 - Linked issue number (if any)
+
+## What's Next
+
+If a linked issue was detected in Step 2 (`ISSUE_NUMBER` is set), offer:
+
+> Want me to post a status comment on issue #N? I can run `/gh-comment`.
 
 ## Gotchas
 
@@ -270,7 +296,7 @@ If `git log main..HEAD` (or `master..HEAD`) returns no commits, the branch has n
 
 When checking for the `readme` or `planning-with-files` skills, do not error or warn if they are absent. These are optional enhancements — the core PR workflow works without them.
 
-When creating a PR, prefer `dev` or `develop` as the base branch if one exists, rather than defaulting to `main`/`master`. Check for these branches first: `git branch -r | grep -E 'origin/(dev|develop)$'`. If `dev`/`develop` exists, use it as `--base`. If neither exists, ask the user which branch to merge into before proceeding.
+When creating a PR, the base branch is determined and confirmed with the user in Step 1. See the "Determine base branch" section there. Do not skip that confirmation gate or override the user's choice later in the workflow.
 
 ## Hard rules
 
