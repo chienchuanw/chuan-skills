@@ -48,6 +48,25 @@ Do not silently discard or stash changes — always get explicit consent.
 
 The branch name follows a fixed convention: `issues/ISSUE_NUMBER`. For example, issue #1 becomes `issues/1`, issue #42 becomes `issues/42`.
 
+### Pre-flight: Confirm base branch
+
+Before creating the branch, check whether a `dev` or `develop` branch exists on the remote:
+
+```bash
+git ls-remote --heads origin dev develop
+```
+
+If `dev` or `develop` exists, check it out first so the new branch is based on it:
+
+```bash
+git checkout dev   # or develop, whichever exists
+git pull origin dev
+```
+
+If neither exists, stay on the repo's default branch — no extra action needed.
+
+### Create the branch
+
 ```bash
 gh issue develop ISSUE_NUMBER --checkout --name "issues/ISSUE_NUMBER"
 ```
@@ -190,6 +209,14 @@ Report to the user:
 - Number of commits made
 - Summary of what was implemented
 - Remind the user that nothing has been pushed — they can review, squash, or push when ready
+
+## What's Next
+
+After the final status report, offer the user a path forward:
+
+> Ready to open a PR? I can run `/gh-pr` to push and create a pull request.
+
+Wait for the user to confirm before proceeding. Do not automatically invoke `/gh-pr`.
 
 ## Multi-issue parallel development
 
