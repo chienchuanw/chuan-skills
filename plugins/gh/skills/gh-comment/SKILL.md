@@ -297,11 +297,11 @@ If a linked issue is detected, offer:
 
 ### 7g: Local cleanup prompt
 
-After the linked issue follow-up (or immediately after merge if no linked issue was found), offer:
+After the linked issue follow-up (or immediately after merge if no linked issue was found), offer to switch back to the PR's base branch (available from `baseRefName` fetched in Step 2) and delete the local issue branch:
 
-> "Want me to switch back to `dev` and delete the local `issues/N` branch?"
+> "Want me to switch back to `BASE_BRANCH` and delete the local `issues/N` branch?"
 
-- If the user accepts, run `git checkout dev && git branch -d issues/N`.
+- If the user accepts, run `git checkout BASE_BRANCH && git branch -d issues/N` (where `BASE_BRANCH` is the PR's base branch, e.g., `dev`, `develop`, or `main`).
 - If the user declines, stop here.
 - Only offer this when the current branch matches `issues/N`. If the branch does not follow this pattern, skip this step.
 
