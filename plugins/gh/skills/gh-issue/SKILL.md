@@ -128,6 +128,14 @@ Only include `--label`, `--assignee`, and `--milestone` flags if values were ide
 
 After creation, report the issue URL back to the user.
 
+## What's Next
+
+After reporting the issue URL, offer to start development:
+
+> Issue #N created. Want me to start development? I can run `/gh-dev` to create a branch and begin implementation.
+
+Replace `N` with the actual issue number from the created issue.
+
 ## Gotchas
 
 Before running any `gh` command, verify that the CLI is available and authenticated:
