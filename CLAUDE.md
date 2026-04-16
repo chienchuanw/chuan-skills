@@ -41,7 +41,7 @@ Skills may optionally include subdirectories for scripts, references, or assets.
 | readme         | local    | Write a new README.md or improve an existing one for any repository                |
 | skill-creator  | external | Create, test, evaluate, and iteratively improve Claude Code skills                 |
 | branch-report  | local    | Generates a branch comparison report with simple explanations and senior dev review |
-| gh             | local    | GitHub CLI workflow skills (gh-issue, gh-dev, gh-pr, gh-comment) for issues, branches, PRs, and comments |
+| gh             | local    | GitHub CLI workflow skills (gh-issue, gh-dev, gh-pr, gh-comment, gh-archive) for issues, branches, PRs, comments, and session archival |
 | skill-optimize | local    | Tools for improving skills: gotcha-capture for documenting pitfalls, skill-benchmark for scoring skill quality |
 | graphify       | external | Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export            |
 | mempalace      | external | Mine projects and conversations into a searchable memory palace with semantic search                            |
