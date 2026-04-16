@@ -105,6 +105,14 @@
         "source": "url",
         "url": "https://github.com/safishamsi/graphify.git"
       }
+    },
+    {
+      "name": "mempalace",
+      "description": "Mine projects and conversations into a searchable memory palace with semantic search and wing/room organization",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/MemPalace/mempalace.git"
+      }
     }
   ]
 }
