@@ -27,10 +27,17 @@ Claude Code supports a plugin system that lets users install and invoke custom s
 | `commit-msg` | local | Suggests 3 commit message options based on git diff and project conventions |
 | `readme` | local | Write a new README.md or improve an existing one for any repository |
 | `branch-report` | local | Generates a branch comparison report with simple explanations and senior developer review |
-| `gh` | local | GitHub CLI workflow skills for issues, development branches, and pull requests |
+| `gh` | local | GitHub CLI workflow skills (gh-issue, gh-dev, gh-pr, gh-comment, gh-archive) for issues, branches, PRs, comments, and session archiving |
+| `seo-meta` | local | Generates SEO metadata (slug, subtitle, tags, title, description) as YAML frontmatter for markdown articles |
+| `skill-optimize` | local | Tools for improving skills: gotcha-capture for documenting pitfalls, skill-benchmark for scoring skill quality |
+| `pre-push-test` | local | Install a git pre-push hook that runs tests before push with automatic failure repair |
 | `skill-creator` | external | Create, test, evaluate, and iteratively improve Claude Code skills |
+| `graphify` | external | Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export |
+| `mempalace` | external | Mine projects and conversations into a searchable memory palace with semantic search |
+| `superpowers` | external | Advanced skills for brainstorming, planning, debugging, TDD, code review, and parallel agent workflows |
+| `planning-with-files` | external | Manus-style file-based planning to organize and track progress on complex tasks |
 
-Local plugins have their skill definitions under `plugins/<name>/skills/<name>/`. External plugins reference an upstream repository (e.g., [anthropics/skills](https://github.com/anthropics/skills)) in `marketplace.json`.
+Local plugins have their skill definitions under `plugins/<name>/skills/<name>/`. External plugins reference an upstream repository in `marketplace.json`.
 
 ## Getting Started
 
@@ -53,7 +60,12 @@ Then install any plugin you want:
 /plugin install readme@chuan-skills
 /plugin install branch-report@chuan-skills
 /plugin install gh@chuan-skills
+/plugin install seo-meta@chuan-skills
+/plugin install skill-optimize@chuan-skills
+/plugin install pre-push-test@chuan-skills
 /plugin install skill-creator@chuan-skills
+/plugin install graphify@chuan-skills
+/plugin install mempalace@chuan-skills
 ```
 
 ### Usage
@@ -66,6 +78,11 @@ Once installed, invoke a skill as a slash command inside Claude Code:
 - `/gh-issue` -- Creates a well-structured GitHub issue using type-specific templates (bug, feat, refactor, doc, perf, security) via the `gh` CLI.
 - `/gh-dev` -- Creates an `issues/N` branch linked to a GitHub issue, then develops with regular convention-following commits. Never pushes to remote.
 - `/gh-pr` -- Pushes the branch and creates or updates a pull request using type-specific templates. Optionally updates README, docs, and project tracking files before opening the PR.
+- `/gh-comment` -- Posts formatted comments on GitHub PRs or issues, approves PRs, and merges PRs using purpose-specific templates.
+- `/gh-archive` -- Captures the current state of a project by updating README.md and project status files in the docs directory at the end of a session.
+- `/seo-meta` -- Generates SEO metadata as YAML frontmatter for markdown articles.
+- `/skill-optimize` -- Captures gotchas for existing skills and benchmarks skill quality with scored reports.
+- `/pre-push-test` -- Installs a git pre-push hook that runs tests before push with automatic failure repair.
 - `/skill-creator` -- Walks you through creating, testing, and refining a new Claude Code skill.
 
 ## Project Structure
@@ -74,33 +91,29 @@ Once installed, invoke a skill as a slash command inside Claude Code:
 chuan-skills/
 ├── .claude-plugin/
 │   └── marketplace.json        # Plugin registry (lists all available plugins)
+├── docs/                       # Project status and planning files
 ├── plugins/
 │   ├── branch-report/
-│   │   └── skills/
-│   │       └── branch-report/
-│   │           ├── agents/     # Sub-agent definitions (analyst, checker, explainer, scout)
-│   │           ├── assets/     # Report templates (English, Traditional Chinese)
-│   │           └── SKILL.md
+│   │   └── skills/branch-report/
 │   ├── commit-msg/
-│   │   └── skills/
-│   │       └── commit-msg/
-│   │           └── SKILL.md
+│   │   └── skills/commit-msg/
 │   ├── gh/
 │   │   └── skills/
-│   │       ├── gh-issue/
-│   │       │   ├── templates/  # Issue templates (EN + zh-TW) for 6 types
-│   │       │   └── SKILL.md
-│   │       ├── gh-dev/
-│   │       │   └── SKILL.md
-│   │       └── gh-pr/
-│   │           ├── templates/  # PR templates (EN + zh-TW) for 6 types
-│   │           └── SKILL.md
-│   └── readme/
+│   │       ├── gh-archive/     # End-of-session documentation capture
+│   │       ├── gh-comment/     # PR/issue commenting, approval, merge
+│   │       ├── gh-dev/         # Issue-linked branch development
+│   │       ├── gh-issue/       # Structured issue creation (6 types)
+│   │       └── gh-pr/          # Pull request creation with templates
+│   ├── pre-push-test/
+│   │   └── skills/pre-push-test/
+│   ├── readme/
+│   │   └── skills/readme/
+│   ├── seo-meta/
+│   │   └── skills/seo-meta/
+│   └── skill-optimize/
 │       └── skills/
-│           └── readme/
-│               ├── assets/     # README template
-│               ├── scripts/    # Tree generation, screenshot capture, asset prep
-│               └── SKILL.md
+│           ├── gotcha-capture/
+│           └── skill-benchmark/
 ├── CLAUDE.md                   # Project conventions for Claude Code
 └── README.md
 ```
