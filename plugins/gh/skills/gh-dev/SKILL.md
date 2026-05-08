@@ -180,7 +180,24 @@ The commit message is exactly the text above — nothing appended, nothing added
 
 Continue development until the implementation is complete.
 
-## Step 8: Final status
+## Step 8: Simplify pass
+
+Once the implementation is working and tested — but before reporting completion or opening a PR — run the built-in `simplify` skill as a dedicated cleanup/refactor pass over the recently changed code:
+
+```
+Invoke the Skill tool with skill: "simplify"
+```
+
+`simplify` reviews changed code for reuse, quality, and efficiency, then fixes the issues it finds. Treat it as a final-mile polish, not a per-commit formatter — it works best when there is a meaningful surface of new code to evaluate.
+
+After `simplify` completes:
+
+- If it made changes, review them, then commit the cleanup separately following `COMMIT_CONVENTION` (e.g., `refactor: simplify auth helpers`). Do not fold simplify edits into unrelated feature commits — keep the cleanup as its own logical commit so reviewers can see the polish step.
+- If it made no changes, proceed directly to the next step.
+
+Skip this step only if the work was a trivial one-line fix where there is nothing meaningful to simplify.
+
+## Step 9: Final status
 
 After all work is committed, show a summary:
 
@@ -237,6 +254,7 @@ After creating the linked branches, dispatch parallel agents using `isolation: "
 - Branch from the same base branch (e.g., `main` or `dev`)
 - Contain all the context it needs in its own prompt — do not reference other issues being developed in parallel
 - Implement its feature as if it were the only change being made to the codebase
+- Run the `simplify` skill as a final cleanup pass after the implementation is working and tested, and commit any resulting changes separately before pushing
 
 **Important**: Agents working in worktrees get their own branch names (`worktree-agent-XXXXX`), not the issue-linked branch names. Include explicit push instructions in each agent's prompt:
 
