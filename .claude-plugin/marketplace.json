@@ -99,6 +99,12 @@
       "strict": false
     },
     {
+      "name": "feature",
+      "description": "End-to-end feature delivery orchestrator: issue → branch → design → strict TDD → PR → review-fix → archive, with approval checkpoints",
+      "source": "./plugins/feature",
+      "strict": false
+    },
+    {
       "name": "graphify",
       "description": "Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export",
       "source": {
