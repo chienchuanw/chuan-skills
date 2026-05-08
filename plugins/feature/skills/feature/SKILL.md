@@ -63,6 +63,8 @@ Invoke the `superpowers:test-driven-development` skill and follow it verbatim. R
 - Refactor with tests still green
 - Commit at meaningful points using the `commit-msg` skill for messages
 
+**Commit signature rule:** strip the `Co-Authored-By:` trailer from every commit made under this skill (initial implementation, fix-loop commits, everything). If `commit-msg` produces messages with a trailer, remove it before committing. Commits should look human-authored.
+
 If the user asked for "skip checkpoints", you may batch commits. Otherwise commit per coherent unit of work.
 
 ## Step 5 — Open the pull request
@@ -86,13 +88,47 @@ gh pr checks <PR_NUMBER> --watch
 - **If CI is red:** do not advance. Report the failing check, return to Step 4 to fix the failure (write a regression test first, per TDD discipline), commit, push, and re-run `gh pr checks`. Loop until green.
 - **If there is no CI configured for the repo:** note it once and continue.
 
-## Step 6 — Review-feedback loop
+## Step 6 — Autonomous review → fix loop (max 3 rounds)
 
-Wait for the user to report review feedback (or fetch it via `gh pr view <PR_NUMBER> --comments` if asked). When feedback arrives:
+Run an automated review-and-fix cycle. The orchestrator (this skill) drives the loop; a fresh subagent does each review.
 
-- Invoke the `gh-fix` skill, which triages each comment as Apply / Disagree / Defer, applies fixes, and posts a summary comment back on the PR via `gh-comment`
+### Round structure
 
-Repeat until the user signals the review round is closed.
+For each round (`ROUND` from 1 to 3):
+
+**6a. Dispatch review subagent.** Use the Agent tool with `subagent_type: "general-purpose"`. The subagent's job is one round of review only — it returns a verdict and exits.
+
+Subagent prompt template:
+
+> You are reviewing PR #`<PR_NUMBER>` in this repo. Use the `review` skill to perform the review against the linked issue (#`<ISSUE_NUMBER>`) and the project's CLAUDE.md conventions.
+>
+> When done, post your findings as a single PR comment using the `gh-comment` skill (feedback template). **Do not include any Claude attribution, "🤖 Generated with Claude Code" footer, or `Co-Authored-By:` trailer in the comment body.** The comment must read as a plain human review.
+>
+> Return a structured verdict to me as your final message:
+> - `VERDICT: approve` — no blocking issues, only nits or none
+> - `VERDICT: request-changes` — list each blocking item as a one-line bullet
+>
+> Do not edit code. Do not merge. Review and comment only.
+
+**6b. Parse verdict.** From the subagent's return message:
+
+- `VERDICT: approve` → break the loop, proceed to Step 7
+- `VERDICT: request-changes` → continue to 6c
+- Anything else → treat as `request-changes` and continue
+
+**6c. Apply fixes.** Invoke the `gh-fix` skill on `PR_NUMBER`. It triages each review comment (Apply / Disagree / Defer), commits fixes (no Co-Authored-By trailer — see Step 4 rule), pushes, and posts a summary reply via `gh-comment` (also signature-free — strip any Claude attribution before posting).
+
+**6d. Increment `ROUND`.** Loop back to 6a unless `ROUND > 3`.
+
+### Round-cap safety net
+
+If the loop exits because `ROUND > 3` without an `approve` verdict:
+
+1. Stop the autonomous loop — do NOT merge
+2. Collect every still-blocking item from the last review's `request-changes` list
+3. Invoke the `gh-issue` skill to open a follow-up issue titled `Follow-up: unresolved review items from PR #<PR_NUMBER>`, body listing the blockers and a link back to the PR
+4. Surface to the user: "Hit 3-round review cap. Filed follow-up issue #X. PR is left open for human decision."
+5. **Stop the orchestration.** Do not proceed to Step 7.
 
 ## Step 7 — Merge **[CHECKPOINT 2]**
 
@@ -128,7 +164,19 @@ gh pr merge <PR_NUMBER> --rebase --delete-branch
 
 Never `git reset --hard`, delete the branch, or abandon work as a "fix" for merge conflicts.
 
-## Step 8 — Archive
+## Step 8 — Switch to default branch
+
+After successful merge:
+
+```bash
+DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name')
+git checkout "$DEFAULT_BRANCH"
+git pull --ff-only
+```
+
+Always switch to the repo's default branch (not `dev` / `develop`), regardless of what `BASE_BRANCH` was during development.
+
+## Step 9 — Archive
 
 Invoke the `gh-archive` skill to refresh README/docs and snapshot project state. This is the explicit end of the workflow.
 
@@ -139,6 +187,7 @@ Invoke the `gh-archive` skill to refresh README/docs and snapshot project state.
 - **Never** force-push, reset hard, or delete branches as a shortcut around conflicts
 - **Never** skip the failing-test step in TDD, even when the change "looks trivial" — write the test first
 - **Never** claim CI is green without running `gh pr checks` first
+- **Never** include Claude attribution, "🤖 Generated with Claude Code" footers, or `Co-Authored-By:` trailers in commits, PR comments, review comments, or follow-up issues created under this skill
 - If a checkpoint bypass was granted, **state once** that you are proceeding without pausing, then proceed; do not re-ask each phase
 
 ## Failure recovery
