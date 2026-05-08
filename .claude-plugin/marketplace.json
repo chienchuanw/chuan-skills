@@ -105,6 +105,12 @@
       "strict": false
     },
     {
+      "name": "health-audit",
+      "description": "Manually-triggered codebase health audit (security, architecture, doc drift, dead code, test gaps) producing a ranked report, filed issues, and approved auto-fix PRs",
+      "source": "./plugins/health-audit",
+      "strict": false
+    },
+    {
       "name": "graphify",
       "description": "Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export",
       "source": {
