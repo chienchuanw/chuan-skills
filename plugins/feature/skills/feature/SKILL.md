@@ -69,10 +69,22 @@ If the user asked for "skip checkpoints", you may batch commits. Otherwise commi
 
 When implementation is complete and the suite is green:
 
-1. Run typecheck/lint/build locally — if any fail, return to Step 4 to fix before pushing
-2. Invoke the `gh-pr` skill, which will push the branch and open a PR using the appropriate template
+1. **Local pre-flight (this skill, not gh-pr):** detect and run the project's typecheck / lint / build commands — read `package.json` scripts, `Makefile`, `pyproject.toml`, `Cargo.toml`, etc. to pick the right ones. Do *not* assume `npm run build`. If any fail, return to Step 4 to fix before pushing. Tell `gh-pr` you have already done the pre-flight so it does not duplicate the work (pass that context when invoking it).
+2. Invoke the `gh-pr` skill, which will push the branch and open a PR using the appropriate template.
 
 Capture the PR number as `PR_NUMBER`.
+
+## Step 5.5 — Watch CI
+
+After the PR is open, check CI before waiting on humans:
+
+```bash
+gh pr checks <PR_NUMBER> --watch
+```
+
+- **If CI is green:** proceed to Step 6.
+- **If CI is red:** do not advance. Report the failing check, return to Step 4 to fix the failure (write a regression test first, per TDD discipline), commit, push, and re-run `gh pr checks`. Loop until green.
+- **If there is no CI configured for the repo:** note it once and continue.
 
 ## Step 6 — Review-feedback loop
 
@@ -99,7 +111,22 @@ Once approved, rebase-merge:
 gh pr merge <PR_NUMBER> --rebase --delete-branch
 ```
 
-If conflicts arise, surface them and stop — do not force-push or take destructive recovery actions without confirmation.
+**If `gh pr merge` reports conflicts** (server-side rebase failed):
+
+1. Stop. Do not retry the merge with `--squash` or `--merge` as a workaround unless the user requests it.
+2. Surface the exact error to the user.
+3. Offer the local-rebase recovery path and wait for confirmation:
+   ```bash
+   git fetch origin
+   git checkout issues/<N>
+   git rebase origin/<BASE_BRANCH>
+   # resolve conflicts, run tests, then:
+   git push --force-with-lease
+   ```
+   Use `--force-with-lease`, never `--force`. Do not force-push if anyone else may have based work on this branch — ask first.
+4. After the local rebase pushes cleanly, re-run `gh pr merge --rebase --delete-branch`.
+
+Never `git reset --hard`, delete the branch, or abandon work as a "fix" for merge conflicts.
 
 ## Step 8 — Archive
 
