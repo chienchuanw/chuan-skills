@@ -127,33 +127,15 @@
       }
     },
     {
-      "name": "daily-planner",
-      "description": "Plan the user's day end-to-end: triage Gmail, read calendar and objectives, classify tasks on an Eisenhower matrix, and write a prioritized time-blocked plan into Obsidian (personal; tied to a specific vault layout)",
-      "source": "./plugins/daily-planner",
+      "name": "daily",
+      "description": "Personal daily-workflow bundle for an Obsidian vault: gmail-helper (multi-account inbox triage), daily-planner (morning plan via Eisenhower matrix), and daily-reviewer (evening retrospective)",
+      "source": "./plugins/daily",
       "strict": false
     },
     {
-      "name": "daily-reviewer",
-      "description": "Evening retrospective: score the day's plan, assess objective on-track status, carry unfinished tasks forward, and write a review into Obsidian (personal; evening bookend to daily-planner)",
-      "source": "./plugins/daily-reviewer",
-      "strict": false
-    },
-    {
-      "name": "gmail-helper",
-      "description": "Personal email secretary across multiple Gmail accounts: triage and label incoming mail, chase older threads, and summarize into an Obsidian journal (personal; account names and journal path are hardcoded)",
-      "source": "./plugins/gmail-helper",
-      "strict": false
-    },
-    {
-      "name": "portfolio-review",
-      "description": "AI-assisted investing thesis review over an Obsidian portfolio: surfaces thesis drift, anchoring, and stale positions (personal; read-only, tied to a specific portfolio schema)",
-      "source": "./plugins/portfolio-review",
-      "strict": false
-    },
-    {
-      "name": "portfolio-update",
-      "description": "Ingest broker/wallet screenshots and update an Obsidian portfolio tracker: diff holdings, log trades and thesis entries, refresh prices (personal; tied to a specific portfolio schema)",
-      "source": "./plugins/portfolio-update",
+      "name": "portfolio",
+      "description": "Personal investing portfolio bundle over an Obsidian tracker: portfolio-update (ingest broker screenshots, log trades) and portfolio-review (read-only thesis drift/anchoring/staleness review)",
+      "source": "./plugins/portfolio",
       "strict": false
     },
     {

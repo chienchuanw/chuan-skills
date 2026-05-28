@@ -47,17 +47,14 @@ Skills may optionally include subdirectories for scripts, references, or assets.
 | skill-optimize | local    | Tools for improving skills: gotcha-capture for documenting pitfalls, skill-benchmark for scoring skill quality |
 | graphify       | external | Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export            |
 | mempalace      | external | Mine projects and conversations into a searchable memory palace with semantic search                            |
-| daily-planner  | local    | Personal: plan the day end-to-end (Gmail triage, calendar, Eisenhower matrix) into an Obsidian daily note        |
-| daily-reviewer | local    | Personal: evening retrospective that scores the day's plan and updates Obsidian objective tracking              |
-| gmail-helper   | local    | Personal: multi-account Gmail triage/labeling secretary that summarizes into an Obsidian journal                |
-| portfolio-review | local  | Personal: read-only investing thesis review over an Obsidian portfolio (drift, anchoring, stale theses)         |
-| portfolio-update | local  | Personal: ingest broker/wallet screenshots and update the Obsidian portfolio tracker                            |
+| daily          | local    | Personal bundle: gmail-helper (inbox triage), daily-planner (morning plan), daily-reviewer (evening retrospective) |
+| portfolio      | local    | Personal bundle: portfolio-update (ingest broker screenshots) + portfolio-review (read-only thesis review)        |
 | mattpocock-skills | external | Reference: Matt Pocock's engineering skills (diagnose, grill-me, handoff, to-prd, improve-codebase-architecture) |
 | find-skills    | external | Reference: discover and install agent skills (Vercel Labs)                                                       |
 
-Local plugins live under `plugins/<name>/skills/<name>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
+A plugin can bundle multiple related skills under `plugins/<plugin>/skills/<skill>/` (e.g. `gh`, `skill-optimize`, `daily`, `portfolio`). Single-skill plugins use `plugins/<name>/skills/<name>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
 
-> Note: the `daily-planner`, `daily-reviewer`, `gmail-helper`, `portfolio-review`, and `portfolio-update` plugins are personal-workflow skills hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema. They are not drop-in reusable yet — genericize (placeholder account names, configurable paths) before sharing.
+> Note: the `daily` and `portfolio` plugins are personal-workflow skill bundles hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema. They are not drop-in reusable yet — genericize (placeholder account names, configurable paths) before sharing.
 
 ## Installing from this marketplace
 
