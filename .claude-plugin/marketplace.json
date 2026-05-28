@@ -125,6 +125,52 @@
         "source": "url",
         "url": "https://github.com/MemPalace/mempalace.git"
       }
+    },
+    {
+      "name": "daily-planner",
+      "description": "Plan the user's day end-to-end: triage Gmail, read calendar and objectives, classify tasks on an Eisenhower matrix, and write a prioritized time-blocked plan into Obsidian (personal; tied to a specific vault layout)",
+      "source": "./plugins/daily-planner",
+      "strict": false
+    },
+    {
+      "name": "daily-reviewer",
+      "description": "Evening retrospective: score the day's plan, assess objective on-track status, carry unfinished tasks forward, and write a review into Obsidian (personal; evening bookend to daily-planner)",
+      "source": "./plugins/daily-reviewer",
+      "strict": false
+    },
+    {
+      "name": "gmail-helper",
+      "description": "Personal email secretary across multiple Gmail accounts: triage and label incoming mail, chase older threads, and summarize into an Obsidian journal (personal; account names and journal path are hardcoded)",
+      "source": "./plugins/gmail-helper",
+      "strict": false
+    },
+    {
+      "name": "portfolio-review",
+      "description": "AI-assisted investing thesis review over an Obsidian portfolio: surfaces thesis drift, anchoring, and stale positions (personal; read-only, tied to a specific portfolio schema)",
+      "source": "./plugins/portfolio-review",
+      "strict": false
+    },
+    {
+      "name": "portfolio-update",
+      "description": "Ingest broker/wallet screenshots and update an Obsidian portfolio tracker: diff holdings, log trades and thesis entries, refresh prices (personal; tied to a specific portfolio schema)",
+      "source": "./plugins/portfolio-update",
+      "strict": false
+    },
+    {
+      "name": "mattpocock-skills",
+      "description": "Matt Pocock's engineering skills collection (diagnose, grill-me, grill-with-docs, handoff, improve-codebase-architecture, to-prd, setup-matt-pocock-skills) — external reference",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/mattpocock/skills.git"
+      }
+    },
+    {
+      "name": "find-skills",
+      "description": "Discover and install agent skills from across known skill repositories (Vercel Labs) — external reference",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vercel-labs/skills.git"
+      }
     }
   ]
 }
