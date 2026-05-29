@@ -12,10 +12,12 @@ This is a personal plugin marketplace of Claude Code skills (slash commands), ho
 .claude-plugin/
 └── marketplace.json      # Marketplace manifest (plugin registry)
 plugins/
-└── commit-msg/           # One directory per plugin
+└── git/                  # One directory per plugin (a domain bundle)
     └── skills/
-        └── commit-msg/
-            └── SKILL.md  # Skill definition
+        ├── commit-msg/
+        │   └── SKILL.md  # Skill definition
+        └── branch-report/
+            └── SKILL.md
 ```
 
 ### Skill format
@@ -35,24 +37,26 @@ Skills may optionally include subdirectories for scripts, references, or assets.
 
 ## Plugins in this marketplace
 
-| Plugin        | Source   | Description                                                                 |
-|---------------|----------|-----------------------------------------------------------------------------|
-| commit-msg     | local    | Suggests 3 commit message options based on git diff and project conventions        |
-| readme         | local    | Write a new README.md or improve an existing one for any repository                |
-| skill-creator  | external | Create, test, evaluate, and iteratively improve Claude Code skills                 |
-| branch-report  | local    | Generates a branch comparison report with simple explanations and senior dev review |
-| gh             | local    | GitHub CLI workflow skills (gh-issue, gh-dev, gh-pr, gh-comment, gh-archive, gh-fix) for issues, branches, PRs, comments, review-feedback handling, and session archival |
-| dev            | local    | Development workflow bundle: feature (end-to-end orchestrator: issue → branch → design → strict TDD → PR → review-fix → archive, with approval checkpoints) |
-| health-audit   | local    | Manually-triggered five-dimension codebase health audit producing a ranked report, filed issues, and approved auto-fix PRs |
-| skill-optimize | local    | Tools for improving skills: gotcha-capture for documenting pitfalls, skill-benchmark for scoring skill quality |
-| graphify       | external | Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export            |
-| mempalace      | external | Mine projects and conversations into a searchable memory palace with semantic search                            |
-| daily          | local    | Personal bundle: gmail-helper (inbox triage), daily-planner (morning plan), daily-reviewer (evening retrospective) |
-| portfolio      | local    | Personal bundle: portfolio-update (ingest broker screenshots) + portfolio-review (read-only thesis review)        |
-| mattpocock-skills | external | Reference: Matt Pocock's engineering skills (diagnose, grill-me, handoff, to-prd, improve-codebase-architecture) |
-| find-skills    | external | Reference: discover and install agent skills (Vercel Labs)                                                       |
+Local plugins are organized into **domain bundles** — each plugin groups the skills for one workflow domain.
 
-A plugin can bundle multiple related skills under `plugins/<plugin>/skills/<skill>/` (e.g. `gh`, `skill-optimize`, `daily`, `portfolio`, `dev`). Single-skill plugins use `plugins/<name>/skills/<name>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
+| Plugin         | Source   | Skills | Description                                                                 |
+|----------------|----------|--------|-----------------------------------------------------------------------------|
+| dev            | local    | feature, health-audit | Development lifecycle: feature (issue → branch → design → strict TDD → PR → review-fix → archive orchestrator) and health-audit (five-dimension codebase health audit → ranked report, filed issues, approved auto-fix PRs) |
+| git            | local    | commit-msg, branch-report, pre-push-test, gh-issue, gh-dev, gh-pr, gh-comment, gh-fix, gh-archive | Git & GitHub workflow: commit messages, branch-comparison reports, a test-before-push hook, plus the gh suite for issues, branches, PRs, comments, review-feedback, and session archival |
+| docs           | local    | readme, seo-meta | Documentation & content: write/improve a README, and generate SEO frontmatter for markdown articles |
+| skill-optimize | local    | gotcha-capture, skill-benchmark | Skill-authoring meta-tools: document pitfalls into a skill, and score/improve skill quality |
+| daily          | local    | gmail-helper, daily-planner, daily-reviewer | Personal: inbox triage, morning plan, evening retrospective |
+| portfolio      | local    | portfolio-update, portfolio-review | Personal: ingest broker screenshots / log trades, and read-only thesis review |
+| skill-creator  | external | — | Create, test, evaluate, and iteratively improve Claude Code skills |
+| superpowers    | external | — | Advanced skills for brainstorming, planning, debugging, TDD, code review, parallel agents |
+| graphify       | external | — | Converts code, docs, PDFs, and images into queryable knowledge graphs |
+| mempalace      | external | — | Mine projects and conversations into a searchable memory palace |
+| mattpocock-skills | external | — | Reference: Matt Pocock's engineering skills (diagnose, grill-me, handoff, to-prd, …) |
+| find-skills    | external | — | Reference: discover and install agent skills (Vercel Labs) |
+
+> The marketplace also registers a few other external references (`understand-anything`, `planning-with-files`, `impeccable`, `openspec`) — see `marketplace.json` for the full list.
+
+Every plugin bundles its skills under `plugins/<plugin>/skills/<skill>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
 
 > Note: the `daily` and `portfolio` plugins are personal-workflow skill bundles hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema. They are not drop-in reusable yet — genericize (placeholder account names, configurable paths) before sharing.
 
@@ -63,10 +67,15 @@ A plugin can bundle multiple related skills under `plugins/<plugin>/skills/<skil
 /plugin marketplace add chienchuanw/chuan-skills
 
 # Install a plugin
-/plugin install commit-msg@chuan-skills
+/plugin install git@chuan-skills
 /plugin install skill-creator@chuan-skills
 ```
 
 ## Adding a new skill
 
-Use the `/skill-creator` skill, then copy the resulting directory into `plugins/<name>/skills/<name>/` (omit the `evals/` subfolder). Register it in `.claude-plugin/marketplace.json`.
+Use the `/skill-creator` skill, then place the resulting directory under the appropriate domain bundle:
+
+- **Fits an existing domain** (`dev`, `git`, `docs`, `skill-optimize`, `daily`, `portfolio`) → copy it to `plugins/<bundle>/skills/<skill>/`. No `marketplace.json` change needed — the bundle already points at `plugins/<bundle>`.
+- **New domain** → create `plugins/<bundle>/skills/<skill>/` and register the bundle in `.claude-plugin/marketplace.json`.
+
+Omit the `evals/` subfolder when copying (it's gitignored anyway).

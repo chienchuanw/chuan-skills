@@ -9,9 +9,39 @@
   },
   "plugins": [
     {
-      "name": "commit-msg",
-      "description": "Suggests 3 commit message options based on git diff and project conventions",
-      "source": "./plugins/commit-msg",
+      "name": "dev",
+      "description": "Development workflow bundle: feature (end-to-end issue → branch → design → strict TDD → PR → review-fix → archive orchestrator) and health-audit (five-dimension codebase health audit producing a ranked report, filed issues, and approved auto-fix PRs)",
+      "source": "./plugins/dev",
+      "strict": false
+    },
+    {
+      "name": "git",
+      "description": "Git & GitHub workflow bundle: commit-msg (commit message options), branch-report (branch-vs-default comparison report), pre-push-test (test-before-push git hook), and the gh suite (gh-issue, gh-dev, gh-pr, gh-comment, gh-fix, gh-archive) for issues, branches, PRs, comments, review-feedback, and session archival",
+      "source": "./plugins/git",
+      "strict": false
+    },
+    {
+      "name": "docs",
+      "description": "Documentation & content bundle: readme (write or improve a README for any repository) and seo-meta (generate SEO metadata as YAML frontmatter for markdown articles)",
+      "source": "./plugins/docs",
+      "strict": false
+    },
+    {
+      "name": "skill-optimize",
+      "description": "Skill-authoring meta-tools: gotcha-capture (document pitfalls into a skill) and skill-benchmark (score and improve skill quality)",
+      "source": "./plugins/skill-optimize",
+      "strict": false
+    },
+    {
+      "name": "daily",
+      "description": "Personal daily-workflow bundle for an Obsidian vault: gmail-helper (multi-account inbox triage), daily-planner (morning plan via Eisenhower matrix), and daily-reviewer (evening retrospective)",
+      "source": "./plugins/daily",
+      "strict": false
+    },
+    {
+      "name": "portfolio",
+      "description": "Personal investing portfolio bundle over an Obsidian tracker: portfolio-update (ingest broker screenshots, log trades) and portfolio-review (read-only thesis drift/anchoring/staleness review)",
+      "source": "./plugins/portfolio",
       "strict": false
     },
     {
@@ -21,24 +51,6 @@
         "source": "url",
         "url": "https://github.com/anthropics/skills.git"
       }
-    },
-    {
-      "name": "readme",
-      "description": "Write a new README.md or improve an existing one for any repository",
-      "source": "./plugins/readme",
-      "strict": false
-    },
-    {
-      "name": "branch-report",
-      "description": "Generates a branch comparison report with simple explanations and senior developer review",
-      "source": "./plugins/branch-report",
-      "strict": false
-    },
-    {
-      "name": "seo-meta",
-      "description": "Generates SEO metadata (slug, subtitle, tags, SEO title, description) as YAML frontmatter for markdown articles",
-      "source": "./plugins/seo-meta",
-      "strict": false
     },
     {
       "name": "understand-anything",
@@ -81,36 +93,6 @@
       }
     },
     {
-      "name": "gh",
-      "description": "GitHub CLI workflow skills for creating issues, pull requests, and more with structured templates",
-      "source": "./plugins/gh",
-      "strict": false
-    },
-    {
-      "name": "skill-optimize",
-      "description": "Tools for improving and maintaining Claude Code skills",
-      "source": "./plugins/skill-optimize",
-      "strict": false
-    },
-    {
-      "name": "pre-push-test",
-      "description": "Install a git pre-push hook that runs tests before push with automatic failure repair via Claude",
-      "source": "./plugins/pre-push-test",
-      "strict": false
-    },
-    {
-      "name": "dev",
-      "description": "Development workflow bundle: feature (end-to-end issue → branch → design → strict TDD → PR → review-fix → archive orchestrator, with approval checkpoints)",
-      "source": "./plugins/dev",
-      "strict": false
-    },
-    {
-      "name": "health-audit",
-      "description": "Manually-triggered codebase health audit (security, architecture, doc drift, dead code, test gaps) producing a ranked report, filed issues, and approved auto-fix PRs",
-      "source": "./plugins/health-audit",
-      "strict": false
-    },
-    {
       "name": "graphify",
       "description": "Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export",
       "source": {
@@ -125,18 +107,6 @@
         "source": "url",
         "url": "https://github.com/MemPalace/mempalace.git"
       }
-    },
-    {
-      "name": "daily",
-      "description": "Personal daily-workflow bundle for an Obsidian vault: gmail-helper (multi-account inbox triage), daily-planner (morning plan via Eisenhower matrix), and daily-reviewer (evening retrospective)",
-      "source": "./plugins/daily",
-      "strict": false
-    },
-    {
-      "name": "portfolio",
-      "description": "Personal investing portfolio bundle over an Obsidian tracker: portfolio-update (ingest broker screenshots, log trades) and portfolio-review (read-only thesis drift/anchoring/staleness review)",
-      "source": "./plugins/portfolio",
-      "strict": false
     },
     {
       "name": "mattpocock-skills",

@@ -22,22 +22,25 @@ Claude Code supports a plugin system that lets users install and invoke custom s
 
 ## Available Plugins
 
-| Plugin | Source | Description |
-|--------|--------|-------------|
-| `commit-msg` | local | Suggests 3 commit message options based on git diff and project conventions |
-| `readme` | local | Write a new README.md or improve an existing one for any repository |
-| `branch-report` | local | Generates a branch comparison report with simple explanations and senior developer review |
-| `gh` | local | GitHub CLI workflow skills (gh-issue, gh-dev, gh-pr, gh-comment, gh-archive) for issues, branches, PRs, comments, and session archiving |
-| `seo-meta` | local | Generates SEO metadata (slug, subtitle, tags, title, description) as YAML frontmatter for markdown articles |
-| `skill-optimize` | local | Tools for improving skills: gotcha-capture for documenting pitfalls, skill-benchmark for scoring skill quality |
-| `pre-push-test` | local | Install a git pre-push hook that runs tests before push with automatic failure repair |
-| `skill-creator` | external | Create, test, evaluate, and iteratively improve Claude Code skills |
-| `graphify` | external | Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export |
-| `mempalace` | external | Mine projects and conversations into a searchable memory palace with semantic search |
-| `superpowers` | external | Advanced skills for brainstorming, planning, debugging, TDD, code review, and parallel agent workflows |
-| `planning-with-files` | external | Manus-style file-based planning to organize and track progress on complex tasks |
+Local plugins are organized into **domain bundles** -- each plugin groups the skills for one workflow domain.
 
-Local plugins have their skill definitions under `plugins/<name>/skills/<name>/`. External plugins reference an upstream repository in `marketplace.json`.
+| Plugin | Source | Skills | Description |
+|--------|--------|--------|-------------|
+| `dev` | local | `feature`, `health-audit` | Development lifecycle: end-to-end feature delivery (issue → branch → TDD → PR → review-fix → archive) and five-dimension codebase health audits |
+| `git` | local | `commit-msg`, `branch-report`, `pre-push-test`, `gh-issue`, `gh-dev`, `gh-pr`, `gh-comment`, `gh-fix`, `gh-archive` | Git & GitHub workflow: commit messages, branch reports, a test-before-push hook, plus the full `gh` suite for issues, branches, PRs, comments, and review feedback |
+| `docs` | local | `readme`, `seo-meta` | Documentation & content: write/improve a README, and generate SEO frontmatter for markdown articles |
+| `skill-optimize` | local | `gotcha-capture`, `skill-benchmark` | Skill-authoring meta-tools: document pitfalls into a skill, and score/improve skill quality |
+| `daily` | local | `gmail-helper`, `daily-planner`, `daily-reviewer` | Personal daily workflow (Obsidian + Gmail): inbox triage, morning plan, evening retrospective |
+| `portfolio` | local | `portfolio-update`, `portfolio-review` | Personal investing tracker (Obsidian): ingest broker screenshots and review thesis drift |
+| `skill-creator` | external | -- | Create, test, evaluate, and iteratively improve Claude Code skills |
+| `superpowers` | external | -- | Advanced skills for brainstorming, planning, debugging, TDD, code review, and parallel agents |
+| `graphify` | external | -- | Converts code, docs, PDFs, and images into queryable knowledge graphs |
+| `mempalace` | external | -- | Mine projects and conversations into a searchable memory palace with semantic search |
+| `planning-with-files` | external | -- | Manus-style file-based planning to organize and track progress on complex tasks |
+
+> `daily` and `portfolio` are personal-workflow bundles hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema -- not drop-in reusable yet. A few more external references (`understand-anything`, `impeccable`, `openspec`, `mattpocock-skills`, `find-skills`) are registered in `marketplace.json`.
+
+Local plugins keep their skill definitions under `plugins/<bundle>/skills/<skill>/`. External plugins reference an upstream repository in `marketplace.json`.
 
 ## Getting Started
 
@@ -56,33 +59,45 @@ Add this repository as a marketplace (one-time setup):
 Then install any plugin you want:
 
 ```bash
-/plugin install commit-msg@chuan-skills
-/plugin install readme@chuan-skills
-/plugin install branch-report@chuan-skills
-/plugin install gh@chuan-skills
-/plugin install seo-meta@chuan-skills
+/plugin install dev@chuan-skills
+/plugin install git@chuan-skills
+/plugin install docs@chuan-skills
 /plugin install skill-optimize@chuan-skills
-/plugin install pre-push-test@chuan-skills
 /plugin install skill-creator@chuan-skills
 /plugin install graphify@chuan-skills
 /plugin install mempalace@chuan-skills
 ```
 
+Installing a bundle makes all of its skills available as slash commands.
+
 ### Usage
 
-Once installed, invoke a skill as a slash command inside Claude Code:
+Once a bundle is installed, invoke any of its skills as a slash command inside Claude Code.
 
-- `/commit-msg` -- Analyzes your staged changes and presents 3 commit message suggestions that match your project's conventions. Pick one or write your own, and it commits for you.
-- `/readme` -- Explores the current repository and generates or improves a README.md with accurate, well-structured content.
-- `/branch-report` -- Compares the current branch against the default branch and generates a report explaining all changes in plain language, followed by a senior developer review with concerns, suggestions, and praise.
-- `/gh-issue` -- Creates a well-structured GitHub issue using type-specific templates (bug, feat, refactor, doc, perf, security) via the `gh` CLI.
-- `/gh-dev` -- Creates an `issues/N` branch linked to a GitHub issue, then develops with regular convention-following commits. Never pushes to remote.
-- `/gh-pr` -- Pushes the branch and creates or updates a pull request using type-specific templates. Optionally updates README, docs, and project tracking files before opening the PR.
-- `/gh-comment` -- Posts formatted comments on GitHub PRs or issues, approves PRs, and merges PRs using purpose-specific templates.
-- `/gh-archive` -- Captures the current state of a project by updating README.md and project status files in the docs directory at the end of a session.
-- `/seo-meta` -- Generates SEO metadata as YAML frontmatter for markdown articles.
-- `/skill-optimize` -- Captures gotchas for existing skills and benchmarks skill quality with scored reports.
+**`dev`**
+- `/feature` -- End-to-end feature delivery: issue → branch → design → strict TDD → PR → review-fix → archive, with approval checkpoints.
+- `/health-audit` -- Five-dimension codebase audit (security, architecture, doc drift, dead code, test gaps) producing a ranked report, filed issues, and approved auto-fix PRs.
+
+**`git`**
+- `/commit-msg` -- Analyzes your staged changes and presents 3 commit message suggestions matching your project's conventions, then commits.
+- `/branch-report` -- Compares the current branch against the default branch and explains the changes in plain language, followed by a senior-developer review.
 - `/pre-push-test` -- Installs a git pre-push hook that runs tests before push with automatic failure repair.
+- `/gh-issue` -- Creates a structured GitHub issue using type-specific templates (bug, feat, refactor, doc, perf, security).
+- `/gh-dev` -- Creates an `issues/N` branch linked to an issue, then develops with convention-following commits.
+- `/gh-pr` -- Pushes the branch and creates or updates a pull request using type-specific templates.
+- `/gh-comment` -- Posts formatted comments on PRs/issues, approves PRs, and merges them.
+- `/gh-fix` -- Reads unresolved PR review comments, evaluates each, then fixes or pushes back with a reasoned reply.
+- `/gh-archive` -- Captures end-of-session state by updating README.md and project status files.
+
+**`docs`**
+- `/readme` -- Explores the repository and generates or improves a README.md with accurate, well-structured content.
+- `/seo-meta` -- Generates SEO metadata as YAML frontmatter for markdown articles.
+
+**`skill-optimize`**
+- `/gotcha-capture` -- Mines conversation history for failure knowledge and writes it into a skill's Gotchas section.
+- `/skill-benchmark` -- Scores skill quality with variance analysis and produces an improvement report.
+
+**External**
 - `/skill-creator` -- Walks you through creating, testing, and refining a new Claude Code skill.
 
 ## Project Structure
@@ -91,42 +106,49 @@ Once installed, invoke a skill as a slash command inside Claude Code:
 chuan-skills/
 ├── .claude-plugin/
 │   └── marketplace.json        # Plugin registry (lists all available plugins)
-├── docs/                       # Project status and planning files
-├── plugins/
-│   ├── branch-report/
-│   │   └── skills/branch-report/
-│   ├── commit-msg/
-│   │   └── skills/commit-msg/
-│   ├── gh/
+├── plugins/                    # One directory per plugin (domain bundle)
+│   ├── dev/
 │   │   └── skills/
-│   │       ├── gh-archive/     # End-of-session documentation capture
-│   │       ├── gh-comment/     # PR/issue commenting, approval, merge
-│   │       ├── gh-dev/         # Issue-linked branch development
+│   │       ├── feature/        # End-to-end feature delivery orchestrator
+│   │       └── health-audit/   # Five-dimension codebase health audit
+│   ├── git/
+│   │   └── skills/
+│   │       ├── commit-msg/     # Commit message suggestions
+│   │       ├── branch-report/  # Branch-vs-default comparison report
+│   │       ├── pre-push-test/  # Test-before-push git hook
 │   │       ├── gh-issue/       # Structured issue creation (6 types)
-│   │       └── gh-pr/          # Pull request creation with templates
-│   ├── pre-push-test/
-│   │   └── skills/pre-push-test/
-│   ├── readme/
-│   │   └── skills/readme/
-│   ├── seo-meta/
-│   │   └── skills/seo-meta/
-│   └── skill-optimize/
+│   │       ├── gh-dev/         # Issue-linked branch development
+│   │       ├── gh-pr/          # Pull request creation with templates
+│   │       ├── gh-comment/     # PR/issue commenting, approval, merge
+│   │       ├── gh-fix/         # Review-feedback triage and reply
+│   │       └── gh-archive/     # End-of-session documentation capture
+│   ├── docs/
+│   │   └── skills/
+│   │       ├── readme/         # Write/improve a README
+│   │       └── seo-meta/       # SEO frontmatter for markdown articles
+│   ├── skill-optimize/
+│   │   └── skills/
+│   │       ├── gotcha-capture/ # Document pitfalls into a skill
+│   │       └── skill-benchmark/# Score skill quality
+│   ├── daily/                  # Personal: gmail-helper, daily-planner, daily-reviewer
+│   │   └── skills/
+│   └── portfolio/              # Personal: portfolio-update, portfolio-review
 │       └── skills/
-│           ├── gotcha-capture/
-│           └── skill-benchmark/
 ├── CLAUDE.md                   # Project conventions for Claude Code
 └── README.md
 ```
 
 - **`.claude-plugin/marketplace.json`** -- The marketplace manifest. Defines each plugin's name, description, source, and skill paths.
-- **`plugins/`** -- Contains local skill definitions. Each plugin follows the `plugins/<name>/skills/<name>/` directory convention.
+- **`plugins/`** -- Contains local skill definitions. Each plugin is a domain bundle following the `plugins/<bundle>/skills/<skill>/` convention.
 - **`CLAUDE.md`** -- Instructions that Claude Code follows when working in this repository.
 
 ## Adding a New Skill
 
 1. Use the `/skill-creator` skill to scaffold and iterate on your new skill.
-2. Copy the resulting skill directory into `plugins/<name>/skills/<name>/` (omit the `evals/` subfolder).
-3. Register the skill in `.claude-plugin/marketplace.json`.
+2. Place the resulting skill directory inside the matching domain bundle:
+   - **Fits an existing domain** (`dev`, `git`, `docs`, `skill-optimize`, `daily`, `portfolio`) -- copy it to `plugins/<bundle>/skills/<skill>/`. No `marketplace.json` change is needed.
+   - **New domain** -- create `plugins/<bundle>/skills/<skill>/` and register the bundle in `.claude-plugin/marketplace.json`.
+3. Omit the `evals/` subfolder when copying (it's gitignored).
 
 ### Skill Format
 
@@ -147,7 +169,7 @@ Skills may optionally include subdirectories for agents, scripts, reference file
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/your-skill-name`)
-3. Add your skill under `plugins/<name>/skills/<name>/` and register it in `marketplace.json`
+3. Add your skill under `plugins/<bundle>/skills/<skill>/` and register the bundle in `marketplace.json` if it's a new domain
 4. Commit your changes
 5. Push to the branch and open a Pull Request
 
