@@ -99,9 +99,9 @@
       "strict": false
     },
     {
-      "name": "feature",
-      "description": "End-to-end feature delivery orchestrator: issue → branch → design → strict TDD → PR → review-fix → archive, with approval checkpoints",
-      "source": "./plugins/feature",
+      "name": "dev",
+      "description": "Development workflow bundle: feature (end-to-end issue → branch → design → strict TDD → PR → review-fix → archive orchestrator, with approval checkpoints)",
+      "source": "./plugins/dev",
       "strict": false
     },
     {

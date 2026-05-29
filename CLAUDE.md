@@ -42,7 +42,7 @@ Skills may optionally include subdirectories for scripts, references, or assets.
 | skill-creator  | external | Create, test, evaluate, and iteratively improve Claude Code skills                 |
 | branch-report  | local    | Generates a branch comparison report with simple explanations and senior dev review |
 | gh             | local    | GitHub CLI workflow skills (gh-issue, gh-dev, gh-pr, gh-comment, gh-archive, gh-fix) for issues, branches, PRs, comments, review-feedback handling, and session archival |
-| feature        | local    | End-to-end feature delivery orchestrator: issue → branch → design → strict TDD → PR → review-fix → archive, with approval checkpoints |
+| dev            | local    | Development workflow bundle: feature (end-to-end orchestrator: issue → branch → design → strict TDD → PR → review-fix → archive, with approval checkpoints) |
 | health-audit   | local    | Manually-triggered five-dimension codebase health audit producing a ranked report, filed issues, and approved auto-fix PRs |
 | skill-optimize | local    | Tools for improving skills: gotcha-capture for documenting pitfalls, skill-benchmark for scoring skill quality |
 | graphify       | external | Converts code, docs, PDFs, and images into queryable knowledge graphs with visualization and export            |
@@ -52,7 +52,7 @@ Skills may optionally include subdirectories for scripts, references, or assets.
 | mattpocock-skills | external | Reference: Matt Pocock's engineering skills (diagnose, grill-me, handoff, to-prd, improve-codebase-architecture) |
 | find-skills    | external | Reference: discover and install agent skills (Vercel Labs)                                                       |
 
-A plugin can bundle multiple related skills under `plugins/<plugin>/skills/<skill>/` (e.g. `gh`, `skill-optimize`, `daily`, `portfolio`). Single-skill plugins use `plugins/<name>/skills/<name>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
+A plugin can bundle multiple related skills under `plugins/<plugin>/skills/<skill>/` (e.g. `gh`, `skill-optimize`, `daily`, `portfolio`, `dev`). Single-skill plugins use `plugins/<name>/skills/<name>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
 
 > Note: the `daily` and `portfolio` plugins are personal-workflow skill bundles hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema. They are not drop-in reusable yet — genericize (placeholder account names, configurable paths) before sharing.
 
