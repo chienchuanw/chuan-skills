@@ -52,7 +52,10 @@ can match whatever language the user is using.
 
 ### 1. Orient
 
-Confirm today's date. Read `Personal/_meta/personal-workflows.md` once so the Daily/Journal/Finance
+Confirm today's date **and its day-of-week** — derive the weekday from the date and state it back
+(e.g. "2026-05-31 是星期日") before doing anything date-dependent. A wrong weekday silently corrupts
+the whole plan (objective study-grid row, "today/tomorrow" deadlines), so verify it up front. Read
+`Personal/_meta/personal-workflows.md` once so the Daily/Journal/Finance
 conventions are fresh. Check whether today's Daily note already exists — if the user has been
 working in it, you are re-planning, not starting blank (see *Writing the Daily note*).
 
@@ -75,12 +78,17 @@ These reads are independent — do them together.
 - **Objectives.** Read `objectives.md` and every objective file whose `status` is `active`. For
   each, find the nearest unchecked milestone. If the file has a weekly study grid (O1 does),
   find the row whose date range contains today — that row is today's objective work.
-- **Calendar.** Call `calendar_list_events` for today on the **`personal` account's primary
-  "Personal & Work" calendar** — that calendar is the user's true schedule and the only one that
-  constrains the plan. Its events are **binding fixed time** the day must work around. Every other
-  calendar in the `personal` account (Toggl, Birthday, Family, Chien and An) and every other
-  account (work, foufa, lighting, semi) is **informative only**: surface anything relevant in
-  `備註`, but never block a time-slot around it.
+- **Calendar.** Query **all** calendars, not just the primary — list accounts with
+  `calendar_list_accounts` and calendars with `calendar_list_calendars`, then call
+  `calendar_list_events` for today across every calendar. Querying only the primary calendar hides
+  real commitments and was a repeated source of incomplete plans. Treat the results by tier:
+  - **Binding (constrains the plan):** the **`personal` account's primary "Personal & Work"
+    calendar** — that is the user's true schedule. Its events are **fixed time** the day must work
+    around.
+  - **Informative only:** every other calendar in the `personal` account (Toggl, Birthday, Family,
+    Chien and An) and every other account (work, foufa, lighting, semi). Surface anything relevant
+    in `備註`, but never block a time-slot around it.
+  You still fetch the informative calendars — you just don't let them constrain time-blocks.
 - **Carryover.** Find the most recent Daily note *before* today. Collect every unchecked `- [ ]`
   line from its task sections and `## 延後 / 待辦轉移` (skip `## 已完成`). Each carried item keeps a
   `(自 YYYY-MM-DD 延後)` marker — preserve the *original* first-delayed date if one is already
