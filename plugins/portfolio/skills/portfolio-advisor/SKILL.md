@@ -171,6 +171,13 @@ lightweight one-time setup, after which every future run measures against the us
 ALWAYS write the memo in this structure. Priority-ranked, not lens-organized — the user wants
 the most important decision first, not to assemble it themselves from five sections.
 
+**Language:** write the prose in **Traditional Chinese (繁體中文)** by default — it's the
+user's default reading language, and the memo is for them. Keep technical tokens verbatim:
+tickers (`NVDA`, `2330`), frontmatter field names, file paths, numbers, and any English proper
+nouns where translating would obscure them. If the user explicitly asks for the memo in
+another language during the session, follow that instead. (This mirrors the sibling skills'
+rule that identifiers stay verbatim while body language follows the user.)
+
 ```markdown
 # Portfolio advice — YYYY-MM-DD   [⚠️ not financial advice]
 
