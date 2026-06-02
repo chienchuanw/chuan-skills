@@ -1,17 +1,21 @@
 ---
 name: portfolio-review
 description: >-
-  AI-assisted thesis review for the Obsidian portfolio at Personal/Finance/Portfolio/. Reads
+  Read-only thinking check for the Obsidian portfolio at Personal/Finance/Portfolio/. Reads
   every open ticker file, compares the original opening thesis against later thesis-log
   entries and the most recent price action, and surfaces drift (you bought for reason A but
   are now justifying with reason B), anchoring (you keep restating the same thesis without
   re-examining it), and stale theses (no new entry in months despite price/news moves).
-  Produces a markdown review the user can paste into their Journal. Use this whenever the
-  user wants to review, check, audit, or sanity-test their investing thinking — "review my
-  portfolio", "am I still right about X", "check my open positions", "thesis check",
-  "portfolio retrospective", "投資組合回顧", "重新檢視持股". Pair skill of portfolio-update —
-  portfolio-update WRITES state from screenshots, this skill READS state and challenges
-  thinking. Read-only: never edits portfolio files.
+  Produces a markdown review the user can paste into their Journal — it challenges your
+  *reasoning* and never tells you to buy or sell. Use this whenever the user wants to
+  sanity-test their investing *thinking* rather than get moves — "is my thesis still right",
+  "challenge my thinking on X", "am I anchoring", "are my reasons still valid", "thesis
+  check", "portfolio retrospective", "重新檢視持股的理由", "我的持股邏輯還成立嗎". For
+  actionable buy/sell/rebalance suggestions and directional calls — "what should I do",
+  "any moves to make", "should I trim X", "投資建議" — use portfolio-advisor instead, which
+  chains this review as its first phase and then escalates to the calls this skill refuses to
+  make. Pair skill of portfolio-update — portfolio-update WRITES state from screenshots, this
+  skill READS state and challenges thinking. Read-only: never edits portfolio files.
 ---
 
 # Portfolio Review
