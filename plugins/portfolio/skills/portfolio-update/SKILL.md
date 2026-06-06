@@ -81,6 +81,15 @@ phantom trades. So: never write a transaction row without the user confirming it
      absent), set `peak_price` = `last_price` and `peak_price_date` = today. Never lower it —
      the peak only ratchets up. This is the high-water mark the 25% trailing stop measures from;
      without it the stage-2 rule can't fire.
+   - **Maintain `est_dividend` for income positions.** For income holdings (core-income and
+     dividend ETFs — anything carrying an `est_dividend` field or that the user treats as a
+     yield play), refresh `est_dividend` and `est_dividend_as_of` whenever a new annual-dividend
+     figure surfaces (post-earnings, a board's dividend proposal, an ex-div, or a revised
+     forecast in the screenshot). This is the input the buy-rule's **current yield**
+     (`est_dividend ÷ last_price`) is computed from — stale dividend = wrong buy signal. Don't
+     invent it; if a position looks like an income holding but has no `est_dividend`, ask the
+     user for the latest estimate. Never derive a buy signal from yield-on-cost
+     (`est_dividend ÷ avg_cost`) — current yield only. See `_rebalancing-rules.md` §六之二.
    - Append a new `### YYYY-MM-DD — <trigger>` section to the Thesis log with the user's
      one-liner.
    - If the position is now zero: set `status: closed`, set `closed: YYYY-MM-DD`, compute
