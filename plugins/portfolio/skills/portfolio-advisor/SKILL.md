@@ -62,10 +62,13 @@ advisor worse than useless.
    minute or two, not instant. Offer to narrow scope if they only care about one market or a
    few tickers, but the default is the whole book.
 
-2. **Read the MOC** `Personal/Finance/Portfolio/portfolio.md`: `last_snapshot`, `fx_rates`,
-   the Allocation table, and the `targets:` block (see "Targets" below). If there's no
-   `targets:` block, note it — you'll fall back to generic thresholds and offer to set targets
-   at the end.
+2. **Read the MOC and the rules.** From `Personal/Finance/Portfolio/portfolio.md`:
+   `last_snapshot`, `fx_rates`, the Allocation table, and the `targets:` block (see "Targets"
+   below). Then read `Personal/Finance/Portfolio/_rebalancing-rules.md` — the user's written
+   rebalancing + profit-taking policy (two-bucket core/satellite system, give-back thresholds,
+   trailing-stop %, trim rules). That file is the spec you mechanically check every position
+   against in step 7. If `targets:` or the rules file is missing, note it — you fall back to
+   generic thresholds and offer to set them up at the end.
 
 3. **Freshness check — don't gate on the calendar, gate on whether they traded.** The snapshot
    may be days old, but you refresh prices live anyway, so the only thing that actually goes
@@ -77,7 +80,9 @@ advisor worse than useless.
 
 4. **Enumerate open positions.** Read every ticker file in `US/`, `TW/`, `Crypto/` with
    `status: open`. For each, hold the opening thesis, the latest 2–3 thesis entries, current
-   shares, avg cost, and position size (TWD-normalized % of book).
+   shares, avg cost, position size (TWD-normalized % of book), the `bucket:` field
+   (`core` / `satellite`), and `peak_price` if present (needed for the trailing-stop check). A
+   position with no `bucket:` can't be rule-checked — route it to data-hygiene in step 7.
 
 5. **Run the thinking-check phase by chaining `portfolio-review`.** Invoke `portfolio-review`'s
    logic to surface drift / anchoring / stale theses. Don't re-derive it here — that skill is
@@ -92,6 +97,25 @@ advisor worse than useless.
    data-hygiene flags instead.
 
 7. **Apply the lenses.** Lead with the well-grounded ones; tag the inferred ones clearly.
+   - **Rule triggers (primary, mechanical — these lead the memo)** — for each open position,
+     check it against `_rebalancing-rules.md` using its `bucket:` and the live price. These are
+     the user's own *pre-committed* rules, not your opinion, so a fired trigger is a concrete
+     numbered action, not a soft suggestion:
+     - **Satellite, unrealized gain ≥ +100% (stage-1 give-back):** "recover principal — sell
+       `original_cost ÷ live_price` shares". Show the share count and the % of the position.
+       `original_cost` = `value_twd − pnl_twd` (or `shares × avg_cost` in native, then ×FX).
+     - **Satellite, ≥ 25% below `peak_price` on a closing basis (stage-2 trailing stop):**
+       "trailing-stop hit — exit the remaining house-money position". If `peak_price` isn't in
+       the data and you can't establish it, say so and make it a *watch-item*, not a fired
+       trigger — never invent the peak.
+     - **Core individual stock > `max_position_pct` (15%):** "trim back to 15%" — broad-ETF
+       buckets (0050 / VOO / VT …) are exempt.
+     - **Market weight off its `targets:` band by ≥ 10pp, or crypto > `crypto_ceiling_pct`:**
+       structural rebalance, prefer new-money direction over force-selling winners.
+     - **Missing `bucket:`** → don't guess it; route to data-hygiene as "classify core/satellite
+       (Buffett 3-question test) before this position can be rule-checked".
+     This lens only *reports* triggers — execution (the actual sell + transaction row) is a
+     separate `portfolio-update` session, per the read-only rule.
    - **Concentration / allocation (primary)** — compare actual TWD-normalized weights against
      the `targets:` block. Flag drift from *the user's stated plan*, not a textbook ("you set
      50% TW, you're at 65% — conscious conviction or creep?"). No targets set → use generic
@@ -166,6 +190,28 @@ If present, flag drift from it. If absent, use the generic fallbacks (clearly la
 generic) and, at the end of the run, offer to write a `targets:` block — first run becomes a
 lightweight one-time setup, after which every future run measures against the user's own plan.
 
+## Rebalancing rules (the mechanical layer)
+
+`targets:` answers "is my allocation off?". The user's full sell/profit-taking discipline lives
+in `Personal/Finance/Portfolio/_rebalancing-rules.md` — a Buffett-flavoured **two-bucket**
+policy you read in step 2 and mechanically enforce in step 7. The essentials you check against:
+
+- **Bucket** — each position carries a `bucket:` of `core` or `satellite` in its frontmatter.
+  *Core* = a business the user understands and would add to at −50% (held for thesis reasons
+  only; never trimmed for "it went up"). *Satellite* = momentum / theme / speculation the user
+  has no −50%-conviction on (governed by mechanical price rules). A position with no `bucket:`
+  is unclassified — flag it, don't guess.
+- **Satellite two-stage give-back** — stage 1: at **+100%** unrealized gain, sell
+  `original_cost ÷ live_price` shares to recover principal; stage 2: the remainder rides with a
+  **25%** trailing stop off `peak_price` (closing basis).
+- **Core sell triggers** — only thesis-broke / better-opportunity / need-the-cash; plus a
+  **15%** single-stock cap (broad ETFs exempt).
+- **Realize-to-what** — recovered principal rotates into core (compounds); trailing-stop profit
+  goes to dry powder.
+
+These are the user's numbers — if they edit `_rebalancing-rules.md`, the file wins over the
+defaults above. You **report** triggers; you never execute (that's `portfolio-update`).
+
 ## Output
 
 ALWAYS write the memo in this structure. Priority-ranked, not lens-organized — the user wants
@@ -191,6 +237,11 @@ biggest: <TICKER> <n>% · snapshot <date> (prices live, shares snapshot-derived)
 - <TICKER> — prior call "<call>": acted / still open / disconfirming condition fired
 - Newly flagged since last run: <…>
 (omit this section on the first-ever run; say so)
+
+## Rule triggers  (mechanical — from _rebalancing-rules.md, your pre-committed rules)
+- <TICKER> — <which rule fired>: <concrete action, e.g. "sell ≈3.3 sh to recover principal">
+- <TICKER> — trailing-stop watch: peak unknown, establish before it can fire
+(say "none fired this run" if clean; list missing-`bucket:` positions under Data hygiene)
 
 ## Do next  (ranked, most material first)
 1. <one-line decision — ticker or structural>

@@ -48,7 +48,10 @@ phantom trades. So: never write a transaction row without the user confirming it
      use the numeric code as filename).
    - If the file doesn't exist: this is a NEW position. Copy `_template-ticker.md`, fill
      frontmatter, write a single `opening` transaction row, and BEFORE marking done, ask
-     the user for a one-paragraph opening thesis. Don't fabricate a thesis.
+     the user for a one-paragraph opening thesis. Don't fabricate a thesis. Also ask for its
+     **`bucket:`** — `core` (you understand it and would add at −50%) or `satellite` (momentum /
+     theme / speculation). This one field is what the rebalancing rules and `portfolio-advisor`
+     check against; don't guess it, ask. If the user is unsure, leave it blank and flag it.
    - If the file exists: continue to step 4.
 
 4. **Diff against existing frontmatter.** Compute deltas:
@@ -73,6 +76,20 @@ phantom trades. So: never write a transaction row without the user confirming it
    - Append a new row to the Transactions table (date / action / shares / price / fees / note).
    - Update frontmatter: `current_shares`, `avg_cost`, `last_price`, `last_price_date`,
      `last_thesis_date`.
+   - **Maintain the trailing-stop reference for satellites.** For any `bucket: satellite`
+     position, if the new `last_price` is above the stored `peak_price` (or `peak_price` is
+     absent), set `peak_price` = `last_price` and `peak_price_date` = today. Never lower it —
+     the peak only ratchets up. This is the high-water mark the 25% trailing stop measures from;
+     without it the stage-2 rule can't fire.
+   - **Maintain `est_dividend` for income positions.** For income holdings (core-income and
+     dividend ETFs — anything carrying an `est_dividend` field or that the user treats as a
+     yield play), refresh `est_dividend` and `est_dividend_as_of` whenever a new annual-dividend
+     figure surfaces (post-earnings, a board's dividend proposal, an ex-div, or a revised
+     forecast in the screenshot). This is the input the buy-rule's **current yield**
+     (`est_dividend ÷ last_price`) is computed from — stale dividend = wrong buy signal. Don't
+     invent it; if a position looks like an income holding but has no `est_dividend`, ask the
+     user for the latest estimate. Never derive a buy signal from yield-on-cost
+     (`est_dividend ÷ avg_cost`) — current yield only. See `_rebalancing-rules.md` §六之二.
    - Append a new `### YYYY-MM-DD — <trigger>` section to the Thesis log with the user's
      one-liner.
    - If the position is now zero: set `status: closed`, set `closed: YYYY-MM-DD`, compute
@@ -88,6 +105,17 @@ phantom trades. So: never write a transaction row without the user confirming it
 9. **Summarize and stop.** List what changed: new positions opened, transactions logged,
    positions closed, FX rate used. Don't auto-commit the vault — let the user review the
    diff first.
+
+10. **Flag rule triggers (lightweight — not a full advice run).** After the snapshot is
+    written, do a quick pass against `_rebalancing-rules.md` and surface anything that just
+    crossed a line, so the user sees it at update time instead of missing it:
+    - a `satellite` position now at **≥ +100%** unrealized (stage-1 give-back is available);
+    - a `satellite` that has fallen **≥ 25%** from its `peak_price` (stage-2 trailing stop);
+    - a `core` **individual** stock now **> 15%** (broad ETFs exempt);
+    - a market off its `targets:` band by ≥ 10pp, or crypto > the ceiling;
+    - any open position still missing a `bucket:`.
+    Keep it to one line each and point the user to `portfolio-advisor` for the full,
+    live-news-grounded decision — this step only raises the flag, it doesn't make the call.
 
 ## Hard rules
 
