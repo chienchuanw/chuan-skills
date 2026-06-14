@@ -95,6 +95,9 @@ These reads are independent — do them together.
   there, so carryover age is the gap between that date and today.
 - **Habit.** Read `Personal/lifestyle.md` for the current habit-cycle habit (the user runs 1–2 at
   a time). That habit is a candidate task every day until the cycle ends, tagged 〔健康〕.
+- **Exercise (O4).** Read `Personal/Objectives/o4-health-bloodlipid.md` and tally this week's logged
+  有氧/阻力 sessions from the recent Daily notes, so you can plan today's *specific* workout — see
+  *Daily exercise planning (O4)*. This is its own input, separate from the habit-cycle habit.
 - **Finance.** Scan `money-principles.md` and `Personal/Finance/credit-card-YYYY.md` for credit-card
   payment dates (扣款日) and recurring finance tasks falling today or in the next few days.
 
@@ -116,7 +119,8 @@ errands, evening. Day-job hours belong to the user; work/dev items are classifie
 
 ### 6. Write the Daily note
 
-Populate `Personal/Daily/YYYY-MM-DD.md` (see *Writing the Daily note*).
+Populate `Personal/Daily/YYYY-MM-DD.md` (see *Writing the Daily note*), including the dedicated
+`## 今日運動（O4）` block with today's planned workout (see *Daily exercise planning (O4)*).
 
 ### 7. Write the Journal planning rationale
 
@@ -126,9 +130,10 @@ why the day was shaped the way it was.
 
 ### 8. Brief the user
 
-Close with a short, warm spoken summary: the three things that matter today, anything time-bound
-they can't miss, and any carryover you've escalated or are recommending they drop. Lead with
-whatever is most urgent. Don't recite the whole list — they have the note for that.
+Close with a short, warm spoken summary: the three things that matter today, **today's planned
+workout in one line** (O4), anything time-bound they can't miss, and any carryover you've escalated
+or are recommending they drop. Lead with whatever is most urgent. Don't recite the whole list —
+they have the note for that.
 
 ## Scoring rubric and the Eisenhower matrix
 
@@ -179,6 +184,36 @@ fails:
 - **`今日重點` must contain at least one task with 目標貢獻 = 3** whenever any objective-advancing
   task is in scope — almost always a Q2 task. A day with zero objective progress should be a
   deliberate exception (the user is sick, travelling, slammed), never an accident of a busy inbox.
+
+## Daily exercise planning (O4 health)
+
+O4 (降血脂・逆轉脂肪肝・減重) carries a doctor's prescription the planner actively *schedules*, not
+just a habit checkbox: **有氧 5×/week ×≥30 min at HR ~110, plus 阻力 2×/week**. Every run, plan
+*today's specific workout* and write it into the Daily note's dedicated `## 今日運動（O4）` block.
+
+To plan it:
+
+1. **Tally this week's progress.** Scan this week's prior Daily notes (Mon→today) for logged 有氧 and
+   阻力 sessions; compute `有氧 X/5` and `阻力 X/2` so far this week. This gap drives today's choice.
+2. **Read `o4-health-bloodlipid.md`** for the current 體重 trend, the menu conventions, and the
+   **cardiac caution** (靜態心電圖非特異性 T 波): 用力吐氣不閉氣、每組留 2–3 下餘力、胸悶/心悸/頭暈即停；
+   **對 Ibuprofen 過敏**. These safety rules go in the block *every day*.
+3. **Pick today's type from day-shape × weekly gap:**
+   - **Free/normal day, 阻力 < 2/week done** → a resistance session, **alternating muscle groups**
+     vs the last one (don't hit the same group two days running — e.g. back+core one day, legs+push
+     the next).
+   - **Free/normal day, 阻力 already 2/week** → aerobic 30+ min (滑步機/飛輪/跑步機坡度走, HR ~110).
+   - **Recovery / red-eye / late-show / travel / low-capacity day** → fall back to the O4 core anchor
+     **飯後散步 15–30 分**; never schedule heavy resistance, just don't break the streak.
+   - **High-crunch week (hard work deadline)** → *maintain, don't add*: keep 散步/light aerobic, defer
+     heavy resistance; protecting sleep matters more than a hard session.
+4. **Write a concrete menu** — movements, sets×reps or duration, HR target — honoring **漸進超負荷**:
+   if a prior log shows 2–3 reps still in reserve at the top of the rep range, nudge the weight up.
+5. The aerobic core habit (飯後散步) still appears as the 〔健康〕 habit task in the matrix; the
+   `## 今日運動（O4）` block is the *specific* prescription for the day and is **always 重要**.
+
+In the brief (step 8), state today's planned workout in one line. When the user logs actuals later,
+record them in the block's 紀錄 line and tick the menu items (the skill is idempotent on re-runs).
 
 ## Writing the Daily note
 
@@ -234,6 +269,16 @@ Use this structure (all zh-TW):
 - [ ] 〔Gmail〕<reactive items gmail-helper surfaced that need the user>
 ### Q4 不重要 × 不緊急 — 放掉 / 刪除候選
 - [ ] <task — most should move to 延後 with an explicit decision>
+
+## 今日運動(O4)
+
+> 對齊 [[o4-health-bloodlipid]]:有氧每週 5 次 ×≥30 分(心率 ~110)+阻力每週 2 次。安全鐵則(心電圖 T 波註記):用力吐氣不閉氣、每組留 2–3 下餘力、胸悶/心悸/頭暈即停;對 Ibuprofen 過敏。
+
+- **本週進度**:有氧 <X>/5、阻力 <X>/2
+- **今日類型**:<有氧 / 阻力 / 有氧+阻力 / 飯後散步(恢復・低能日)>
+- **今日菜單**:
+  - [ ] <動作・時長・強度 / 心率目標>
+- **紀錄**(完成後填):<時間・心率・重量×組數×次數・感受>
 
 ## 已完成
 
