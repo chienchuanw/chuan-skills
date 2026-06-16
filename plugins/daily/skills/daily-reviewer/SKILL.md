@@ -13,7 +13,13 @@ description: >-
   "睡前回顧", "檢討今天", "今天有沒有在軌道上" — even if they don't name a skill. This is
   the evening bookend to daily-planner: daily-planner builds the morning plan, daily-reviewer
   reviews it at night. Prefer this skill over daily-planner whenever the user is looking
-  BACKWARD at a day that already happened rather than planning one ahead.
+  BACKWARD at a day that already happened rather than planning one ahead. It also runs a
+  nightly spending pass — asking once for today's card transactions (pasted notification /
+  app text), logging them into the month's spend-log, checking them against the card-routing
+  rules and overspend / forex-leak / revolving-credit / subscription signals, and flagging
+  semi.tw business expenses for monthly reimbursement — so 記帳 happens nightly instead of in
+  a month-end scramble. Also triggers on "記帳", "今天花了多少", "今天的消費", "消費審核",
+  "對一下帳", "看一下今天刷卡", "review my spending".
 ---
 
 # Daily Reviewer
@@ -47,6 +53,15 @@ The working directory is the vault root. Key paths:
 - **Recent history** — the last ~5–7 `Personal/Daily/*.md` notes before today, for spotting
   multi-day slippage patterns.
 - **Standing context** — `Personal/lifestyle.md` (current habit cycle).
+- **Finance** — `Personal/Finance/spend-log-YYYY-MM.md` (this month's spend log; you append rows
+  to `## 每日紀錄（你填）` and maintain `## AI 每日分析` + `## 本月投入指標`),
+  `Personal/Finance/semi-reimbursement-YYYY.md` (semi.tw expenses pending reimbursement),
+  `Personal/money-principles.md` (the card-routing speed table + overspend/forex/subscription
+  rules you check against), and `Personal/Finance/credit-card-YYYY.md` (per-year index).
+  Screenshots live in the gitignored `Personal/Finance/Screenshots/` — the user pastes the
+  *text*; never ask for or commit image files. Tracked finance notes (`spend-log-*`,
+  `semi-reimbursement-*`, `credit-card-*`) ARE committed; the user commits the vault when they
+  choose — do not commit on their behalf unless asked.
 
 **Language.** Everything you write into `Personal/Daily/` and `Personal/Journal/` is Traditional
 Chinese (zh-TW), per the vault's `CLAUDE.md`. Leave identifiers verbatim — objective IDs (`O1`),
@@ -106,6 +121,53 @@ work items dominate the day rating (see the capacity note in the rubric).
 
 If the user is terse or says "just use the checkboxes", respect that — take `[ ]` as 未做 and move on.
 
+### 3b. Nightly spending pass (always ask once)
+
+記帳 is now a fixed nightly ritual, not a month-end scramble — that is the whole point of folding
+it in here. **Every evening, regardless of whether the day looked spendy**, ask once, as part of
+the same interview round:
+
+> 「今天有沒有刷卡消費?有的話把銀行通知或 App 截圖的**文字**貼給我(貼文字就好,截圖圖檔留在
+> gitignored 的 `Screenshots/`)。沒有就說『今天沒刷卡』。」
+
+Handle the reply:
+
+- **有消費** — parse each transaction into a `## 每日紀錄（你填）` row in **this month's**
+  `spend-log-YYYY-MM.md`: `日期｜卡別｜類別｜金額 NT$｜外幣?｜說明`.
+  - 卡別 uses the代號 in the spend-log header: `台新狗狗`｜`第一桃園`｜`第一星璨`(備用)｜`富邦momo`｜`富邦J`.
+  - 類別: `固定`(訂閱/雲)｜`日常`｜`外送餐飲`｜`網購`｜`旅遊海外`｜`大額`(單筆 ≥NT$10,000)｜`其他`.
+  - A 外幣 charge usually carries a separate `國外交易手續費／服務費` line — log that as its own
+    `其他` row too (it's the leak you're tracking).
+  - If anything is ambiguous — unclear merchant code, which card, or whether a charge is foreign —
+    **ask in this same round; never guess an amount or invent a row.**
+- **沒消費** — write no table row (the table is per-transaction). Just record `今日無消費` in the
+  review write-up so the nightly habit is visibly kept.
+- **沒空 / 懶得貼** — respect it. Don't nag. Note `消費未結算(待補)` in the day's carryover so it
+  doesn't silently vanish, and move on.
+
+Then run the **daily spend check** against `money-principles.md` §2–§3 and surface anything real
+(stay quiet when clean — don't manufacture a finding):
+
+- **用卡分工是否照表** — 外幣訂閱/海外/加密入金→`第一桃園`;國內網購/日常/台幣固定帳單→`台新狗狗`;
+  momo 站內→`富邦momo`;自由・亞洲旅遊實體→`富邦J`.刷錯卡就點名,並說正確該走哪張。
+- **外幣漏損** — 外幣消費沒走第一桃園、或可避免的 1.5% 國外交易費。
+- **超支訊號** — 單筆 ≥NT$10,000 立即核「是否本人、是否預期」;`第一桃園`(與星璨共用 50k)或
+  `富邦`(momo/J 共用 50k)是否逼近額度天花板(額度吃緊＝結構性煞車,要講出來)。
+- **循環信用** — 任何一筆動用循環 = 紅旗;底線是「永遠沒有」。
+- **外送 / 訂閱** — 外送餐飲計次(本期主動優化項＝外送砍半,對齊 [[lifestyle]] 降血脂);可疑的
+  「在繳錢但沒在用」訂閱。
+- **semi 公司支出(報帳關鍵)** — 商戶名含 `semi`、或屬 AWS 帳號 `316415871029`(semi)者:
+  (a) 該 spend-log 列在說明標 `semi`;(b) **同步彙整到 `semi-reimbursement-YYYY.md` 當月段落**
+  (日期/項目/金額/外幣/含手續費/單據)。AWS `024805779264`(lighting)與 `767397942164`(personal)
+  屬個人,**不**列入 semi。
+
+**開源不在每晚範圍**:這段只做「節流」(消費審核)。開源(增加收入、接案、職涯)是週尺度議題,放到
+週回顧或目標檢視時談;別每晚問空泛的「怎麼賺更多」。若當天真的冒出具體開源機會,記進 Journal
+即可,不在此處展開。
+
+This pass is tracked **separately from the 1–5 day rating** — the score reflects tasks/objectives
+(see the rubric); spending is its own axis and does not raise or lower the day score.
+
 ### 4. Assess
 
 With the day's truth in hand, compute:
@@ -139,6 +201,17 @@ Apply the day's truth to the vault. **Never delete completed work or the user's 
   `- [ ]` → `- [x]`, and refresh the `**目前進度**（YYYY-MM-DD）：…` line with today's date and a
   one-line status. Be conservative — a normal day of practice toward a milestone is not a
   milestone completion. When unsure, leave the objective file untouched and note it in the review.
+- **Spend log** — append today's parsed rows to `## 每日紀錄（你填）` in this month's
+  `spend-log-YYYY-MM.md`, and add **one dated bullet** under `## AI 每日分析` summarising the
+  daily check (`- 2026-06-16 — 〔卡別分工…〕〔外幣漏損…〕〔超支/額度…〕〔semi…〕`, only the lines
+  that fired; if clean, say so briefly). Don't overwrite prior days' analysis or the user's own
+  rows — append only. Leave `## 本月投入指標` and `## 月底覆核` for the month-end pass unless a
+  figure obviously needs nudging. If the month's spend-log doesn't exist yet, create it from
+  `Personal/_templates/spend-log.md`.
+- **semi reimbursement** — for any semi-tagged charge, add a row to the current-month段落 of
+  `Personal/Finance/semi-reimbursement-YYYY.md` (日期／項目／金額／外幣／含手續費／單據「待補」)
+  and refresh that month's 小計. This is the monthly hand-off to the accountant — don't let a
+  semi charge sit only in the spend-log.
 
 ### 6. Write the Daily note review
 
@@ -158,7 +231,10 @@ template* below. Regenerate in place on a re-run.
 Close with a short spoken summary: the day rating and the one-line reason, the most important
 thing that slipped (especially any ≥3-day pattern), the on-track verdict for the objectives
 that need attention, and the top one or two suggestions for tomorrow. Lead with what matters
-most. End on something genuine and motivating — a real win, or momentum to carry forward.
+most. **Surface any finance red flag that fired** (revolving credit used, an unexpected ≥NT$10k
+charge, a card-routing miss, a credit-limit squeeze, or a semi expense to flag) — but if the
+spending was clean or there was none, a single "消費乾淨" line is enough; don't pad the brief.
+End on something genuine and motivating — a real win, or momentum to carry forward.
 Don't recite the whole review; the notes hold the detail.
 
 ## Day rating rubric (1–5)
@@ -209,7 +285,8 @@ cheaper to fix than a 🔴 found in July.
 - **全日完成率**:XX%(任務清單＋重點,部分計 0.5)
 - **本期習慣**:做了 / 未做 — <habit name>
 - **目標推進**:<今天有實質前進的目標,或「無」>
-- **今日評分**:N/5 — <一句話定調>
+- **今日消費**:<N 筆 NT$X / 今日無消費 / 待補> — <一句:照分工表? 有無紅旗(外幣漏損・超支・循環・semi),或「乾淨」>
+- **今日評分**:N/5 — <一句話定調(消費不計入評分)>
 
 ### 目標在軌狀態
 - 🟢/🟡/🔴 〔O1 TOEFL〕<最近里程碑> — <一句:進度 vs 需求>
@@ -234,6 +311,13 @@ cheaper to fix than a 🔴 found in July.
 ### 目標在軌評估
 <逐一 O1 / O2 / O3:verdict + 為什麼 + 需要什麼。O1 對照本週讀書計畫格子>
 
+### 今日消費審核
+> 對齊 [[money-principles]];逐筆已登錄於 [[spend-log-YYYY-MM]]。開源(增加收入)屬週尺度,本段不談。
+- 紀錄:<N 筆 NT$X / 今日無消費 / 待補>
+- 用卡分工:<照表 / 刷錯:某筆該走 X 卻刷 Y>
+- 紅旗:<外幣漏損・超支(≥10k 或額度逼近)・動用循環・可疑訂閱…,逐項或「無」>
+- semi 報帳:<本日有無 semi 支出、已彙整到 [[semi-reimbursement-YYYY]],或「無」>
+
 ### 觀察到的模式
 > 來自最近 5–7 天每日筆記的回顧。
 <重複延後、連續落後、時間配置問題等;若無,寫「本週無明顯重複模式」>
@@ -253,3 +337,13 @@ cheaper to fix than a 🔴 found in July.
   *that* it happened. A bad day understood is worth more than a bad day scolded.
 - **Conflicting signals** — if a box is `[x]` but the user says it wasn't really done, trust the
   user's spoken word over the checkbox and correct the box.
+- **Spend-log rows are NOT idempotent** — the `## 每日回顧` sections regenerate in place, but
+  spend-log **rows append**. On a re-run, before adding any row check whether today's
+  transactions are already in `## 每日紀錄`; if so, don't duplicate them (and don't duplicate the
+  dated `## AI 每日分析` bullet or the semi row). When in doubt, show the user what's already
+  logged and confirm before appending.
+- **User declines the spending ask** — never block the day review on it. Log `消費未結算(待補)`
+  in carryover and finish the rest of the review normally; the finance pass is a habit, not a gate.
+- **Ambiguous / partial transaction text** — if pasted text is missing the card, amount, or
+  merchant, ask once; if still unclear, log what's certain and mark the gap (`卡別待確認`) rather
+  than guessing. Never fabricate an amount.
