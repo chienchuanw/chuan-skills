@@ -54,11 +54,35 @@ Start in character — a one-line "Good morning. Let me go through your inboxes.
 ### 2. Triage today's incoming mail, account by account
 
 For each account, search for mail that arrived since the last run (default: `newer_than:1d`, or `is:unread newer_than:7d`
-if the user implies they haven't checked in a while). For each account:
+if the user implies they haven't checked in a while).
+
+**Cover every inbox tab, not just Primary.** Gmail sorts incoming mail into category tabs — **Primary, Social,
+Promotions, Updates, Forums** — and triaging only what lands in Primary silently drops everything Gmail filed under the
+other tabs (receipts, shipping updates, account notices, social pings, newsletters). You must sweep all five. The Gmail
+API does not split by tab unless you ask it to, so query each category explicitly with the `category:` operator combined
+with the time window, per account:
+
+- `category:primary newer_than:1d`
+- `category:updates newer_than:1d`   ← receipts, invoices, shipping, account/security notices live here; never skip it
+- `category:social newer_than:1d`
+- `category:promotions newer_than:1d`
+- `category:forums newer_than:1d`
+
+(Swap in `is:unread newer_than:7d` per category if the user implies they haven't checked in a while.) Anything Gmail has
+not categorised still appears under `category:primary`, so the five queries together are exhaustive.
+
+**Match effort to the tab.** Primary and Updates carry the things that actually need the user — triage these
+message-by-message. Social, Promotions, and Forums are usually bulk: skim for the rare item that matters (a real reply in
+Forums, an order confirmation miscategorised into Promotions), then handle the rest in batch — one summary line and, if a
+suitable bulk label exists, one `gmail_modify_labels` pass. Do not read every promotional email individually; report
+them as a count plus any standouts.
+
+For each account:
 
 1. `gmail_list_labels` to learn that account's existing label taxonomy. Labels are **per-account** — don't assume work's
    labels exist on personal.
-2. For each new message, read enough (`gmail_get_message`, sender, subject, snippet) to classify it. Bucket into
+2. For each message worth classifying (all of Primary/Updates; the standouts you surfaced from Social/Promotions/Forums),
+   read enough (`gmail_get_message`, sender, subject, snippet) to classify it. Bucket into
    the kind of categories a secretary thinks in: **Action needed**, **Awaiting their reply**, **FYI / read later**,
    **Receipts & invoices**, **Newsletters**, **Notifications / automated**, **Personal**, **Spam-ish**. These are
    *thinking* buckets — the actual Gmail labels you apply should match each account's existing taxonomy.
@@ -92,12 +116,13 @@ leave the rest of the note alone). Plain Markdown, no emoji. Use this structure:
 ```markdown
 ## Inbox triage — HH:MM
 
-work — 12 new
+work — 12 new (Primary 5, Updates 4, Social 0, Promotions 3, Forums 0)
 - Action needed (2): [sender] — subject → label `work/action`
 - FYI (4): ...
-- Newsletters (6): bulk → label `work/newsletters` (suggest: archive)
+- Updates (4): 2 receipts → `work/invoices`, 1 shipping, 1 security notice
+- Promotions (3): bulk → label `work/newsletters` (suggest: archive); standout: ESET renewal notice
 
-personal — 3 new
+personal — 3 new (Primary 1, Updates 1, Social 1, Promotions 0, Forums 0)
 - ...
 
 New labels created this run: `work/clients/acme`, `personal/travel`
