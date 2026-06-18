@@ -45,6 +45,12 @@
       "strict": false
     },
     {
+      "name": "gma2",
+      "description": "grandMA2 lighting-console bundle (drives the gma2 MCP server over Telnet): connect (install/register the MCP and verify the console), presets (build Gobo/Color/Beam/Focus palettes from fixture XML with per-type DMX resolution), setlist (build a per-song macro/sequence/page/executor/view + artist-coloured master cuelist from a rundown, wired to the name-driven Song Change engine), and bpm (detect audio tempos via librosa and write them into song macros)",
+      "source": "./plugins/gma2",
+      "strict": false
+    },
+    {
       "name": "skill-creator",
       "description": "Create, test, evaluate, and iteratively improve Claude Code skills",
       "source": {

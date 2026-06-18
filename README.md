@@ -32,13 +32,14 @@ Local plugins are organized into **domain bundles** -- each plugin groups the sk
 | `skill-optimize` | local | `gotcha-capture`, `skill-benchmark` | Skill-authoring meta-tools: document pitfalls into a skill, and score/improve skill quality |
 | `daily` | local | `gmail-helper`, `daily-planner`, `daily-reviewer` | Personal daily workflow (Obsidian + Gmail): inbox triage, morning plan, evening retrospective |
 | `portfolio` | local | `portfolio-update`, `portfolio-review` | Personal investing tracker (Obsidian): ingest broker screenshots and review thesis drift |
+| `gma2` | local | `connect`, `presets`, `setlist`, `bpm` | grandMA2 lighting console (via the gma2 MCP server): connect/verify the desk, build Gobo/Color/Beam/Focus presets from fixture XML, build a per-song set-list system from a rundown, and detect audio BPM into song macros |
 | `skill-creator` | external | -- | Create, test, evaluate, and iteratively improve Claude Code skills |
 | `superpowers` | external | -- | Advanced skills for brainstorming, planning, debugging, TDD, code review, and parallel agents |
 | `graphify` | external | -- | Converts code, docs, PDFs, and images into queryable knowledge graphs |
 | `mempalace` | external | -- | Mine projects and conversations into a searchable memory palace with semantic search |
 | `planning-with-files` | external | -- | Manus-style file-based planning to organize and track progress on complex tasks |
 
-> `daily` and `portfolio` are personal-workflow bundles hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema -- not drop-in reusable yet. A few more external references (`understand-anything`, `impeccable`, `openspec`, `mattpocock-skills`, `find-skills`) are registered in `marketplace.json`.
+> `daily`, `portfolio`, and `gma2` are personal/hardware-specific bundles -- `daily` and `portfolio` are hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema; `gma2` drives a specific grandMA2 console through the companion `gma2-mcp` server -- not drop-in reusable yet. A few more external references (`understand-anything`, `impeccable`, `openspec`, `mattpocock-skills`, `find-skills`) are registered in `marketplace.json`.
 
 Local plugins keep their skill definitions under `plugins/<bundle>/skills/<skill>/`. External plugins reference an upstream repository in `marketplace.json`.
 
@@ -132,8 +133,14 @@ chuan-skills/
 │   │       └── skill-benchmark/# Score skill quality
 │   ├── daily/                  # Personal: gmail-helper, daily-planner, daily-reviewer
 │   │   └── skills/
-│   └── portfolio/              # Personal: portfolio-update, portfolio-review
+│   ├── portfolio/              # Personal: portfolio-update, portfolio-review
+│   │   └── skills/
+│   └── gma2/                   # Hardware: grandMA2 console via the gma2 MCP server
 │       └── skills/
+│           ├── connect/        # Register the MCP + verify the console
+│           ├── presets/        # Gobo/Color/Beam/Focus palettes from fixture XML
+│           ├── setlist/        # Per-song macro/seq/page/exec/view + master cuelist
+│           └── bpm/            # Audio BPM → song macros (librosa)
 ├── CLAUDE.md                   # Project conventions for Claude Code
 └── README.md
 ```
