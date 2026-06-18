@@ -22,3 +22,6 @@
 # Log
 insights/
 docs/superpowers/
+# Python bytecode (skill scripts)
+__pycache__/
+*.pyc
