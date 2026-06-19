@@ -86,9 +86,11 @@ confirming. Build via the MCP tools:
   fixtures (e.g. `Fixture 101 Thru 109 + Fixture 201 Thru 208`), each colour as
   `{id, name, r, g, b, w}`. It sets COLORRGB1/2/3/5, stores, labels, and sets the
   pool swatch.
-- **Gobo/Beam/Focus**: `build_preset_palette` with per-preset `by_target` —
-  one target per fixture type, each with the resolved `(attribute, at_percent)`
-  pairs. Targets accumulate (merge) into one Global preset.
+- **Gobo/Beam/Focus**: `build_preset_palette` with `preset_type` set to
+  `"gobo"` / `"beam"` / `"focus"` (the required first argument — picks the pool),
+  `scope="global"`, and per-preset `by_target` — one target per fixture type, each
+  with the resolved `(attribute, at_percent)` pairs. Targets accumulate (merge)
+  into one Global preset.
 
 Clear the programmer before and after (`ClearAll`) so the rig isn't left lit.
 
