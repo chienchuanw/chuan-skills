@@ -32,7 +32,7 @@ writes go through the gma2 MCP.
 ephemeral environment (nothing gets installed permanently):
 
 ```bash
-uv run --with librosa --with soundfile python \
+uv run --with librosa --with soundfile --with numpy python \
   plugins/gma2/skills/bpm/scripts/analyze_bpm.py "<audio folder>"
 ```
 

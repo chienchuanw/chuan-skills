@@ -3,7 +3,7 @@
 
 Run with uv so librosa is pulled into an ephemeral env (don't pollute anything):
 
-  uv run --with librosa --with soundfile python analyze_bpm.py FILE_OR_DIR ...
+  uv run --with librosa --with soundfile --with numpy python analyze_bpm.py FILE_OR_DIR ...
 
 Requires `ffmpeg` on PATH (used to decode any format — wav/mp3/… — to a uniform
 mono 22.05 kHz wav before analysis, which is robust across codecs).
