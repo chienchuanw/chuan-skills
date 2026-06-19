@@ -111,6 +111,22 @@ class WarningTests(unittest.TestCase):
         _, warnings = self._parse("number,name\n1,\n2,B\n")
         self.assertTrue(any("blank" in w.lower() for w in warnings))
 
+    def test_duplicate_numeric_number_warns_overwrite(self):
+        # Two rows on Cue 1: the second Store overwrites the first on the desk.
+        _, warnings = self._parse("number,name\n1,INTRO\n1,VERSE\n")
+        self.assertTrue(any("duplicate cue number" in w.lower() for w in warnings))
+        self.assertTrue(any("overwrite" in w.lower() for w in warnings))
+
+    def test_duplicate_nonnumeric_number_warns_overwrite(self):
+        # Non-numeric ids are skipped by the increasing-order check, so the
+        # overwrite must be caught by a dedicated duplicate-number warning.
+        _, warnings = self._parse("number,name\nA1,X\nA1,Y\n")
+        self.assertTrue(any("duplicate cue number" in w.lower() for w in warnings))
+
+    def test_unique_numbers_no_overwrite_warning(self):
+        _, warnings = self._parse("number,name\n1,A\n2,B\n3,C\n")
+        self.assertFalse(any("duplicate cue number" in w.lower() for w in warnings))
+
 
 class CommandTests(unittest.TestCase):
     def test_clearall_brackets_and_store_lines(self):

@@ -171,10 +171,27 @@ def _sanity(cues: list[Cue]) -> list[str]:
         pretty = ", ".join(f'"{n}"×{k}' for n, k in dups.items())
         warnings.append(f"duplicate cue name(s) — fine, numbers differ: {pretty}")
 
+    # Duplicate cue *numbers* are the dangerous case: each row becomes a
+    # `Store ... Cue <n>`, so a repeated number makes the later Store silently
+    # overwrite the earlier cue on the console. Check the raw id strings so this
+    # fires for non-numeric ids too (the ordering check below only sees floats).
+    num_seen: dict[str, int] = {}
+    for c in cues:
+        num_seen[c.number] = num_seen.get(c.number, 0) + 1
+    dup_nums = {n: k for n, k in num_seen.items() if k > 1}
+    if dup_nums:
+        pretty = ", ".join(f"{n}×{k}" for n, k in dup_nums.items())
+        warnings.append(
+            "duplicate cue number(s) — the later Store overwrites the earlier "
+            f"on the console: {pretty}"
+        )
+
     nums = [_to_float(c.number) for c in cues]
     if all(n is not None for n in nums):
-        out_of_order = any(b <= a for a, b in zip(nums, nums[1:]))
-        if out_of_order:
+        # Equality is already covered by the duplicate-number warning above, so
+        # only flag an actual descent here to avoid double-warning on dupes.
+        descends = any(b < a for a, b in zip(nums, nums[1:]))
+        if descends:
             warnings.append("cue numbers are not strictly increasing — check ordering")
 
     return warnings
