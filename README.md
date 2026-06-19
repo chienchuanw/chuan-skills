@@ -32,7 +32,7 @@ Local plugins are organized into **domain bundles** -- each plugin groups the sk
 | `skill-optimize` | local | `gotcha-capture`, `skill-benchmark` | Skill-authoring meta-tools: document pitfalls into a skill, and score/improve skill quality |
 | `daily` | local | `gmail-helper`, `daily-planner`, `daily-reviewer` | Personal daily workflow (Obsidian + Gmail): inbox triage, morning plan, evening retrospective |
 | `portfolio` | local | `portfolio-update`, `portfolio-review` | Personal investing tracker (Obsidian): ingest broker screenshots and review thesis drift |
-| `gma2` | local | `connect`, `presets`, `setlist`, `bpm` | grandMA2 lighting console (via the gma2 MCP server): connect/verify the desk, build Gobo/Color/Beam/Focus presets from fixture XML, build a per-song set-list system from a rundown, and detect audio BPM into song macros |
+| `gma2` | local | `connect`, `presets`, `setlist`, `cuelist`, `bpm` | grandMA2 lighting console (via the gma2 MCP server): connect/verify the desk, build Gobo/Color/Beam/Focus presets from fixture XML, build a per-song set-list system from a rundown, import a song's cue-list CSV into its sequence, and detect audio BPM into song macros |
 | `skill-creator` | external | -- | Create, test, evaluate, and iteratively improve Claude Code skills |
 | `superpowers` | external | -- | Advanced skills for brainstorming, planning, debugging, TDD, code review, and parallel agents |
 | `graphify` | external | -- | Converts code, docs, PDFs, and images into queryable knowledge graphs |
@@ -140,6 +140,7 @@ chuan-skills/
 │           ├── connect/        # Register the MCP + verify the console
 │           ├── presets/        # Gobo/Color/Beam/Focus palettes from fixture XML
 │           ├── setlist/        # Per-song macro/seq/page/exec/view + master cuelist
+│           ├── cuelist/        # Per-song cue-list CSV → cues in the song sequence
 │           └── bpm/            # Audio BPM → song macros (librosa)
 ├── CLAUDE.md                   # Project conventions for Claude Code
 └── README.md
