@@ -51,6 +51,12 @@
       "strict": false
     },
     {
+      "name": "knowledge",
+      "description": "Personal knowledge & learning bundle over an Obsidian vault: read-article (digest pasted article URLs via a per-article sub-agent — summarize, fact-check core claims, conclude, map to the user's Objectives/projects, then file an enriched reference note and report a TL;DR)",
+      "source": "./plugins/knowledge",
+      "strict": false
+    },
+    {
       "name": "skill-creator",
       "description": "Create, test, evaluate, and iteratively improve Claude Code skills",
       "source": {
