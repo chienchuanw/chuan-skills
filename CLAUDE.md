@@ -41,7 +41,7 @@ Local plugins are organized into **domain bundles** — each plugin groups the s
 
 | Plugin         | Source   | Skills | Description                                                                 |
 |----------------|----------|--------|-----------------------------------------------------------------------------|
-| dev            | local    | feature, health-audit | Development lifecycle: feature (issue → branch → design → strict TDD → PR → review-fix → archive orchestrator) and health-audit (five-dimension codebase health audit → ranked report, filed issues, approved auto-fix PRs) |
+| dev            | local    | feature, health-audit, apply-coding-rules | Development lifecycle: feature (issue → branch → design → strict TDD → PR → review-fix → archive orchestrator), health-audit (five-dimension codebase health audit → ranked report, filed issues, approved auto-fix PRs), and apply-coding-rules (stamp a managed coding-discipline rules block into a project's CLAUDE.md) |
 | git            | local    | commit-msg, branch-report, pre-push-test, gh-issue, gh-dev, gh-pr, gh-comment, gh-fix, gh-archive | Git & GitHub workflow: commit messages, branch-comparison reports, a test-before-push hook, plus the gh suite for issues, branches, PRs, comments, review-feedback, and session archival |
 | docs           | local    | readme, seo-meta | Documentation & content: write/improve a README, and generate SEO frontmatter for markdown articles |
 | skill-optimize | local    | gotcha-capture, skill-benchmark | Skill-authoring meta-tools: document pitfalls into a skill, and score/improve skill quality |
