@@ -67,6 +67,15 @@ Invoke the `superpowers:test-driven-development` skill and follow it verbatim. R
 
 If the user asked for "skip checkpoints", you may batch commits. Otherwise commit per coherent unit of work.
 
+### Completion gate — separate doing from judging
+
+Before declaring the implementation done and moving to Step 5, do **not** let the implementing context self-certify "done" — an agent easily mistakes effort for completion. Gate the handoff on independent, verifiable evidence:
+
+- Restate the issue's acceptance criteria as checks that **show up in command output** — e.g. `npm test` exits 0, `tsc --noEmit` clean, `git status` clean, the new behavior demonstrably runs. A criterion is met only when that evidence is in front of you, never because the work "looks complete."
+- For criteria that need judgment rather than a command (e.g. "matches the issue's intent"), dispatch a **fresh, cheap evaluator subagent** (Haiku-class) that returns a binary pass/fail + one-line reason against the criteria, and is told to default to **fail** when evidence is missing. A fail returns to the Red-Green loop, not a debate.
+
+This is the same separation Claude Code's `/goal` enforces (an independent model judges completion); here it gates implementation → PR.
+
 ## Step 5 — Open the pull request
 
 When implementation is complete and the suite is green:
