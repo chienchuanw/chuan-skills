@@ -79,6 +79,8 @@ Render [`templates/reference-note.md`](templates/reference-note.md) with the dig
 
 Never overwrite an unrelated existing note; if a note with the same slug exists, pick a more specific slug.
 
+**Add it to the Reference MOC.** After filing, add the new note to `Personal/Reference/_reference-moc.md` (a Map of Content / 內容地圖) under its best-fit `## ` theme — a one-line `- [[<slug>]] — <短描述>` bullet. A note may sit under **more than one** theme when genuinely cross-cutting (LYT-style; see `[[lyt-framework-obsidian-pkm]]`). If no existing theme fits, add a sensible new `## ` heading. Low-value notes still get a one-line entry. This keeps the flat `Reference/` folder navigable as it grows — without it the MOC rots.
+
 ### 5. Log to the Daily note
 
 Append one line to today's `Personal/Daily/YYYY-MM-DD.md` under a `## 閱讀學習` heading (create the heading if absent):
