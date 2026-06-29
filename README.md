@@ -32,6 +32,7 @@ Local plugins are organized into **domain bundles** -- each plugin groups the sk
 | `skill-optimize` | local | `gotcha-capture`, `skill-benchmark` | Skill-authoring meta-tools: document pitfalls into a skill, and score/improve skill quality |
 | `daily` | local | `gmail-helper`, `daily-planner`, `daily-reviewer` | Personal daily workflow (Obsidian + Gmail): inbox triage, morning plan, evening retrospective |
 | `portfolio` | local | `portfolio-update`, `portfolio-review` | Personal investing tracker (Obsidian): ingest broker screenshots and review thesis drift |
+| `knowledge` | local | `read-article`, `watch-video` | Personal knowledge intake (Obsidian): digest a pasted article or video URL -- summarize, fact-check, conclude, map to Objectives/projects -- and file an enriched reference note; `watch-video` pulls the transcript via yt-dlp first |
 | `gma2` | local | `connect`, `presets`, `setlist`, `cuelist`, `bpm` | grandMA2 lighting console (via the gma2 MCP server): connect/verify the desk, build Gobo/Color/Beam/Focus presets from fixture XML, build a per-song set-list system from a rundown, import a song's cue-list CSV into its sequence, and detect audio BPM into song macros |
 | `skill-creator` | external | -- | Create, test, evaluate, and iteratively improve Claude Code skills |
 | `superpowers` | external | -- | Advanced skills for brainstorming, planning, debugging, TDD, code review, and parallel agents |

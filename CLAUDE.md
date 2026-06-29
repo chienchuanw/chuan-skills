@@ -47,7 +47,7 @@ Local plugins are organized into **domain bundles** — each plugin groups the s
 | skill-optimize | local    | gotcha-capture, skill-benchmark | Skill-authoring meta-tools: document pitfalls into a skill, and score/improve skill quality |
 | daily          | local    | gmail-helper, daily-planner, daily-reviewer | Personal: inbox triage, morning plan, evening retrospective |
 | portfolio      | local    | portfolio-update, portfolio-review | Personal: ingest broker screenshots / log trades, and read-only thesis review |
-| knowledge      | local    | read-article | Personal: digest pasted article URLs (summarize, fact-check, conclude, map to Objectives/projects) and file an enriched reference note |
+| knowledge      | local    | read-article, watch-video | Personal: digest pasted article URLs or video URLs (summarize, fact-check, conclude, map to Objectives/projects) and file an enriched reference note; watch-video pulls the transcript via yt-dlp first |
 | skill-creator  | external | — | Create, test, evaluate, and iteratively improve Claude Code skills |
 | superpowers    | external | — | Advanced skills for brainstorming, planning, debugging, TDD, code review, parallel agents |
 | graphify       | external | — | Converts code, docs, PDFs, and images into queryable knowledge graphs |
