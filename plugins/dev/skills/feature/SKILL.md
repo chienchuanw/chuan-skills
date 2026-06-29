@@ -50,6 +50,8 @@ Read the issue body and any linked context. Explore the relevant parts of the co
 
 Present the proposal and **stop**. Wait for the user to approve, request changes, or skip.
 
+**Optional HTML decision page (for comparison-heavy designs only).** A design proposal is usually fine as text in chat. But when the decision genuinely hinges on **comparing two or more viable approaches** — different architectures, libraries, or data models with real trade-offs — plain prose forces the user to reconstruct the comparison in their head, and that reconstruction *is* the review cost. In that case, offer to render a single self-contained `.html` file (no build, no framework, inline CSS) that puts the approaches **side by side**: one column per approach, each with its summary, the files it would touch, its trade-offs, and its risks; highlight the row where they differ most. Write it to `docs/superpowers/decisions/<date>-<feature>.html` (or the repo's docs dir) and open it with `open` (macOS) / `xdg-open`. The user scans it, then tells you their pick in chat. This is a *review interface*, not a deliverable — keep it to one static file, and skip it entirely for single-approach designs (decision-ladder: don't build an interface the decision doesn't need).
+
 **Bypass:** if the user says "skip checkpoints", "auto", "go ahead", or similar at the start of the session, note the bypass and proceed without pausing — but still write the proposal so it lands in conversation history.
 
 ## Step 4 — Strict TDD implementation
@@ -75,6 +77,15 @@ Before declaring the implementation done and moving to Step 5, do **not** let th
 - For criteria that need judgment rather than a command (e.g. "matches the issue's intent"), dispatch a **fresh, cheap evaluator subagent** (Haiku-class) that returns a binary pass/fail + one-line reason against the criteria, and is told to default to **fail** when evidence is missing. A fail returns to the Red-Green loop, not a debate.
 
 This is the same separation Claude Code's `/goal` enforces (an independent model judges completion); here it gates implementation → PR.
+
+**Understanding record — make the proof travel with the work.** When AI does the implementing, the scarce thing is no longer the output but evidence that someone *understands* it. Before the handoff, write a tight four-answer record and carry it into the PR description (a `## Understanding` section), not just the chat:
+
+1. **What is it?** — what this change actually does, in one or two sentences.
+2. **Why this approach?** — the key design decision and the alternative you rejected, with the reason.
+3. **When does it break?** — the failure modes, edge cases, or load conditions where it would fall over; what is explicitly *not* handled.
+4. **What was learned?** — the non-obvious thing this implementation surfaced (a gotcha, a constraint, a wrong first assumption).
+
+Keep it terse and concrete — a reviewer should be able to interrogate the change from these four answers alone. If you can't answer #2 or #3 without hand-waving, that is a signal the work isn't actually understood yet: stop and close the gap before opening the PR.
 
 ## Step 5 — Open the pull request
 
