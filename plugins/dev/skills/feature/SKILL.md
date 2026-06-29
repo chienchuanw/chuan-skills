@@ -92,7 +92,7 @@ Keep it terse and concrete — a reviewer should be able to interrogate the chan
 When implementation is complete and the suite is green:
 
 1. **Local pre-flight (this skill, not gh-pr):** detect and run the project's typecheck / lint / build commands — read `package.json` scripts, `Makefile`, `pyproject.toml`, `Cargo.toml`, etc. to pick the right ones. Do *not* assume `npm run build`. If any fail, return to Step 4 to fix before pushing. Tell `gh-pr` you have already done the pre-flight so it does not duplicate the work (pass that context when invoking it).
-2. Invoke the `gh-pr` skill, which will push the branch and open a PR using the appropriate template.
+2. Invoke the `gh-pr` skill, which will push the branch and open a PR using the appropriate template. **Pass it the Understanding record from the completion gate** so it appends a `## Understanding` section to the PR body (the same way you tell it the pre-flight is already done) — its base template has no such slot, and the four answers can also feed the template's Motivation / Implementation / Test Plan sections rather than being duplicated.
 
 Capture the PR number as `PR_NUMBER`.
 
