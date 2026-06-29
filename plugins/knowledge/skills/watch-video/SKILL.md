@@ -30,8 +30,14 @@ searches stay out of the main conversation. You (the main agent) orchestrate, fi
 ## Environment
 
 - **Working directory is the Obsidian vault root** (`/Users/chuan/Documents/Mind`). Use vault-relative paths.
-- **Dependency**: `yt-dlp` (captions only — no video downloaded). Check `which yt-dlp`; if missing, install once
-  with `brew install yt-dlp`, then continue. yt-dlp is also how you read the transcript — there is no API key.
+- **Dependencies**:
+  - `yt-dlp` — fetch captions / download audio (no API key). `which yt-dlp`; if missing, `brew install yt-dlp`.
+  - **Whisper fallback** (for videos with NO captions): `whisper-cpp` (`brew install whisper-cpp` → gives the
+    `whisper-cli` binary), `ffmpeg` (`brew install ffmpeg`), and a GGML model at
+    `~/.cache/whisper.cpp/ggml-small.bin` (download once, ~465 MB:
+    `curl -L -o ~/.cache/whisper.cpp/ggml-small.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin`).
+    Transcription is **local and private** — nothing leaves the machine — and fast on Apple Silicon
+    (~30 s for a 6-min video with the `small` model + Metal).
 - **Output notes**: `Personal/Reference/<kebab-case-english-slug>.md` — flat folder, kebab-case English filename,
   Chinese content. Same folder/format family as `read-article` output.
 - **Note template**: [`templates/watch-note.md`](templates/watch-note.md) — the reference format plus a
@@ -63,10 +69,14 @@ frontmatter `tags:` from a few `Personal/Reference/*.md`) and pass it in.
 Sub-agent task spec:
 
 > Digest the YouTube video at `<URL>`. Steps:
-> 1. **Get the transcript.** Run yt-dlp to fetch captions only (no video):
->    `yt-dlp --skip-download --write-auto-subs --write-subs --sub-langs "en.*,zh-Hant,zh-Hans,zh.*" --sub-format vtt -o "/tmp/wv-%(id)s.%(ext)s" "<URL>"`
->    Read the resulting `.vtt`. If **no captions exist** (file absent / empty / yt-dlp error), return
->    `{ "error": "no transcript available" }` — do NOT fabricate a summary from the title/description.
+> 1. **Get the transcript** — try captions first, transcribe locally if there are none.
+>    a. **Captions:** `yt-dlp --skip-download --write-auto-subs --write-subs --sub-langs "en.*,zh-Hant,zh-Hans,zh.*" --sub-format vtt -o "/tmp/wv-%(id)s.%(ext)s" "<URL>"`. If a `.vtt` is produced, read it — done.
+>    b. **No captions → Whisper fallback** (download audio, transcribe locally; ensure the model exists first — see Environment, download once if missing):
+>       `yt-dlp -f bestaudio -o "/tmp/wv-a-%(id)s.%(ext)s" "<URL>"`  →
+>       `ffmpeg -y -i /tmp/wv-a-<id>.* -ar 16000 -ac 1 -c:a pcm_s16le /tmp/wv-<id>.wav`  →
+>       `whisper-cli -m ~/.cache/whisper.cpp/ggml-small.bin -f /tmp/wv-<id>.wav -l auto -ovtt -otxt -of /tmp/wv-<id>`.
+>       Read the resulting `.vtt` (has timestamps for step 4) / `.txt`. The transcript is machine-made — tolerate homophone errors, judge meaning not spelling.
+>    c. Only if BOTH the caption fetch AND the audio download fail (private / age-gated / region-blocked) return `{ "error": "no transcript available" }` — never fabricate a summary from the title/thumbnail/description.
 >    Also capture: title, channel, duration, upload date.
 > 2. **Summarize**: title, channel, upload date, duration, a 1–2 sentence description, and 2–4 thematic sections
 >    with the key points (strip the WEBVTT timestamps for the prose, but keep them for step 4).
@@ -136,8 +146,9 @@ time. Then: 3-point summary, key timestamps if `skim`, fact-check verdict (loudl
   Length informs only the time-saved estimate, never whether the skill runs or what the verdict is.
 - **One video on demand, never a backlog grind.** Bulk-digesting a watch-later list feeds the very compulsion the
   user is trying to escape; bulk-deleting it is healthier. See Workflow step 0.
-- **No transcript, no digest.** If the video has no captions, say so and stop — never hallucinate a summary from
-  the title, thumbnail, or description.
+- **No captions → transcribe locally; never hallucinate.** If a video has no captions, fall back to local Whisper
+  transcription (see Environment + Workflow step 1). Only stop with "no transcript available" when even the audio
+  can't be fetched (private / age-gated / region-blocked). Never fabricate a summary from the title/thumbnail.
 - **Check currency, not just truth.** Videos go stale; flag superseded/outdated claims as loudly as false ones,
   and record both the original and the corrected fact in 求證結果.
 - **Watching is not endorsement.** When a claim fails fact-checking, say so plainly in both the note and report.
