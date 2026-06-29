@@ -133,8 +133,14 @@ Append one line under a `## 閱讀學習` heading in today's `Personal/Daily/YYY
 ### 6. Report a TL;DR (chat)
 
 Lead with the **verdict** (watch / skim / summary-only / skip) so the user instantly knows whether to spend the
-time. Then: 3-point summary, key timestamps if `skim`, fact-check verdict (loudly any false/outdated claim),
-1–2 application hooks (with the objective/project), and where it was filed. Keep it tight.
+time. Then **always** give a substantive content summary (the 2–4 thematic sections / key points — the same
+substance as the note's 摘要/主題重點), key timestamps if `skim`, fact-check verdict (loudly any false/outdated
+claim), 1–2 application hooks (with the objective/project), and where it was filed.
+
+**A `skip` verdict still gets the full summary.** "Skip" means "you don't need to spend time watching it," NOT
+"you don't get to know what was in it." Never collapse a low-value report to verdict + a single one-line hook —
+the user explicitly wants the content even for videos that aren't worth watching. Keep it tight, but the
+substance is non-negotiable across every verdict tier.
 
 ## Rules
 
