@@ -74,8 +74,11 @@ Sub-agent task spec:
 >    `skip` (no need to watch — the summary is enough or it's low value) /
 >    `summary-only` (worth knowing, not worth watching — read the note) /
 >    `skim` (worth jumping to specific moments — give the timestamps) /
->    `watch` (genuinely worth the full runtime), each with one line of honest reasoning. Bias toward the lower
->    options; a 40-minute video that delivers in 4 is a `skim`, not a `watch`.
+>    `watch` (genuinely necessary — worth actually watching), each with one line of honest reasoning. Bias toward
+>    the lower options. The question is **"does the user actually need to watch this?"**, NOT how long it is —
+>    length is irrelevant to the verdict. A 3-minute clip the user doesn't need is still `skip`; a long video
+>    that is genuinely necessary is `watch`. Runtime only affects how much time the verdict *saves*, never whether
+>    a video is "too short to bother triaging" — short videos get the same honest verdict.
 > 4. **Key timestamps**: the 2–4 most valuable moments as `mm:ss — what's there`, so the user can jump.
 > 5. **Assess learning value**: `high | low` with one line.
 > 6. **Fact-check core claims for truth AND currency** (only if learning_value is high): pick 2–4 load-bearing
@@ -126,7 +129,11 @@ time. Then: 3-point summary, key timestamps if `skim`, fact-check verdict (loudl
 ## Rules
 
 - **The verdict is the product, and its default leans "skip".** You exist to save the user time, not to justify
-  watching. Be honest: most queued videos are `skip` or `summary-only`. A high runtime is a cost, not a virtue.
+  watching. Be honest: most queued videos are `skip` or `summary-only`.
+- **Judge by necessity, not length.** Apply the same triage to a 3-minute clip as to a 3-hour talk — the criterion
+  is whether watching it is genuinely worth the user's time, full stop. Never wave a video through as "too short
+  to bother" or decline to triage it for being brief; 5 minutes saved, many times over, is exactly the point.
+  Length informs only the time-saved estimate, never whether the skill runs or what the verdict is.
 - **One video on demand, never a backlog grind.** Bulk-digesting a watch-later list feeds the very compulsion the
   user is trying to escape; bulk-deleting it is healthier. See Workflow step 0.
 - **No transcript, no digest.** If the video has no captions, say so and stop — never hallucinate a summary from
