@@ -8,7 +8,9 @@ description: >
   do a security check on, find dead code in, check doc drift in, or get a backlog of
   improvement issues for a repository — e.g. "/health-audit", "audit this repo",
   "do a full health check", "scan for issues to file", "check what's rotting in here".
-  Not for ad-hoc bug hunts on a single file — use feature-dev:code-reviewer for that.
+  Scoped to a whole repository: not for ad-hoc bug hunts on a single file (use
+  feature-dev:code-reviewer), and not for scoring an individual skill's quality (use
+  skill-benchmark).
 ---
 
 # health-audit
@@ -141,6 +143,12 @@ GeoLite2 for IP-to-country lookups", "auth middleware lives in lib/auth/">
 
 The report is the **single source of truth** for the rest of the workflow.
 
+### Optional HTML report view (for findings-heavy audits only)
+
+The markdown report is usually enough. But when the audit returns **many findings across multiple dimensions** — roughly **more than 8 findings, or 3+ dimensions with high/medium hits** — a flat markdown table forces the user to scroll and re-sort in their head to see where the risk clusters, and that reconstruction *is* the review cost (output is cheap; human curation is the bottleneck). In that case, offer to **also** render a single self-contained `audits/<YYYY-MM-DD>-health-audit.html` (no build, no framework, inline CSS, a little vanilla JS) that makes the ranked findings **scannable**: the findings table with severity color-coding, sortable columns (Score, Severity, Dimension), and dimension filter chips so the user can isolate one dimension at a time. Open it with `open` (macOS) / `xdg-open`.
+
+This is a *review interface*, not a deliverable — keep it to one static file, mirror the markdown report's data exactly (do not introduce findings the report lacks), and **skip it entirely for small audits** (a handful of findings reads fine as text — decision-ladder: don't build an interface the decision doesn't need). The markdown report remains the single source of truth; the HTML is a generated view of it.
+
 ## Phase 3 — File issues **[CHECKPOINT]**
 
 Show the user the ranked table and ask: which findings should become GitHub issues? Default suggestion: everything with Severity ≥ medium. The user may:
@@ -191,6 +199,7 @@ If Phase 1's doc-drift dimension surfaced **new architectural facts** (newly-int
 - **Never** spawn more than one set of parallel scan agents — if a scan needs to be re-run, run sequentially to avoid race conditions on shared report files.
 - **Never** assume `graphify` exists. Detect, fall back, and note degraded mode.
 - The audit is a snapshot. Date the report, do not overwrite previous audits.
+- The optional HTML report is a **generated view** of the markdown report — never let the two diverge, and skip it for small audits (decision-ladder).
 
 ## Failure recovery
 

@@ -3,7 +3,8 @@ name: branch-report
 description: >
   Generates a branch-vs-default comparison report with plain-language explanations and senior dev
   review. Use when the user asks to summarize, compare, review, or explain branch changes, or
-  wants a PR summary before merging.
+  wants a PR summary before merging. Read-only: it produces a report to read — it does not push the
+  branch or open/update the PR (for that use gh-pr).
 ---
 
 # branch-report

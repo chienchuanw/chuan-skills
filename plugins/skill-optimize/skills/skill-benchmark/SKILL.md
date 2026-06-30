@@ -6,7 +6,8 @@ description: >
   evaluate, score, audit, assess, or rate a skill's quality, or wants to know if a skill is worth
   keeping vs. deprecating. Also trigger when the user asks "how good is this skill", "is this skill
   useful", "should I keep this skill", "review skill quality", or wants a thorough multi-dimensional
-  analysis of a skill before deciding whether to improve or remove it. Takes a skill name as argument
+  analysis of a skill before deciding whether to improve or remove it. Scoped to one skill: for a
+  whole-repository health/security audit use health-audit, not this. Takes a skill name as argument
   (e.g., /skill-benchmark readme). Produces a scored report with actionable improvement suggestions.
   Do NOT use for creating new skills, editing skill code, or capturing gotchas — those are different
   workflows.

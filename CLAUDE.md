@@ -61,6 +61,18 @@ Every plugin bundles its skills under `plugins/<plugin>/skills/<skill>/`. Extern
 
 > Note: the `daily` and `portfolio` plugins are personal-workflow skill bundles hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema. They are not drop-in reusable yet — genericize (placeholder account names, configurable paths) before sharing.
 
+## Skills map vs Anthropic's official Agent Skills
+
+Anthropic open-sourced 17 official Agent Skills ([`anthropics/skills`](https://github.com/anthropics/skills)), which now overlap parts of this marketplace. Treat the official set as a competitive map: keep our moat, borrow their patterns where useful, and **don't duplicate the commodity tier**. New skills should avoid the commodity column below.
+
+| Tier | Skills here | Stance |
+|------|-------------|--------|
+| **Moat** — no official counterpart, keep investing | `read-article`, `watch-video`, `daily-*` (gmail-helper, daily-planner, daily-reviewer), `portfolio-*` (update, review, advisor), `gma2` (bpm, connect, cuelist, presets, setlist) | These solve personal-workflow / domain problems Anthropic doesn't touch. Keep building here. |
+| **Improvable** — borrow official patterns | `dev/health-audit` (← official `webapp-testing`), `dev/*` (align with `claude-api` & `mcp-builder` conventions), `skill-optimize` (← official `skill-creator` scaffolding) | Adopt the official patterns to raise quality without rebuilding from scratch. Tracked as follow-ups: #40 (webapp-testing → health-audit), #41 (skill-creator scaffolding → skill-optimize). |
+| **Commodity** — do NOT duplicate | Document generation (pdf / docx / pptx / xlsx) | Anthropic covers this well. Do not build skills that re-implement document generation; depend on the official skills instead. |
+
+Keep `SKILL.md` `description:` fields **specific and non-overlapping** so triggering stays collision-free as the catalog grows (progressive disclosure). When two skills share trigger words (e.g. "audit", "review", "PR"), add a one-line disambiguation pointer to the other skill rather than letting descriptions drift toward near-duplicates.
+
 ## Installing from this marketplace
 
 ```bash

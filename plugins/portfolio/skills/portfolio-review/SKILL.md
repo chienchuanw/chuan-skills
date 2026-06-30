@@ -92,6 +92,12 @@ thesis is healthier than a winner that's been on autopilot. Say so when you see 
    - <2-3 concrete things to do in the next portfolio-update session>
    ```
 
+## Optional HTML side-by-side view (for multi-position drift comparisons only)
+
+The markdown review is usually enough. But when you've flagged **several positions at once** (roughly **4+ flagged across drift / anchoring / stale**) and the user needs to weigh them against each other — which thesis rotted worst, which big position is on autopilot — a vertical list of paragraphs forces them to hold all of it in their head at once, and that reconstruction *is* the review cost. In that case, offer to **also** render a single self-contained `.html` file (no build, no framework, inline CSS) that puts the flagged positions **side by side**: one card/column per ticker showing position size, opening thesis vs latest thesis, days stale, and the failure mode flagged — sorted by position size so the material ones lead. Write it next to where the user keeps reviews (e.g. `Personal/Journal/`) and open it with `open` (macOS) / `xdg-open`.
+
+This is a *review interface*, not a deliverable — keep it to one static file, mirror the markdown review exactly (no new findings), and **skip it entirely when only one or two positions are flagged** (a short list reads fine as text — decision-ladder: don't build an interface the decision doesn't need). The skill stays read-only: the HTML is a generated view, never a write to a portfolio file.
+
 ## Hard rules
 
 - **Never edit any portfolio file.** This skill is read-only. If the user wants to act on a
