@@ -78,7 +78,9 @@ Sub-agent task spec:
 >       Read the resulting `.vtt` (has timestamps for step 4) / `.txt`. The transcript is machine-made — tolerate homophone errors, judge meaning not spelling.
 >    c. Only if BOTH the caption fetch AND the audio download fail (private / age-gated / region-blocked) return `{ "error": "no transcript available" }` — never fabricate a summary from the title/thumbnail/description.
 >    Also capture: title, channel, duration, upload date.
-> 2. **Summarize**: title, channel, upload date, duration, a 1–2 sentence description, and 2–4 thematic sections
+> 2. **Summarize**: title, channel, upload date, duration, a one-line scannable `description` (≤ ~40
+>    Traditional-Chinese chars, a single clause — the retrieval hook: topic + the single most important
+>    point/caveat, NOT a summary; detail belongs in the body), and 2–4 thematic sections
 >    with the key points (strip the WEBVTT timestamps for the prose, but keep them for step 4).
 > 3. **Triage verdict** (the headline): one of
 >    `skip` (no need to watch — the summary is enough or it's low value) /

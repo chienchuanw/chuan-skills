@@ -5,7 +5,7 @@ author:
   - "[[作者姓名]]"
 published: YYYY-MM-DD
 created: {{date:YYYY-MM-DD}}
-description: "一兩句話摘要本文重點，作為日後檢索的快速線索。"
+description: "一行可掃描的檢索鉤子（≤~40 字、單句）：主題＋最重要的一個點或警語；細節留給摘要與正文。"
 tags:
   - clippings
   - <topic-tag>
