@@ -121,6 +121,8 @@ Render [`templates/watch-note.md`](templates/watch-note.md) to `Personal/Referen
 OR fact-checking found a core claim that is false / seriously disputed / outdated (surface it before filing).
 Never overwrite an unrelated note; if the slug exists, pick a more specific one.
 
+**Add it to the Reference MOC.** After filing, add the new note to `Personal/Reference/_reference-moc.md` (a Map of Content / 內容地圖) under its best-fit `## ` theme — a one-line `- [[<slug>]] — <短描述>` bullet (lead the hook with the watch/skip verdict). A note may sit under more than one theme when genuinely cross-cutting. If no existing theme fits, add a sensible new `## ` heading. `skip`/`summary-only` notes still get a one-line entry. This keeps the flat `Reference/` folder navigable as it grows — without it the MOC rots.
+
 ### 5. Log to the Daily note
 
 Append one line under a `## 閱讀學習` heading in today's `Personal/Daily/YYYY-MM-DD.md` (create heading if absent):
@@ -160,4 +162,5 @@ substance is non-negotiable across every verdict tier.
 - **Watching is not endorsement.** When a claim fails fact-checking, say so plainly in both the note and report.
 - The sub-agent reads and reasons; it never writes vault files. The main agent does all filing.
 - Plain, terse vault writing — no emoji, plain Markdown — matching existing `Personal/Reference/` notes.
+- **Output discipline (progressive disclosure).** The note's `description:` frontmatter must be **ONE scannable line** — a single sentence hook (lead with the watch/skip verdict), not a paragraph; detail belongs in the body. The `_reference-moc.md` entry stays a one-line `- [[<slug>]] — <短描述>` bullet (step 4). Least-first: the description and MOC line are the cheap-to-scan index; the full note is the detail behind them. Enforcing this at creation time keeps `Personal/Reference/` navigable as it grows and reduces the manual vault hygiene tracked in `chienchuanw/Mind#3`.
 - You file; you do not delete or rewrite the user's existing notes.
