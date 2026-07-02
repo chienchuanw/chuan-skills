@@ -53,6 +53,10 @@ The working directory is the vault root. Key paths:
 - **Recent history** — the last ~5–7 `Personal/Daily/*.md` notes before today, for spotting
   multi-day slippage patterns.
 - **Standing context** — `Personal/lifestyle.md` (current habit cycle).
+- **Failure resume** — `Personal/failure-resume.md`, a running log (Tina Seelig's "failure resume").
+  Each evening you capture the day's genuine setback/lesson as one row — reframing failure as
+  *data*, not identity, to counter the user's "worth = output" tendency. You append rows; you
+  never rewrite or delete the user's own rows.
 - **Finance** — `Personal/Finance/spend-log-YYYY-MM.md` (this month's spend log; you append rows
   to `## 每日紀錄（你填）` and maintain `## AI 每日分析` + `## 本月投入指標`),
   `Personal/Finance/semi-reimbursement-YYYY.md` (semi.tw expenses pending reimbursement),
@@ -168,6 +172,30 @@ Then run the **daily spend check** against `money-principles.md` §2–§3 and s
 This pass is tracked **separately from the 1–5 day rating** — the score reflects tasks/objectives
 (see the rubric); spending is its own axis and does not raise or lower the day score.
 
+### 3c. Daily reflection pass (always ask once)
+
+Fold one more short reflection into the same interview round — this is what keeps the failure
+resume and the zemblanity habit alive daily instead of decaying into a file no one touches. Ask
+both parts together, plainly:
+
+> 「今天有沒有一個**挫折或失誤**值得記下來?(學到什麼、之後會怎麼改)——以及有沒有一個你一直
+> **在忽略的警訊**(健康/財務/申請/身體上,明顯但不想面對的那種)?兩個都沒有就說『今天沒有』。」
+
+Handle the reply (both parts are optional — never manufacture one):
+
+- **挫折/失誤** — if there's a genuine one, you'll add a row to `Personal/failure-resume.md` in
+  step 5. Frame it as data: capture 挫折 → 學到什麼 → 之後改什麼行為. **Enforce the file's one
+  rule: no self-judgment adjectives** ("我很爛/很懶/不夠好"); if the user phrases it that way,
+  reflect it back as a behaviour/lesson, not an identity verdict. A normal day with no real
+  setback gets **no row** — don't invent failure to fill the table.
+- **忽略的警訊 (zemblanity)** — the reverse of good luck: bad outcomes are usually the
+  predictable result of an ignored warning sign, not chance. Record it in the Journal review
+  (step 7). If the *same* warning sign has surfaced on multiple recent days, escalate it in
+  明日建議 — a repeatedly-ignored signal is exactly what this is meant to catch early.
+
+This pass is a habit prompt, not a gate — a terse "今天沒有" is respected, and it never blocks
+the rest of the review.
+
 ### 4. Assess
 
 With the day's truth in hand, compute:
@@ -212,6 +240,11 @@ Apply the day's truth to the vault. **Never delete completed work or the user's 
   `Personal/Finance/semi-reimbursement-YYYY.md` (日期／項目／金額／外幣／含手續費／單據「待補」)
   and refresh that month's 小計. This is the monthly hand-off to the accountant — don't let a
   semi charge sit only in the spend-log.
+- **Failure resume** — if the reflection pass surfaced a genuine setback/lesson, append **one row**
+  to the `## 失敗履歷（滾動追加）` table in `Personal/failure-resume.md`:
+  `日期｜挫折 / 失誤｜學到什麼｜因此改了什麼行為`. Keep the file's rule — a behaviour/lesson, never a
+  self-judgment. No genuine setback today → no row (this table is sparse by design; don't pad it).
+  If the file doesn't exist yet, don't create it silently — note it in the review and move on.
 
 ### 6. Write the Daily note review
 
@@ -322,6 +355,11 @@ cheaper to fix than a 🔴 found in July.
 > 來自最近 5–7 天每日筆記的回顧。
 <重複延後、連續落後、時間配置問題等;若無,寫「本週無明顯重複模式」>
 
+### 教訓與警訊
+> 每日反思。失敗＝資料非身分;警訊多半是可預期的行為後果。
+- 今日教訓:<挫折 → 學到什麼 → 改什麼;已追加到 [[failure-resume]],或「今日無」>
+- 忽略的警訊(zemblanity):<健康/財務/申請/身體上被忽略的訊號,或「今日無」;若近日重複出現,點名並升級到明日建議>
+
 ### 明日建議
 - <2–4 條具體、可執行的建議,針對根因而非症狀>
 ```
@@ -342,6 +380,9 @@ cheaper to fix than a 🔴 found in July.
   transactions are already in `## 每日紀錄`; if so, don't duplicate them (and don't duplicate the
   dated `## AI 每日分析` bullet or the semi row). When in doubt, show the user what's already
   logged and confirm before appending.
+- **Failure-resume rows are NOT idempotent either** — same discipline as the spend-log: on a
+  re-run, check whether today's date already has a row in `## 失敗履歷（滾動追加）` before appending,
+  so a second review pass doesn't duplicate the day's lesson.
 - **User declines the spending ask** — never block the day review on it. Log `消費未結算(待補)`
   in carryover and finish the rest of the review normally; the finance pass is a habit, not a gate.
 - **Ambiguous / partial transaction text** — if pasted text is missing the card, amount, or
