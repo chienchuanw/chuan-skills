@@ -96,6 +96,13 @@ For each article, report back: a 3-point summary, the fact-check verdict (and lo
 1–2 application hooks (with the objective/project they connect to), and where it was filed (slug + tags). Keep it
 tight — this digest is the whole point, so the user can decide whether to open the full note without re-reading the article.
 
+**Always end the chat report with a `給小朋友的說明` (explain-it-to-a-child) block** — a 2–4 sentence retelling of
+the article's core idea in words a child could follow, built on one everyday analogy (a toy box, a restaurant, a
+robot helper). Include it for **every** article regardless of learning value (low-value ones too). This is a
+comprehension aid the user asked for; it lives **only in the chat report — never write it into the vault note**
+(the note stays terse per progressive disclosure). Traditional Chinese, warm and concrete; the child-friendliness
+comes from the analogy and simple words, not from padding or emoji.
+
 ## Rules
 
 - The sub-agent reads and reasons; it never writes vault files. The main agent does all filing.

@@ -146,6 +146,13 @@ claim), 1–2 application hooks (with the objective/project), and where it was f
 the user explicitly wants the content even for videos that aren't worth watching. Keep it tight, but the
 substance is non-negotiable across every verdict tier.
 
+**Always end the chat report with a `給小朋友的說明` (explain-it-to-a-child) block** — a 2–4 sentence retelling of
+the video's core idea in words a child could follow, built on one everyday analogy (a toy box, a restaurant, a
+robot helper). Include it for **every** video regardless of verdict or learning value (`skip` and low-value ones
+too). This is a comprehension aid the user asked for; it lives **only in the chat report — never write it into the
+vault note** (the note stays terse per progressive disclosure). Traditional Chinese, warm and concrete; the
+child-friendliness comes from the analogy and simple words, not from padding or emoji.
+
 ## Rules
 
 - **The verdict is the product, and its default leans "skip".** You exist to save the user time, not to justify
