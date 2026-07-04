@@ -109,8 +109,23 @@ actually stopping.
 
 ### 5. Append to the wind-down log (silent)
 
-Append one block to `Personal/Journal/end-of-day/end-of-day-YYYY-MM.md` (create folder/file if
-absent). Do this quietly — do not narrate it back or re-engage the user after the handoff. Block
+Append one block to `Personal/Journal/end-of-day/end-of-day-YYYY-MM.md`. Create the folder and the
+month file if absent — when creating the file, start it with this header, then the night's block:
+
+```markdown
+---
+title: "收心日誌 YYYY-MM"
+tags:
+  - end-of-day
+  - wind-down
+---
+
+# 收心日誌 YYYY-MM
+
+> 由 end-of-day skill 每晚追加，一晚一區塊。純收心紀錄，非任務、非評分。
+```
+
+Do this quietly — do not narrate it back or re-engage the user after the handoff. Per-night block
 format:
 
 ```markdown
