@@ -34,7 +34,7 @@
     },
     {
       "name": "daily",
-      "description": "Personal daily-workflow bundle for an Obsidian vault: gmail-helper (multi-account inbox triage), daily-planner (morning plan via Eisenhower matrix), and daily-reviewer (evening retrospective)",
+      "description": "Personal daily-workflow bundle for an Obsidian vault: gmail-helper (multi-account inbox triage), daily-planner (morning plan via Eisenhower matrix), daily-reviewer (evening retrospective), and end-of-day (bedtime wind-down for sleep/stress/memory)",
       "source": "./plugins/daily",
       "strict": false
     },
