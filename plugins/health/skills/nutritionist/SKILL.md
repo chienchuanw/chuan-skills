@@ -85,8 +85,8 @@ meal photo / "記一餐" / "這餐可以嗎" → §2 (log a meal); "本週飲食
 ### 1. Intake interview (first run only — builds the profile)
 
 Only when `nutrition-profile.md` is absent. **Pre-fill everything you can from the vault first**
-(read o4 + lifestyle: current weight/BF/waist, blood panel, targets, no-alcohol/no-bread rules,
-eating-out/tour pattern) so you do **not** re-ask what's already known. Then ask **one question
+(read o4 + lifestyle: current weight/BF/waist, blood panel, targets, no-alcohol / halve-refined-carbs
+rules, eating-out/tour pattern) so you do **not** re-ask what's already known. Then ask **one question
 at a time** only for the genuine gaps:
 - Activity level (for a TDEE estimate) — job is physical (touring/get-in) + gym; confirm rough
   weekly pattern.
