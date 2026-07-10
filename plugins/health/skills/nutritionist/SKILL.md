@@ -146,8 +146,11 @@ Create or update a `## 飲食` section in today's `Personal/Daily/YYYY-MM-DD.md`
 
 ```markdown
 ## 飲食
-- 今日：估 ~1700 / 目標 1650 kcal・蛋白 ~100g・三刀 糖✓酒✓精緻澱粉✗(午餐白飯)・明日修正：<一句>
+- 今日：估 ~<累計> / 目標 <profile 目標> kcal・蛋白 ~<N>g・三刀 糖<>酒<>精緻澱粉<>・明日修正：<一句>
 ```
+
+(Pull `目標` and the protein floor from `nutrition-profile.md` — never hard-code a number here;
+the target self-calibrates.)
 
 Detailed per-meal rows stay in `food-log-YYYY-MM.md`; the daily note keeps only the one-line
 rollup so `daily-reviewer` can read it at night without owning it.
