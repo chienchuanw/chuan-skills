@@ -57,6 +57,12 @@
       "strict": false
     },
     {
+      "name": "health",
+      "description": "Personal health bundle over an Obsidian vault: nutritionist (acts as the user's dietitian — reviews meals from a photo or text, gives cluster-tuned diet advice grounded in his blood panel/fatty liver/HbA1c and target weight/body-fat, sets a daily calorie + protein target and self-calibrates it against the weekly weight trend, logs intake to a tracked food-log, writes a daily 飲食 rollup and updates the O4 objective; damage-control mode for meals he can't control)",
+      "source": "./plugins/health",
+      "strict": false
+    },
+    {
       "name": "skill-creator",
       "description": "Create, test, evaluate, and iteratively improve Claude Code skills",
       "source": {
