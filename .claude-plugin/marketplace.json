@@ -45,6 +45,12 @@
       "strict": false
     },
     {
+      "name": "money",
+      "description": "Personal money-discipline bundle over an Obsidian vault: spend-audit (intercept a hesitant purchase with a structured Q&A audit — real frequency, real pain vs want, existing substitute, urge source, timing/opportunity-cost, money-principles checks — reaching a buy / don't / use-what-you-have / find-cheaper / cool-down verdict and logging it). Pre-purchase sibling of daily's daily-reviewer, which logs spends after the fact",
+      "source": "./plugins/money",
+      "strict": false
+    },
+    {
       "name": "gma2",
       "description": "grandMA2 lighting-console bundle (drives the gma2 MCP server over Telnet): connect (install/register the MCP and verify the console), presets (build Gobo/Color/Beam/Focus palettes from fixture XML with per-type DMX resolution), setlist (build a per-song macro/sequence/page/executor/view + artist-coloured master cuelist from a rundown, wired to the name-driven Song Change engine), and bpm (detect audio tempos via librosa and write them into song macros)",
       "source": "./plugins/gma2",
