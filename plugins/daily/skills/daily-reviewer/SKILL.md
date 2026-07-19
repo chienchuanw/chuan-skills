@@ -19,7 +19,9 @@ description: >-
   rules and overspend / forex-leak / revolving-credit / subscription signals, and flagging
   semi.tw business expenses for monthly reimbursement — so 記帳 happens nightly instead of in
   a month-end scramble. Also triggers on "記帳", "今天花了多少", "今天的消費", "消費審核",
-  "對一下帳", "看一下今天刷卡", "review my spending".
+  "對一下帳", "看一下今天刷卡", "review my spending". This pass logs spends that ALREADY
+  happened; for a PRE-purchase decision on whether to buy something you're hesitating over,
+  use money's spend-audit instead.
 ---
 
 # Daily Reviewer

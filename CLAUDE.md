@@ -47,6 +47,7 @@ Local plugins are organized into **domain bundles** — each plugin groups the s
 | skill-optimize | local    | gotcha-capture, skill-benchmark | Skill-authoring meta-tools: document pitfalls into a skill, and score/improve skill quality |
 | daily          | local    | gmail-helper, daily-planner, daily-reviewer | Personal: inbox triage, morning plan, evening retrospective |
 | portfolio      | local    | portfolio-update, portfolio-review | Personal: ingest broker screenshots / log trades, and read-only thesis review |
+| money          | local    | spend-audit | Personal: intercept a hesitant purchase with a structured Q&A audit (impulse vs genuine need) → buy / don't / use-what-you-have / find-cheaper / cool-down verdict, logged to `spend-audit-log.md`. Pre-purchase sibling of `daily-reviewer` (which logs spends after the fact) |
 | knowledge      | local    | read-article | Personal: digest pasted article URLs (summarize, fact-check, conclude, map to Objectives/projects) and file an enriched reference note |
 | skill-creator  | external | — | Create, test, evaluate, and iteratively improve Claude Code skills |
 | superpowers    | external | — | Advanced skills for brainstorming, planning, debugging, TDD, code review, parallel agents |
@@ -59,7 +60,7 @@ Local plugins are organized into **domain bundles** — each plugin groups the s
 
 Every plugin bundles its skills under `plugins/<plugin>/skills/<skill>/`. External plugins reference an upstream repo in `marketplace.json` (e.g., [anthropics/skills](https://github.com/anthropics/skills)).
 
-> Note: the `daily` and `portfolio` plugins are personal-workflow skill bundles hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema. They are not drop-in reusable yet — genericize (placeholder account names, configurable paths) before sharing.
+> Note: the `daily`, `portfolio`, and `money` plugins are personal-workflow skill bundles hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema. They are not drop-in reusable yet — genericize (placeholder account names, configurable paths) before sharing.
 
 ## Skills map vs Anthropic's official Agent Skills
 
@@ -67,7 +68,7 @@ Anthropic open-sourced 17 official Agent Skills ([`anthropics/skills`](https://g
 
 | Tier | Skills here | Stance |
 |------|-------------|--------|
-| **Moat** — no official counterpart, keep investing | `read-article`, `watch-video`, `daily-*` (gmail-helper, daily-planner, daily-reviewer), `portfolio-*` (update, review, advisor), `gma2` (bpm, connect, cuelist, presets, setlist) | These solve personal-workflow / domain problems Anthropic doesn't touch. Keep building here. |
+| **Moat** — no official counterpart, keep investing | `read-article`, `watch-video`, `daily-*` (gmail-helper, daily-planner, daily-reviewer), `portfolio-*` (update, review, advisor), `money/spend-audit`, `gma2` (bpm, connect, cuelist, presets, setlist) | These solve personal-workflow / domain problems Anthropic doesn't touch. Keep building here. |
 | **Improvable** — borrow official patterns | `dev/health-audit` (← official `webapp-testing`), `dev/*` (align with `claude-api` & `mcp-builder` conventions), `skill-optimize` (← official `skill-creator` scaffolding) | Adopt the official patterns to raise quality without rebuilding from scratch. Tracked as follow-ups: #40 (webapp-testing → health-audit), #41 (skill-creator scaffolding → skill-optimize). |
 | **Commodity** — do NOT duplicate | Document generation (pdf / docx / pptx / xlsx) | Anthropic covers this well. Do not build skills that re-implement document generation; depend on the official skills instead. |
 
@@ -88,7 +89,7 @@ Keep `SKILL.md` `description:` fields **specific and non-overlapping** so trigge
 
 Use the `/skill-creator` skill, then place the resulting directory under the appropriate domain bundle:
 
-- **Fits an existing domain** (`dev`, `git`, `docs`, `skill-optimize`, `daily`, `portfolio`) → copy it to `plugins/<bundle>/skills/<skill>/`. No `marketplace.json` change needed — the bundle already points at `plugins/<bundle>`.
+- **Fits an existing domain** (`dev`, `git`, `docs`, `skill-optimize`, `daily`, `portfolio`, `money`) → copy it to `plugins/<bundle>/skills/<skill>/`. No `marketplace.json` change needed — the bundle already points at `plugins/<bundle>`.
 - **New domain** → create `plugins/<bundle>/skills/<skill>/` and register the bundle in `.claude-plugin/marketplace.json`.
 
 Omit the `evals/` subfolder when copying (it's gitignored anyway).
