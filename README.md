@@ -32,6 +32,7 @@ Local plugins are organized into **domain bundles** -- each plugin groups the sk
 | `skill-optimize` | local | `gotcha-capture`, `skill-benchmark` | Skill-authoring meta-tools: document pitfalls into a skill, and score/improve skill quality |
 | `daily` | local | `gmail-helper`, `daily-planner`, `daily-reviewer` | Personal daily workflow (Obsidian + Gmail): inbox triage, morning plan, evening retrospective |
 | `portfolio` | local | `portfolio-update`, `portfolio-review` | Personal investing tracker (Obsidian): ingest broker screenshots and review thesis drift |
+| `money` | local | `spend-audit` | Personal money-discipline (Obsidian): intercept a hesitant purchase with a structured Q&A audit (impulse vs genuine need) → buy / don't / use-what-you-have / find-cheaper / cool-down verdict, logged. Pre-purchase sibling of `daily-reviewer` |
 | `gma2` | local | `connect`, `presets`, `setlist`, `cuelist`, `bpm` | grandMA2 lighting console (via the gma2 MCP server): connect/verify the desk, build Gobo/Color/Beam/Focus presets from fixture XML, build a per-song set-list system from a rundown, import a song's cue-list CSV into its sequence, and detect audio BPM into song macros |
 | `skill-creator` | external | -- | Create, test, evaluate, and iteratively improve Claude Code skills |
 | `superpowers` | external | -- | Advanced skills for brainstorming, planning, debugging, TDD, code review, and parallel agents |
@@ -39,7 +40,7 @@ Local plugins are organized into **domain bundles** -- each plugin groups the sk
 | `mempalace` | external | -- | Mine projects and conversations into a searchable memory palace with semantic search |
 | `planning-with-files` | external | -- | Manus-style file-based planning to organize and track progress on complex tasks |
 
-> `daily`, `portfolio`, and `gma2` are personal/hardware-specific bundles -- `daily` and `portfolio` are hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema; `gma2` drives a specific grandMA2 console through the companion `gma2-mcp` server -- not drop-in reusable yet. A few more external references (`understand-anything`, `impeccable`, `openspec`, `mattpocock-skills`, `find-skills`) are registered in `marketplace.json`.
+> `daily`, `portfolio`, `money`, and `gma2` are personal/hardware-specific bundles -- `daily`, `portfolio`, and `money` are hardcoded to a specific Obsidian vault, Gmail accounts, and portfolio schema; `gma2` drives a specific grandMA2 console through the companion `gma2-mcp` server -- not drop-in reusable yet. A few more external references (`understand-anything`, `impeccable`, `openspec`, `mattpocock-skills`, `find-skills`) are registered in `marketplace.json`.
 
 Local plugins keep their skill definitions under `plugins/<bundle>/skills/<skill>/`. External plugins reference an upstream repository in `marketplace.json`.
 
@@ -154,7 +155,7 @@ chuan-skills/
 
 1. Use the `/skill-creator` skill to scaffold and iterate on your new skill.
 2. Place the resulting skill directory inside the matching domain bundle:
-   - **Fits an existing domain** (`dev`, `git`, `docs`, `skill-optimize`, `daily`, `portfolio`) -- copy it to `plugins/<bundle>/skills/<skill>/`. No `marketplace.json` change is needed.
+   - **Fits an existing domain** (`dev`, `git`, `docs`, `skill-optimize`, `daily`, `portfolio`, `money`) -- copy it to `plugins/<bundle>/skills/<skill>/`. No `marketplace.json` change is needed.
    - **New domain** -- create `plugins/<bundle>/skills/<skill>/` and register the bundle in `.claude-plugin/marketplace.json`.
 3. Omit the `evals/` subfolder when copying (it's gitignored).
 
