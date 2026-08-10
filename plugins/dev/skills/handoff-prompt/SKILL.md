@@ -63,7 +63,11 @@ Output one fenced code block the user copies verbatim into a new session. Write 
 3. **Next action.** The single concrete next step to take.
 4. **Acceptance criteria.** How the next session knows that step is done (a test, a check, an observable outcome).
 5. **⚠️ Reality check** (only if Step 2 found discrepancies): each mismatch, stated plainly.
-6. **Suggested skills.** Skills the new session should invoke. Always include `using-superpowers` (skill-first
+6. **Suggested model / effort.** One line: the Claude model + effort level the next session should run at, plus a
+   one-line reason — sized to the *next action*, not this session. Use the canonical rubric in the `model-advisor`
+   skill (`plugins/dev/skills/model-advisor/SKILL.md`); do not maintain a second copy here. Weighting: lower
+   reversibility → higher model/effort.
+7. **Suggested skills.** Skills the new session should invoke. Always include `using-superpowers` (skill-first
    discipline). If `task_plan.md` / `progress.md` / `findings.md` exist in the working directory, suggest
    `planning-with-files` for session recovery. Add others the context clearly calls for.
 
