@@ -132,6 +132,29 @@
 
 **Acceptance**：一個 UI 專案能走完「Figma 定稿→確認→實作→UI PR 附對照→綠燈 merge」；Figma 與碼的漂移在 PR 時被檢出。
 
+### ④ 實作 spec（鎖定 2026-08-10）
+
+四個實作岔路的決定：
+
+| 岔路 | 決定 | 理由 |
+|---|---|---|
+| 形態 | 新 skill `ui-visual-gate`，auto-integrate 引用 | 與 ① 一致的乾淨切分 |
+| UI 專案判定 | repo CLAUDE.md 標記 `ui_project: true`＋檔案推斷備援 | 確定可預測；heuristic 只當提醒 |
+| merge 視覺對照物 | 三選一：截圖／臨時網頁／Figma frame 連結 | 一定要有畫面證明，但不硬綁 Figma |
+| Figma 流程 | 重用現有 figma skills（不自建） | 走決策階梯：codebase 已有，不重造輪子 |
+
+**產出物**：
+1. `plugins/dev/skills/ui-visual-gate/SKILL.md` — 定義 UI 專案判定、進碼前的視覺優先閘門（Gate 1）、與 merge 前的視覺對照要求（Gate 2）。可被模型觸發（在 UI 工作開始時自動浮現）。
+2. 改 `auto-integrate/SKILL.md` — 綠燈條件多一條：若為 UI 專案，merge 前須附一份視覺對照物並記進 merge-log。
+
+**Gate 1（進碼前，視覺優先）**：確認是 UI 專案後，實作前須先有 Figma 定稿或臨時網頁，經 Chuan 美學確認才進碼。Figma = source of truth：先 Figma 定稿 → 用 figma skills（`get_design_context`/`get_variable_defs`）拉 tokens/context 進來實作 → 碼裡改了畫面要回推 Figma（`figma-generate-design`）。
+
+**Gate 2（merge 綠燈多一關）**：UI 專案的 auto-integrate 綠燈，除測試全過＋review 無 blocking 外，**多要求**一份視覺對照物（截圖／臨時部署網址／Figma frame 連結），寫進 `docs/merge-log.md` 那一行。缺對照物 → 停機找人。
+
+**綁 ①**：auto-integrate 偵測到 UI 專案時，把 Gate 2 併入既有綠燈閘門；非 UI 專案不受影響。
+
+**Acceptance（不變）**：UI 專案能走完 Figma 定稿→確認→實作→UI PR 附對照→綠燈 merge；漂移在 PR 時被檢出。
+
 ---
 
 ## 未來（非本輪）
