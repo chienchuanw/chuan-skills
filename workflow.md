@@ -15,9 +15,11 @@ Skills tagged **⚡ auto** are fired automatically by the superpowers `using-sup
 | Brainstorm a feature before building          | brainstorming ⚡                                          |
 | Write a formal spec                           | `/openspec` (or brainstorming → writing-plans)           |
 | Plan implementation steps                     | writing-plans, `/planning-with-files`                    |
+| Pick the right model + effort for a task      | `/model-advisor`                                         |
 | Execute a written plan                        | executing-plans, subagent-driven-development             |
 | Isolate feature work                          | using-git-worktrees ⚡                                    |
 | Build frontend UI                             | `/frontend-design` (impeccable)                          |
+| Gate UI work on visuals (before code + merge) | `/ui-visual-gate`                                        |
 | Implement with TDD                            | test-driven-development ⚡                                |
 | Debug a failure                               | systematic-debugging ⚡                                   |
 | Run parallel independent tasks                | dispatching-parallel-agents                              |
@@ -26,6 +28,7 @@ Skills tagged **⚡ auto** are fired automatically by the superpowers `using-sup
 | Start work on an issue                        | `/gh-dev <n>`                                            |
 | Open or update a PR                           | `/gh-pr`                                                 |
 | Comment, approve, or merge a PR               | `/gh-comment`                                            |
+| Autonomously review→fix→merge to dev          | `/auto-integrate`                                        |
 | Compare branch changes for summary            | `/branch-report`                                         |
 | Verify work before claiming done              | verification-before-completion ⚡                         |
 | Block push on test failure                    | `/pre-push-test` (one-time setup)                        |
@@ -34,6 +37,7 @@ Skills tagged **⚡ auto** are fired automatically by the superpowers `using-sup
 | Add SEO frontmatter to an article             | `/seo-meta`                                              |
 | End-of-session docs snapshot                  | `/gh-archive`                                            |
 | Save session state                            | `/remember`                                              |
+| Emit a paste-prompt to resume next session    | `/handoff-prompt`                                        |
 | Mine project into long-term memory            | `/mempalace mine`                                        |
 | Create a new skill                            | `/skill-creator`, writing-skills                         |
 | Benchmark a skill                             | `/skill-benchmark <name>`                                |
@@ -160,6 +164,7 @@ Turn intent into a design, then into a step-by-step plan.
 | writing-plans        | (chained from brainstorm)| Turn approved spec into implementation plan  | chain |
 | planning-with-files  | `/planning-with-files`   | Create `task_plan.md` / `progress.md` / `findings.md` for >5-step tasks |       |
 | gh-issue             | `/gh-issue`              | File structured issue (bug, feat, refactor, doc, perf, security) |       |
+| model-advisor        | `/model-advisor`         | Pick a Claude model + effort for the task ahead (canonical rubric) |     |
 
 brainstorming is a **hard gate**: it will not let you proceed to implementation until a design is presented and approved. The chain flows brainstorm → spec doc → writing-plans → execution.
 
@@ -188,6 +193,7 @@ Code the plan. Branch per issue, TDD by default, commit with conventions.
 | subagent-driven-development   | `/subagent-driven-development`   | Execute plan with a fresh agent per task (recommended) |       |
 | dispatching-parallel-agents   | `/dispatching-parallel-agents`   | 2+ truly independent tasks                |       |
 | frontend-design               | `/frontend-design`               | Building web UI                           |       |
+| ui-visual-gate                | `/ui-visual-gate`                | UI project: confirm visuals (Figma / preview) BEFORE coding | |
 | systematic-debugging          | (auto)                           | Any bug, test failure, or surprise        | ⚡     |
 | commit-msg                    | `/commit-msg`                    | Get 3 commit message options from staged diff |   |
 
@@ -248,8 +254,11 @@ Open the PR, get it reviewed, respond, merge.
 | receiving-code-review           | (auto)                        | Handling review feedback with rigor            | ⚡     |
 | gh-comment                      | `/gh-comment`                 | Comment / approve / request-changes / merge    |       |
 | finishing-a-development-branch  | (chained)                     | After implementation is done                   | chain |
+| auto-integrate                  | `/auto-integrate`             | Autonomously review→self-fix→green-light→rebase-merge to `dev` |  |
 
 `gh-pr` optionally invokes `readme` and `planning-with-files` before opening the PR; body includes `Closes #N` for linked auto-close. `gh-comment merge` prefers rebase and offers post-merge cleanup + issue wrap-up.
+
+`auto-integrate` is the autonomous variant of this phase: it runs `/code-review` (high effort), self-fixes, and rebase-merges to `dev` only on a hard green light (tests pass + no blocking findings), logging one revert line per merge. It has six hard guardrails — chief among them **it never touches `main`/production** (release stays a manual step) — and ships a `protect-branches.sh` script for the repo-side protections. For UI projects it also requires a visual comparison (screenshot / preview URL / Figma frame) before merging (see `ui-visual-gate`). Stop conditions (red tests, architecture decisions, protected target) hand back to you with a recommendation.
 
 **Chain**
 
@@ -295,6 +304,7 @@ Persist knowledge, improve skills, keep CLAUDE.md honest.
 |------------------------|---------------------------|------------------------------------------------|-------|
 | mempalace              | `/mempalace`              | Mine project/conversations into memory palace  |       |
 | remember               | `/remember`               | Save session state for clean continuation      |       |
+| handoff-prompt         | `/handoff-prompt`         | Emit a paste-prompt to resume in a fresh session (spec locked / context near full); includes a suggested model/effort line |  |
 | gotcha-capture         | `/gotcha-capture <skill>` | After a skill fails — capture lessons         |       |
 | skill-benchmark        | `/skill-benchmark <skill>`| Score a skill across 6 dimensions              |       |
 | skill-creator          | `/skill-creator`          | New skills or iteration                        |       |
@@ -427,6 +437,7 @@ Superpowers' `using-superpowers` meta-skill enforces: **if there's even a 1% cha
 | commit-msg, readme, branch-report, seo-meta, pre-push-test           | Local    | `plugins/<name>/`                     |
 | gh-issue, gh-dev, gh-pr, gh-comment, gh-archive                      | Local    | `plugins/gh/`                         |
 | gotcha-capture, skill-benchmark                                      | Local    | `plugins/skill-optimize/`             |
+| model-advisor, auto-integrate, ui-visual-gate, handoff-prompt        | Local    | `plugins/dev/`                        |
 | brainstorming, writing-plans, executing-plans, TDD, debugging, …    | External | `obra/superpowers`                    |
 | skill-creator, writing-skills                                        | External | `anthropics/skills`                   |
 | understand-anything                                                  | External | `Lum1104/Understand-Anything`         |
