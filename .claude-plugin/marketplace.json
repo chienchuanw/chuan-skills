@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "dev",
-      "description": "Development workflow bundle: feature (end-to-end issue → branch → design → strict TDD → PR → review-fix → archive orchestrator), health-audit (five-dimension codebase health audit producing a ranked report, filed issues, and approved auto-fix PRs), and apply-coding-rules (stamp a managed coding-discipline rules block into a project's CLAUDE.md)",
+      "description": "Development workflow bundle: feature (end-to-end issue → branch → design → strict TDD → PR → review-fix → archive orchestrator), health-audit (five-dimension codebase health audit producing a ranked report, filed issues, and approved auto-fix PRs), apply-coding-rules (stamp a managed coding-discipline rules block into a project's CLAUDE.md), and handoff-prompt (companion to /handoff that emits a copy-paste prompt to bootstrap a fresh session)",
       "source": "./plugins/dev",
       "strict": false
     },
