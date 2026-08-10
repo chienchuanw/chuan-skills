@@ -86,8 +86,11 @@ The repo-side half of the guardrails. Run once per repo to protect `main` (requi
 linear history, block force-push + deletion):
 
 ```bash
-plugins/dev/skills/auto-integrate/scripts/protect-branches.sh <owner>/<repo>
+"${CLAUDE_PLUGIN_ROOT}/skills/auto-integrate/scripts/protect-branches.sh" <owner>/<repo>
 ```
+
+`${CLAUDE_PLUGIN_ROOT}` is set when this runs as an installed plugin (it points at the `dev` plugin dir). If you are
+working inside the marketplace repo checkout instead, the path is `plugins/dev/skills/auto-integrate/scripts/protect-branches.sh`.
 
 The script is idempotent (reads then PUTs; deletes nothing) and prints what it set. Review its `--help` before running
 — it changes GitHub repository settings, so the user runs it deliberately; auto-integrate never runs it for them.
