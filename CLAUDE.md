@@ -55,6 +55,7 @@ Local plugins are organized into **domain bundles** — each plugin groups the s
 | mempalace      | external | — | Mine projects and conversations into a searchable memory palace |
 | mattpocock-skills | external | — | Reference: Matt Pocock's engineering skills (diagnose, grill-me, handoff, to-prd, …) |
 | find-skills    | external | — | Reference: discover and install agent skills (Vercel Labs) |
+| heptabase      | external | — | Heptabase's official CLI skills: manage notes, journals, tags, cards, files, whiteboards, goals, courses, lessons via the Heptabase CLI |
 
 > The marketplace also registers a few other external references (`understand-anything`, `planning-with-files`, `impeccable`, `openspec`) — see `marketplace.json` for the full list.
 
