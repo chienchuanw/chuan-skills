@@ -50,6 +50,9 @@ Run when the user invokes `/auto-integrate` on a finished feature branch. Target
      for the user, do not merge.
 3. **Test.** Run the project's test command. Must be fully green. Red → **STOP**, report the failure.
 4. **Green-light gate.** Re-confirm: tests all pass AND no blocking findings remain (invariant 2). If not → **STOP**.
+   **If this is a UI project** (see the `ui-visual-gate` skill — `ui_project: true` in the repo's `CLAUDE.md`, or the
+   diff touches front-end files), the green light ALSO requires a visual comparison artifact (screenshot / preview URL
+   / Figma frame link). Missing it → **STOP** and ask the user for one.
 5. **Merge.** Clean-rebase the feature branch onto the target, then merge as a single squashed commit (invariant 3).
    Record the resulting sha. Never force-push a shared branch (invariant 4).
 6. **Log.** Append one entry to `docs/merge-log.md` (create it if absent) using the format below, then report the
@@ -73,6 +76,7 @@ Append to `docs/merge-log.md` (newest at top is fine; keep entries greppable):
 ## <date> <short-sha> <feature-branch> → <target>
 - did: <one line — what shipped>
 - review: <verdict — e.g. "no blocking; 2 nits fixed">
+- visual: <UI projects only — screenshot path / preview URL / Figma frame link>
 - revert: git revert <short-sha>
 ```
 
