@@ -1,15 +1,14 @@
 ---
 name: handoff-prompt
 description: >-
-  Companion to the `handoff` skill that closes the last mile of a session handoff. After `/handoff` has written a
-  handoff document to the OS temp directory, run this in the SAME (ending) session to emit a copy-paste English
-  prompt an engineer pastes into a FRESH session so a new agent resumes the work seamlessly. It reads the just-saved
-  handoff doc plus current context, runs a lightweight reality check against the repo, and outputs a hybrid prompt:
-  a pointer to the doc path plus a distilled orientation, next action, acceptance criteria, and suggested skills.
-  Use when a session is wrapping up and the user wants the exact prompt to bootstrap the next session — "give me the
-  handoff prompt", "what do I paste into the new session", "產生接手 prompt", "handoff-prompt", "下一輪要貼什麼".
-  Manual-only (`disable-model-invocation`). It does NOT write the handoff doc (that is `/handoff`) and does NOT
-  launch a background agent (that is `claude-handoff`).
+  Companion to the `handoff` skill: after `/handoff` has written a handoff document, run this in the SAME (ending)
+  session to emit a copy-paste English prompt the user pastes into a FRESH session so a new agent resumes the work
+  seamlessly. Use when a session is wrapping up and the next session needs a clean bootstrap — ESPECIALLY right after
+  a spec or plan is finalized/locked, when the context window is filling up or approaching its limit, or just before
+  a `/clear` to continue the work elsewhere. Triggers: "give me the handoff prompt", "what do I paste into the new
+  session", "產生接手 prompt", "handoff-prompt", "下一輪要貼什麼", "context 快滿了", "spec 定稿了幫我接棒", "要 /clear 了".
+  Manual-only (`disable-model-invocation`). It does
+  NOT write the handoff doc (that is `/handoff`) and does NOT launch a background agent (that is `claude-handoff`).
 argument-hint: "(optional) what the next session will focus on"
 disable-model-invocation: true
 ---
@@ -58,8 +57,9 @@ this step.
 Output one fenced code block the user copies verbatim into a new session. Write the prompt in **English**. Structure:
 
 1. **Pointer.** Instruct the new agent to first read the handoff document at `<absolute path>` for full detail.
-2. **Distilled orientation.** One short paragraph: what the project/task is and where it currently stands. Do not
-   re-dump the whole doc — this is the essential frame so the agent has direction even if the file read fails.
+2. **Distilled orientation.** One short paragraph: what the project/task is, where it currently stands (what's done
+   vs. still to do), and the key files/paths in play — named by path, not pasted. Do not re-dump the whole doc; this
+   is the essential frame so the agent has direction even if the file read fails.
 3. **Next action.** The single concrete next step to take.
 4. **Acceptance criteria.** How the next session knows that step is done (a test, a check, an observable outcome).
 5. **⚠️ Reality check** (only if Step 2 found discrepancies): each mismatch, stated plainly.
