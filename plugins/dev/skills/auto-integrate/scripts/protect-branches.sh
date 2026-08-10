@@ -31,7 +31,9 @@ REPO=""
 
 die() { printf 'error: %s\n' "$1" >&2; exit 1; }
 
-usage() { sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
+# Print the header comment block (lines after the shebang, up to the first
+# non-comment line) as help text. Robust to the header changing length.
+usage() { awk 'NR==1{next} /^#/{sub(/^# ?/,""); print; next} {exit}' "$0"; exit "${1:-0}"; }
 
 while [ $# -gt 0 ]; do
   case "$1" in
