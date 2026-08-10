@@ -85,6 +85,36 @@
 
 **Acceptance**：對一個真實 feature 分支，agent 能自主跑完 review→修→綠燈→merge 到 dev 並留紀錄；失敗情境會正確停機；main 受 repo rule 保護。
 
+### ① 實作 spec（鎖定 2026-08-10）
+
+四個實作岔路的決定：
+
+| 岔路 | 決定 | 理由 |
+|---|---|---|
+| 形態 | 新獨立 skill `auto-integrate`（不綁進 feature） | 切分最乾淨、可被 feature 未來呼叫；現在不耦合 |
+| review 把關者 | 現有 `/code-review` · high effort | 重用有維護的工具，與其餘工作流一致 |
+| merge 一行紀錄 | repo 內 `docs/merge-log.md` | 受版控、可 grep、隨 repo 走 |
+| branch-protection 產出 | `scripts/protect-branches.sh`（gh api）＋清單 | 一次套用、可重跑 |
+
+**產出物**：
+1. `plugins/dev/skills/auto-integrate/SKILL.md` — 手動觸發（`disable-model-invocation`，高後果動作必須明確喊）。
+2. `plugins/dev/skills/auto-integrate/scripts/protect-branches.sh` — 對指定 repo 套用 main 保護的 gh 腳本（idempotent、只讀取後 PUT，不刪東西）。
+
+**`auto-integrate` 迴圈（在 feature 分支上喊 `/auto-integrate`）**：
+0. **安全前置**：確認目前在 feature 分支、目標 = `dev`／整合分支。若目標解析到 `main`/production → 立即拒絕停機（護欄 #1）。
+1. **Review**：對 `dev..HEAD` 的 diff 跑 `/code-review` high effort。
+2. **Triage/修**：有 blocking findings → 有界地自修/重構後**回到步驟 1 重審**；若屬架構取捨或跨檔案大重構 → 停機附建議（不自作主張）。
+3. **測試**：跑專案測試指令，必須全綠。
+4. **綠燈閘門（護欄 #4）**：測試全過 **且** review 無殘留 blocking，才可 merge；任一未過 → 停機找人。
+5. **Merge**：乾淨 rebase → merge 到 `dev`，squash 成**一個可 revert 單位**＋記 sha/tag（護欄 #2）；**絕不 force-push 共享分支**（護欄 #3）。
+6. **紀錄**：`docs/merge-log.md` 追加一行（做了什麼／review 結論／`git revert <sha>`）（護欄 #5）。
+
+**停機條件（明確）**：紅燈測試、需架構決策、跨檔案大重構取捨、目標解析到受保護分支 → 停下，附一段給 Chuan 的建議，不 merge。
+
+**綁 ③**：迴圈本身屬「低可逆性自主 merge」→ 依 model-advisor 建議跑 Opus 5 · high（必要時 `max`）；review 步驟用 high effort。
+
+**Acceptance（不變）**：真實 feature 分支能跑完 review→修→綠燈→merge→紀錄；失敗情境正確停機；main 受 repo rule 保護。
+
 ---
 
 ## ④ UI/UX 專案：視覺優先閘門 ＋ Figma 常態 sync（最後做）
