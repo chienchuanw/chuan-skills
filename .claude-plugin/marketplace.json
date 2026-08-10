@@ -147,6 +147,14 @@
         "source": "url",
         "url": "https://github.com/vercel-labs/skills.git"
       }
+    },
+    {
+      "name": "heptabase",
+      "description": "Heptabase's official CLI skills — interact with Heptabase via its CLI to manage notes, journals, tags, cards, files, whiteboards, goals, courses, and lessons — external reference",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/heptameta/heptabase-cli-skills.git"
+      }
     }
   ]
 }
