@@ -52,7 +52,7 @@
     },
     {
       "name": "gma2",
-      "description": "grandMA2 lighting-console bundle (drives the gma2 MCP server over Telnet): connect (install/register the MCP and verify the console), presets (build Gobo/Color/Beam/Focus palettes from fixture XML with per-type DMX resolution), setlist (build a per-song macro/sequence/page/executor/view + artist-coloured master cuelist from a rundown, wired to the name-driven Song Change engine), and bpm (detect audio tempos via librosa and write them into song macros)",
+      "description": "grandMA2 lighting-console bundle (drives the gma2 MCP server over Telnet): connect (install/register the MCP and verify the console), presets (build Gobo/Color/Beam/Focus palettes from fixture XML with per-type DMX resolution), setlist (build a per-song macro/sequence/page/executor/view + artist-coloured master cuelist from a rundown, wired to the name-driven Song Change engine), cuelist (import a song's section CSV into its sequence as labelled empty cues), design (act as a professional concert lighting designer — design each song's looks from its audio energy, section map and MVR rig geometry, then program them into the cues as preset-referenced values with layered times, per-song effects on the BPM speed master, and a follow-spot sheet), and bpm (detect audio tempos via librosa and write them into song macros)",
       "source": "./plugins/gma2",
       "strict": false
     },
