@@ -48,6 +48,7 @@ Local plugins are organized into **domain bundles** — each plugin groups the s
 | daily          | local    | gmail-helper, daily-planner, daily-reviewer | Personal: inbox triage, morning plan, evening retrospective |
 | portfolio      | local    | portfolio-update, portfolio-review | Personal: ingest broker screenshots / log trades, and read-only thesis review |
 | money          | local    | spend-audit | Personal: intercept a hesitant purchase with a structured Q&A audit (impulse vs genuine need) → buy / don't / use-what-you-have / find-cheaper / cool-down verdict, logged to `spend-audit-log.md`. Pre-purchase sibling of `daily-reviewer` (which logs spends after the fact) |
+| gma2           | local    | connect, presets, setlist, cuelist, design, bpm | grandMA2 lighting console (drives the gma2 MCP over Telnet): connect (register the MCP + verify the desk), presets (Gobo/Color/Beam/Focus palettes resolved per fixture type from XML), setlist (per-song macro/sequence/page/executor + artist-coloured master cuelist from a rundown), cuelist (import a song's section CSV as labelled empty cues), design (professional concert LD — design each song's looks from audio energy, section map and MVR geometry, then program them into the cues), bpm (detect tempos and write them into the song macros) |
 | knowledge      | local    | read-article | Personal: digest pasted article URLs (summarize, fact-check, conclude, map to Objectives/projects) and file an enriched reference note |
 | skill-creator  | external | — | Create, test, evaluate, and iteratively improve Claude Code skills |
 | superpowers    | external | — | Advanced skills for brainstorming, planning, debugging, TDD, code review, parallel agents |
@@ -69,7 +70,7 @@ Anthropic open-sourced 17 official Agent Skills ([`anthropics/skills`](https://g
 
 | Tier | Skills here | Stance |
 |------|-------------|--------|
-| **Moat** — no official counterpart, keep investing | `read-article`, `watch-video`, `daily-*` (gmail-helper, daily-planner, daily-reviewer), `portfolio-*` (update, review, advisor), `money/spend-audit`, `gma2` (bpm, connect, cuelist, presets, setlist) | These solve personal-workflow / domain problems Anthropic doesn't touch. Keep building here. |
+| **Moat** — no official counterpart, keep investing | `read-article`, `watch-video`, `daily-*` (gmail-helper, daily-planner, daily-reviewer), `portfolio-*` (update, review, advisor), `money/spend-audit`, `gma2` (bpm, connect, cuelist, design, presets, setlist) | These solve personal-workflow / domain problems Anthropic doesn't touch. Keep building here. |
 | **Improvable** — borrow official patterns | `dev/health-audit` (← official `webapp-testing`), `dev/*` (align with `claude-api` & `mcp-builder` conventions), `skill-optimize` (← official `skill-creator` scaffolding) | Adopt the official patterns to raise quality without rebuilding from scratch. Tracked as follow-ups: #40 (webapp-testing → health-audit), #41 (skill-creator scaffolding → skill-optimize). |
 | **Commodity** — do NOT duplicate | Document generation (pdf / docx / pptx / xlsx) | Anthropic covers this well. Do not build skills that re-implement document generation; depend on the official skills instead. |
 
