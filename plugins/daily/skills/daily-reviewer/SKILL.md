@@ -18,7 +18,10 @@ description: >-
   app text), logging them into the month's spend-log, checking them against the card-routing
   rules and overspend / forex-leak / revolving-credit / subscription signals, and flagging
   semi.tw business expenses for monthly reimbursement — so 記帳 happens nightly instead of in
-  a month-end scramble. Also triggers on "記帳", "今天花了多少", "今天的消費",
+  a month-end scramble. It also runs a nightly learning-track pass — asking once about DS&A,
+  English writing and English speaking, then verifying writing and speaking against the actual
+  files in the vault rather than trusting the answer — because that nightly ask is the forcing
+  function the tracking depends on. Also triggers on "記帳", "今天花了多少", "今天的消費",
   "對一下帳", "看一下今天刷卡", "review my spending". This pass logs spends that ALREADY
   happened; for a PRE-purchase decision on whether to buy something you're hesitating over,
   use money's spend-audit instead.
@@ -59,6 +62,13 @@ The working directory is the vault root. Key paths:
   Each evening you capture the day's genuine setback/lesson as one row — reframing failure as
   *data*, not identity, to counter the user's "worth = output" tendency. You append rows; you
   never rewrite or delete the user's own rows.
+- **Learning tracks** — `Personal/Learning/dsa-progress.md` is the **only vault file this system
+  writes programmatically**; everything else the `level-up` dashboard uses, it reads. You own its
+  frontmatter (`courses_completed`, `problems_solved`, `updated`) and append to its 每日紀錄 table.
+  `Personal/Learning/English/writing/` and `Personal/Learning/English/recordings/` are drop-boxes
+  the *user* fills — you only ever list them, never write into them. Both use `YYYY-MM-DD` filename
+  prefixes; see `Personal/Learning/English/README.md` for the naming rules. Do not put any `.md`
+  into `writing/` yourself: the dashboard counts every `.md` there as a finished piece.
 - **Finance** — `Personal/Finance/spend-log-YYYY-MM.md` (this month's spend log; you append rows
   to `## 每日紀錄（你填）` and maintain `## AI 每日分析` + `## 本月投入指標`),
   `Personal/Finance/semi-reimbursement-YYYY.md` (semi.tw expenses pending reimbursement),
@@ -198,6 +208,41 @@ Handle the reply (both parts are optional — never manufacture one):
 This pass is a habit prompt, not a gate — a terse "今天沒有" is respected, and it never blocks
 the rest of the review.
 
+### 3d. Learning-track pass (always ask once)
+
+Three learning tracks feed the user's profile-building (O3) and are displayed by `level-up`, a
+local read-only dashboard over this vault. **Nothing produces that evidence unless you ask.**
+The precedent is stark: the user's own self-scored RPG in this vault ran at 23% adherence in
+three weeks, while zero-gamified 記帳 survived five months — because 記帳 gets asked about every
+night. The forcing function is this question, not a dashboard. Ask it every evening, folded
+into the same interview round:
+
+> 「今天 DS&A 解了幾題／完成哪一節?英文寫作有產出嗎?口說錄了嗎?三個都沒有就說『今天沒有』。」
+
+**For writing and speaking, do not take the answer as evidence — go look.** List
+`Personal/Learning/English/writing/` and `Personal/Learning/English/recordings/` for files whose
+name starts with today's date. A file on disk counts; a spoken「今天有寫」does not. This is
+deliberate: only evidence-bound activity scores, and a checkbox is too easy to tick. If the user
+says they wrote but no file appeared, record the claim in the Journal and say plainly that the
+track won't count it until the file lands — once, without arguing.
+
+- **DS&A** — edX auto-grading is the only external judge in this system, but its results do not
+  flow anywhere automatically. The number is spoken, so its honesty ceiling is whatever the user
+  says tonight. Take it at face value and write it down; do not cross-examine.
+- **寫作 / 口說** — filesystem check only. Speaking duration needs no report at all: the dashboard
+  reads it from the audio file with `afinfo`.
+
+**Tone here is the whole design.** 答不出來、沒證據、或三個都沒有 = 當日該軌道未完成,就這樣,
+**不追究、不說教、不追問原因**。Record it and move on. A track that goes quiet for days is worth
+naming *once* in 觀察到的模式 (that is what the pattern scan is for) — but never moralise about
+it in this pass. The user is explicit that he is the player here, not the system's designer:
+his job is to do the work, not to be lectured about not doing it.
+
+Unlike the spending pass, this one **does** feed the 1–5 day rating — but only through the
+existing 目標推進 channel, with no special weighting. Learning-track work *is* objective progress,
+so pretending it is a separate axis would make the rating dishonest. A day with real DS&A or
+writing output counts as 目標推進; a day without simply doesn't.
+
 ### 4. Assess
 
 With the day's truth in hand, compute:
@@ -242,6 +287,15 @@ Apply the day's truth to the vault. **Never delete completed work or the user's 
   `Personal/Finance/semi-reimbursement-YYYY.md` (日期／項目／金額／外幣／含手續費／單據「待補」)
   and refresh that month's 小計. This is the monthly hand-off to the accountant — don't let a
   semi charge sit only in the spend-log.
+- **DS&A progress** — if the user reported DS&A work, update `Personal/Learning/dsa-progress.md`:
+  append **one row** to `## 每日紀錄` (`日期｜課程 / 章節｜題數｜備註`), and refresh the frontmatter
+  (`problems_solved` += tonight's count, `updated` = today). Only bump `courses_completed` when a
+  course is genuinely finished — a certificate exists, not just the last video watched — and add
+  its row to `## 課程完成`. **Append only; never rewrite or delete earlier rows.** No DS&A today →
+  no row and no frontmatter change (a blank day means it didn't happen; do not write a `0` row,
+  which would read as "logged zero" rather than "nothing logged").
+  Write nothing for 寫作 / 口說 — their evidence *is* the files in `English/`, and the dashboard
+  counts those directly. There is no number to record.
 - **Failure resume** — if the reflection pass surfaced a genuine setback/lesson, append **one row**
   to the `## 失敗履歷（滾動追加）` table in `Personal/failure-resume.md`:
   `日期｜挫折 / 失誤｜學到什麼｜因此改了什麼行為`. Keep the file's rule — a behaviour/lesson, never a
@@ -321,7 +375,8 @@ cheaper to fix than a 🔴 found in July.
 - **本期習慣**:做了 / 未做 — <habit name>
 - **目標推進**:<今天有實質前進的目標,或「無」>
 - **今日消費**:<N 筆 NT$X / 今日無消費 / 待補> — <一句:照分工表? 有無紅旗(外幣漏損・超支・循環・semi),或「乾淨」>
-- **今日評分**:N/5 — <一句話定調(消費不計入評分)>
+- **學習軌道**:DS&A <N 題 / 無> ・寫作 <檔名 / 無> ・口說 <檔名 / 無> — <寫作與口說以檔案為準,非自述>
+- **今日評分**:N/5 — <一句話定調(消費不計入評分;學習軌道走「目標推進」計入)>
 
 ### 目標在軌狀態
 - 🟢/🟡/🔴 〔O1 TOEFL〕<最近里程碑> — <一句:進度 vs 需求>
@@ -352,6 +407,12 @@ cheaper to fix than a 🔴 found in July.
 - 用卡分工:<照表 / 刷錯:某筆該走 X 卻刷 Y>
 - 紅旗:<外幣漏損・超支(≥10k 或額度逼近)・動用循環・可疑訂閱…,逐項或「無」>
 - semi 報帳:<本日有無 semi 支出、已彙整到 [[semi-reimbursement-YYYY]],或「無」>
+
+### 今日學習軌道
+> 三條軌道由 [[dsa-progress]] 與 `Learning/English/` 的檔案本身為證;寫作與口說不採信自述。
+- DS&A:<課程 / 章節 + N 題,或「今日無」;已登錄於 [[dsa-progress]]>
+- 英文寫作:<今日新檔名,或「今日無新檔」;若自述有寫但無檔案,如實寫出此落差>
+- 英文口說:<今日新錄音檔名 + 時長,或「今日無新檔」>
 
 ### 觀察到的模式
 > 來自最近 5–7 天每日筆記的回顧。
@@ -385,6 +446,13 @@ cheaper to fix than a 🔴 found in July.
 - **Failure-resume rows are NOT idempotent either** — same discipline as the spend-log: on a
   re-run, check whether today's date already has a row in `## 失敗履歷（滾動追加）` before appending,
   so a second review pass doesn't duplicate the day's lesson.
+- **`dsa-progress.md` missing** — don't create it silently (same rule as `failure-resume.md`).
+  Note it in the review and move on; the dashboard already shows「資料源未建立」so the gap is visible.
+- **`English/writing/` or `recordings/` missing** — same: note it, don't create it. These are the
+  user's drop-boxes, and a directory you conjured up is not evidence that he set one up.
+- **DS&A rows are NOT idempotent** — like the spend-log and failure-resume, `## 每日紀錄` rows
+  append. On a re-run, check whether today's date already has a row before adding one, and don't
+  double-count `problems_solved` in the frontmatter.
 - **User declines the spending ask** — never block the day review on it. Log `消費未結算(待補)`
   in carryover and finish the rest of the review normally; the finance pass is a habit, not a gate.
 - **Ambiguous / partial transaction text** — if pasted text is missing the card, amount, or
