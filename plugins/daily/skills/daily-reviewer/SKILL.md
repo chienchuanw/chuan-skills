@@ -66,7 +66,9 @@ The working directory is the vault root. Key paths:
   `level-up` dashboard's behalf; every other path that dashboard reads, it only reads. This says
   nothing about your other writes — the Daily note, Journal, spend log, semi-reimbursement,
   failure resume and objective files below are all yours to write as usual. You own this file's
-  frontmatter (`courses_completed`, `problems_solved`, `updated`) and its `## 每日紀錄` table.
+  frontmatter (`courses_completed`, `problems_solved`, `updated`) and its `## 每日紀錄` and
+  `## 課程完成` tables. Both frontmatter counts are **derived from those tables, never incremented**
+  — see §5.
   `Personal/Learning/English/writing/` and `Personal/Learning/English/recordings/` are drop-boxes
   the *user* fills — you only ever list them, never write into them. Both use `YYYY-MM-DD` filename
   prefixes; see `Personal/Learning/English/README.md` for the naming rules. Do not put any `.md`
@@ -224,14 +226,16 @@ three weeks, while zero-gamified 記帳 survived five months — because 記帳 
 night. The forcing function is this question, not a dashboard. Ask it every evening, folded
 into the same interview round:
 
-> 「今天 DS&A 解了幾題／完成哪一節(**修完一整門課、拿到證書的話講一聲**)?英文寫作有產出嗎?
+> 「今天 DS&A 解了幾題／完成哪一節(**修完一整門課的話講一聲,順便把證書連結貼給我**)?英文寫作有產出嗎?
 > 口說錄了嗎?三個都沒有就說『今天沒有』。」
 
 The parenthetical is not padding. `courses_completed` is the **only** field the dashboard ranks
 the DS&A track on (`0 / 8 門課`); `problems_solved` renders as a faint footnote. Without an
-explicit prompt for 門 / 證書, the ask only ever yields 題 and 節, and §5's rule for bumping
+explicit prompt for 門 / 證書, the ask only ever yields 題 and 節, and §5's rule for raising
 `courses_completed` could never fire — the track would sit at 未入門 forever while real work
-piled up underneath it.
+piled up underneath it. Asking for the **link**, not just the news, is what makes the field's
+claim true: §5 counts only rows that have one, so a night where the URL never gets requested is
+a night the count cannot legitimately move.
 
 **For writing and speaking, do not take the answer as evidence — go look.** List
 `Personal/Learning/English/writing/` and `Personal/Learning/English/recordings/` for files whose
@@ -316,8 +320,15 @@ Apply the day's truth to the vault. **Never delete completed work or the user's 
   frontmatter. **`problems_solved` is not a running increment — it is the sum of the whole `題數`
   column, recomputed from the table every time you touch it.** Add the rows up and write the total;
   that way the number can't drift from its own evidence, and a re-run can't double-count. Set
-  `updated` = today. Only bump `courses_completed` when a course is genuinely finished — a
-  certificate exists, not just the last video watched — and add its row to `## 課程完成`.
+  `updated` = today. **`courses_completed` is not an increment either — it is the number of rows
+  in `## 課程完成` that carry a real certificate link in the 證書 column, recounted every time you
+  touch the file.** When the user reports finishing a course, ask for the certificate URL and paste
+  it into that column. If they don't have it to hand, still write the row with 證書 = `待補` —
+  but **do not raise `courses_completed`**, because the count is derived from the cert-bearing rows
+  and that row isn't one yet. Pick it up on a later night when the link arrives. This is the whole
+  reason this field is allowed to rank the track: every unit it counts has a URL underneath it that
+  someone outside this vault issued. A count that moved on last night's word alone would be the
+  same self-report as `題數`, wearing a badge it hadn't earned.
   **Earlier days' rows are append-only: never rewrite or delete them. Today's row is the one
   exception** — on a re-run, if today already has a row, amend that row in place (raise `題數`
   to the day's true total, extend 課程 / 章節 and 備註) rather than adding a second row or dropping
@@ -410,7 +421,7 @@ cheaper to fix than a 🔴 found in July.
 - **本期習慣**:做了 / 未做 — <habit name>
 - **目標推進**:<今天有實質前進的目標,或「無」>
 - **今日消費**:<N 筆 NT$X / 今日無消費 / 待補> — <一句:照分工表? 有無紅旗(外幣漏損・超支・循環・semi),或「乾淨」>
-- **學習軌道**:DS&A <N 題(自述) / 無> ・寫作 <檔名 / 無> ・口說 <檔名 / 無> — <寫作與口說以檔案為準;DS&A 題數為自述,僅課程完成有證書>
+- **學習軌道**:DS&A <N 題(自述) / 無> ・寫作 <檔名 / 無> ・口說 <檔名 / 無> — <寫作與口說以檔案為準;DS&A 題數為自述,課程完成需附證書連結才計入>
 - **今日評分**:N/5 — <一句話定調(消費不計入評分;學習軌道走「目標推進」計入)>
 
 ### 目標在軌狀態
@@ -446,8 +457,9 @@ cheaper to fix than a 🔴 found in July.
 ### 今日學習軌道
 > 寫作與口說以 `Learning/English/` 的檔案為證,不採信自述。
 > **DS&A 的題數是自述**——[[dsa-progress]] 只是它被抄進去的地方,不是它的證據。
-> 這條軌道上唯一有外部憑據的是「課程完成」,因為有證書。
-- DS&A:<課程 / 章節 + N 題(自述),或「今日無」;已抄錄於 [[dsa-progress]]>
+> 這條軌道上唯一可能有外部憑據的是「課程完成」——但**要證書連結真的貼進 [[dsa-progress]]
+> 的 `證書` 欄,它才算數**。只是口頭說修完了,那還是自述,與題數同級。
+- DS&A:<課程 / 章節 + N 題(自述),或「今日無」;已抄錄於 [[dsa-progress]];若今日完成整門課,註明證書連結已附 / 待補>
 - 英文寫作:<今日新檔名,或「今日無新檔」;若自述有寫但無檔案,如實寫出此落差>
 - 英文口說:<今日新錄音檔名,或「今日無新檔」;不記時長——儀表板自己從音檔讀>
 
@@ -490,7 +502,10 @@ cheaper to fix than a 🔴 found in July.
 - **Re-running the DS&A write** — unlike the spend-log and failure-resume, `dsa-progress.md`'s
   `## 每日紀錄` is **amend-in-place for today**: if today's date already has a row, update that row
   instead of appending a second one. Then recompute `problems_solved` as the sum of the whole
-  `題數` column — never as a delta on the old value. Note the two tables named `## 每日紀錄` are
+  `題數` column, and `courses_completed` as the count of `## 課程完成` rows holding a certificate
+  link — never as a delta on the old value. Recomputation is what makes the re-run safe: a
+  `待補` row that got its URL filled in tonight is picked up by the recount for free, and a row
+  still waiting for one silently stays uncounted rather than needing to be remembered. Note the two tables named `## 每日紀錄` are
   different files with different rules: `dsa-progress.md`'s table amends today's row,
   `spend-log-YYYY-MM.md`'s `## 每日紀錄（你填）` is strictly append-only.
 - **User declines the spending ask** — never block the day review on it. Log `消費未結算(待補)`
