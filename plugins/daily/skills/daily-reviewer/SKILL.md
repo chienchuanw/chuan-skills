@@ -116,6 +116,11 @@ These reads are independent — do them together.
   For each, find the nearest unchecked milestone. For O1, find the study-grid row whose date
   range contains today — that row is this week's expected objective work.
 - **Habit** — read `Personal/lifestyle.md` for the current habit-cycle habit.
+- **Learning tracks** — read the `## 每日紀錄` table in `Personal/Learning/dsa-progress.md` and
+  list `Personal/Learning/English/{writing,recordings}/`. These are the *only* readable history
+  for the three tracks: the 學習軌道 line in the daily note is new, so the recent notes read
+  above do not carry it, and a track that has gone quiet for days is invisible from them alone.
+  This is what makes the 觀察到的模式 callout in step 3d reachable at all.
 
 ### 3. Interview the user
 
@@ -235,6 +240,13 @@ deliberate: only evidence-bound activity scores, and a checkbox is too easy to t
 says they wrote but no file appeared, record the claim in the Journal and say plainly that the
 track won't count it until the file lands — once, without arguing.
 
+**Also check today's mtimes, not just the filename prefix.** The dashboard counts *every* `.md`
+in `writing/`, and for an undated filename it falls back to the file's modification date. So a
+file dropped in without a `YYYY-MM-DD` prefix already counts there while a
+name-prefix-only check here would report「今日無新檔」— the Journal and the dashboard would
+then disagree about the same day. If you find one, name it and tell the user to rename it to the
+convention; don't rename it yourself (see the drop-box rule in Environment).
+
 - **DS&A** — edX auto-grading is the only external judge in this system, but its results do not
   flow anywhere automatically. The number is spoken, so its honesty ceiling is whatever the user
   says tonight. Take it at face value and write it down; do not cross-examine.
@@ -311,7 +323,12 @@ Apply the day's truth to the vault. **Never delete completed work or the user's 
   to the day's true total, extend 課程 / 章節 and 備註) rather than adding a second row or dropping
   the new work on the floor. One row per date, always. No DS&A today → no row and no frontmatter
   change (a blank day means it didn't happen; do not write a `0` row, which would read as
-  "logged zero" rather than "nothing logged").
+  "logged zero" rather than "nothing logged"). **The one case where `題數` may legitimately be
+  `0` is a day whose DS&A work wasn't problems** — finishing a course, sitting a graded exam,
+  watching a section through. Write the row, put `0` in 題數, and say in 備註 what actually
+  happened. The rule above bans a `0` row for a day with *no* DS&A work at all; it does not ban
+  recording work that simply wasn't measured in problems. A finished course with no row would
+  leave `courses_completed` moving with nothing underneath it explaining why.
   Write nothing for 寫作 / 口說 — their evidence *is* the files in `English/`, and the dashboard
   counts those directly. There is no number to record.
 - **Failure resume** — if the reflection pass surfaced a genuine setback/lesson, append **one row**
@@ -393,7 +410,7 @@ cheaper to fix than a 🔴 found in July.
 - **本期習慣**:做了 / 未做 — <habit name>
 - **目標推進**:<今天有實質前進的目標,或「無」>
 - **今日消費**:<N 筆 NT$X / 今日無消費 / 待補> — <一句:照分工表? 有無紅旗(外幣漏損・超支・循環・semi),或「乾淨」>
-- **學習軌道**:DS&A <N 題 / 無> ・寫作 <檔名 / 無> ・口說 <檔名 / 無> — <寫作與口說以檔案為準,非自述>
+- **學習軌道**:DS&A <N 題(自述) / 無> ・寫作 <檔名 / 無> ・口說 <檔名 / 無> — <寫作與口說以檔案為準;DS&A 題數為自述,僅課程完成有證書>
 - **今日評分**:N/5 — <一句話定調(消費不計入評分;學習軌道走「目標推進」計入)>
 
 ### 目標在軌狀態
@@ -427,8 +444,10 @@ cheaper to fix than a 🔴 found in July.
 - semi 報帳:<本日有無 semi 支出、已彙整到 [[semi-reimbursement-YYYY]],或「無」>
 
 ### 今日學習軌道
-> 三條軌道由 [[dsa-progress]] 與 `Learning/English/` 的檔案本身為證;寫作與口說不採信自述。
-- DS&A:<課程 / 章節 + N 題,或「今日無」;已登錄於 [[dsa-progress]]>
+> 寫作與口說以 `Learning/English/` 的檔案為證,不採信自述。
+> **DS&A 的題數是自述**——[[dsa-progress]] 只是它被抄進去的地方,不是它的證據。
+> 這條軌道上唯一有外部憑據的是「課程完成」,因為有證書。
+- DS&A:<課程 / 章節 + N 題(自述),或「今日無」;已抄錄於 [[dsa-progress]]>
 - 英文寫作:<今日新檔名,或「今日無新檔」;若自述有寫但無檔案,如實寫出此落差>
 - 英文口說:<今日新錄音檔名,或「今日無新檔」;不記時長——儀表板自己從音檔讀>
 
