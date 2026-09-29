@@ -62,9 +62,11 @@ The working directory is the vault root. Key paths:
   Each evening you capture the day's genuine setback/lesson as one row — reframing failure as
   *data*, not identity, to counter the user's "worth = output" tendency. You append rows; you
   never rewrite or delete the user's own rows.
-- **Learning tracks** — `Personal/Learning/dsa-progress.md` is the **only vault file this system
-  writes programmatically**; everything else the `level-up` dashboard uses, it reads. You own its
-  frontmatter (`courses_completed`, `problems_solved`, `updated`) and append to its 每日紀錄 table.
+- **Learning tracks** — `Personal/Learning/dsa-progress.md` is the one file you write on the
+  `level-up` dashboard's behalf; every other path that dashboard reads, it only reads. This says
+  nothing about your other writes — the Daily note, Journal, spend log, semi-reimbursement,
+  failure resume and objective files below are all yours to write as usual. You own this file's
+  frontmatter (`courses_completed`, `problems_solved`, `updated`) and its `## 每日紀錄` table.
   `Personal/Learning/English/writing/` and `Personal/Learning/English/recordings/` are drop-boxes
   the *user* fills — you only ever list them, never write into them. Both use `YYYY-MM-DD` filename
   prefixes; see `Personal/Learning/English/README.md` for the naming rules. Do not put any `.md`
@@ -217,7 +219,14 @@ three weeks, while zero-gamified 記帳 survived five months — because 記帳 
 night. The forcing function is this question, not a dashboard. Ask it every evening, folded
 into the same interview round:
 
-> 「今天 DS&A 解了幾題／完成哪一節?英文寫作有產出嗎?口說錄了嗎?三個都沒有就說『今天沒有』。」
+> 「今天 DS&A 解了幾題／完成哪一節(**修完一整門課、拿到證書的話講一聲**)?英文寫作有產出嗎?
+> 口說錄了嗎?三個都沒有就說『今天沒有』。」
+
+The parenthetical is not padding. `courses_completed` is the **only** field the dashboard ranks
+the DS&A track on (`0 / 8 門課`); `problems_solved` renders as a faint footnote. Without an
+explicit prompt for 門 / 證書, the ask only ever yields 題 and 節, and §5's rule for bumping
+`courses_completed` could never fire — the track would sit at 未入門 forever while real work
+piled up underneath it.
 
 **For writing and speaking, do not take the answer as evidence — go look.** List
 `Personal/Learning/English/writing/` and `Personal/Learning/English/recordings/` for files whose
@@ -229,8 +238,11 @@ track won't count it until the file lands — once, without arguing.
 - **DS&A** — edX auto-grading is the only external judge in this system, but its results do not
   flow anywhere automatically. The number is spoken, so its honesty ceiling is whatever the user
   says tonight. Take it at face value and write it down; do not cross-examine.
-- **寫作 / 口說** — filesystem check only. Speaking duration needs no report at all: the dashboard
-  reads it from the audio file with `afinfo`.
+- **寫作 / 口說** — filesystem check only: you record **filenames**, nothing else. Do **not** ask
+  the user how long they spoke, and do **not** run `afinfo` yourself to find out. The dashboard
+  reads duration straight off the audio file; a number in the Journal would either be a
+  self-report (which this design rejects) or a duplicate of a figure the dashboard already owns.
+  Neither template has a 時長 field, deliberately.
 
 **Tone here is the whole design.** 答不出來、沒證據、或三個都沒有 = 當日該軌道未完成,就這樣,
 **不追究、不說教、不追問原因**。Record it and move on. A track that goes quiet for days is worth
@@ -288,12 +300,18 @@ Apply the day's truth to the vault. **Never delete completed work or the user's 
   and refresh that month's 小計. This is the monthly hand-off to the accountant — don't let a
   semi charge sit only in the spend-log.
 - **DS&A progress** — if the user reported DS&A work, update `Personal/Learning/dsa-progress.md`:
-  append **one row** to `## 每日紀錄` (`日期｜課程 / 章節｜題數｜備註`), and refresh the frontmatter
-  (`problems_solved` += tonight's count, `updated` = today). Only bump `courses_completed` when a
-  course is genuinely finished — a certificate exists, not just the last video watched — and add
-  its row to `## 課程完成`. **Append only; never rewrite or delete earlier rows.** No DS&A today →
-  no row and no frontmatter change (a blank day means it didn't happen; do not write a `0` row,
-  which would read as "logged zero" rather than "nothing logged").
+  write today's row into its `## 每日紀錄` table (`日期｜課程 / 章節｜題數｜備註`), then refresh the
+  frontmatter. **`problems_solved` is not a running increment — it is the sum of the whole `題數`
+  column, recomputed from the table every time you touch it.** Add the rows up and write the total;
+  that way the number can't drift from its own evidence, and a re-run can't double-count. Set
+  `updated` = today. Only bump `courses_completed` when a course is genuinely finished — a
+  certificate exists, not just the last video watched — and add its row to `## 課程完成`.
+  **Earlier days' rows are append-only: never rewrite or delete them. Today's row is the one
+  exception** — on a re-run, if today already has a row, amend that row in place (raise `題數`
+  to the day's true total, extend 課程 / 章節 and 備註) rather than adding a second row or dropping
+  the new work on the floor. One row per date, always. No DS&A today → no row and no frontmatter
+  change (a blank day means it didn't happen; do not write a `0` row, which would read as
+  "logged zero" rather than "nothing logged").
   Write nothing for 寫作 / 口說 — their evidence *is* the files in `English/`, and the dashboard
   counts those directly. There is no number to record.
 - **Failure resume** — if the reflection pass surfaced a genuine setback/lesson, append **one row**
@@ -412,7 +430,7 @@ cheaper to fix than a 🔴 found in July.
 > 三條軌道由 [[dsa-progress]] 與 `Learning/English/` 的檔案本身為證;寫作與口說不採信自述。
 - DS&A:<課程 / 章節 + N 題,或「今日無」;已登錄於 [[dsa-progress]]>
 - 英文寫作:<今日新檔名,或「今日無新檔」;若自述有寫但無檔案,如實寫出此落差>
-- 英文口說:<今日新錄音檔名 + 時長,或「今日無新檔」>
+- 英文口說:<今日新錄音檔名,或「今日無新檔」;不記時長——儀表板自己從音檔讀>
 
 ### 觀察到的模式
 > 來自最近 5–7 天每日筆記的回顧。
@@ -440,9 +458,9 @@ cheaper to fix than a 🔴 found in July.
   user's spoken word over the checkbox and correct the box.
 - **Spend-log rows are NOT idempotent** — the `## 每日回顧` sections regenerate in place, but
   spend-log **rows append**. On a re-run, before adding any row check whether today's
-  transactions are already in `## 每日紀錄`; if so, don't duplicate them (and don't duplicate the
-  dated `## AI 每日分析` bullet or the semi row). When in doubt, show the user what's already
-  logged and confirm before appending.
+  transactions are already in `spend-log-YYYY-MM.md`'s `## 每日紀錄（你填）`; if so, don't duplicate
+  them (and don't duplicate the dated `## AI 每日分析` bullet or the semi row). When in doubt, show
+  the user what's already logged and confirm before appending.
 - **Failure-resume rows are NOT idempotent either** — same discipline as the spend-log: on a
   re-run, check whether today's date already has a row in `## 失敗履歷（滾動追加）` before appending,
   so a second review pass doesn't duplicate the day's lesson.
@@ -450,9 +468,12 @@ cheaper to fix than a 🔴 found in July.
   Note it in the review and move on; the dashboard already shows「資料源未建立」so the gap is visible.
 - **`English/writing/` or `recordings/` missing** — same: note it, don't create it. These are the
   user's drop-boxes, and a directory you conjured up is not evidence that he set one up.
-- **DS&A rows are NOT idempotent** — like the spend-log and failure-resume, `## 每日紀錄` rows
-  append. On a re-run, check whether today's date already has a row before adding one, and don't
-  double-count `problems_solved` in the frontmatter.
+- **Re-running the DS&A write** — unlike the spend-log and failure-resume, `dsa-progress.md`'s
+  `## 每日紀錄` is **amend-in-place for today**: if today's date already has a row, update that row
+  instead of appending a second one. Then recompute `problems_solved` as the sum of the whole
+  `題數` column — never as a delta on the old value. Note the two tables named `## 每日紀錄` are
+  different files with different rules: `dsa-progress.md`'s table amends today's row,
+  `spend-log-YYYY-MM.md`'s `## 每日紀錄（你填）` is strictly append-only.
 - **User declines the spending ask** — never block the day review on it. Log `消費未結算(待補)`
   in carryover and finish the rest of the review normally; the finance pass is a habit, not a gate.
 - **Ambiguous / partial transaction text** — if pasted text is missing the card, amount, or
