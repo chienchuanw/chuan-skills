@@ -16,8 +16,8 @@ description: >-
   BACKWARD at a day that already happened rather than planning one ahead. It also runs a
   nightly spending pass — asking once for today's card transactions (pasted notification /
   app text), logging them into the month's spend-log, checking them against the card-routing
-  rules and overspend / forex-leak / revolving-credit / subscription signals, and flagging
-  semi.tw business expenses for monthly reimbursement — so 記帳 happens nightly instead of in
+  rules and overspend / forex-leak / revolving-credit / subscription signals, and tagging
+  二之間 (semi) company expenses `semi` for the company's own monthly close — so 記帳 happens nightly instead of in
   a month-end scramble. It also runs a nightly learning-track pass — asking once about DS&A,
   English writing and English speaking, then verifying writing and speaking against the actual
   files in the vault rather than trusting the answer — because that nightly ask is the forcing
@@ -64,7 +64,7 @@ The working directory is the vault root. Key paths:
   never rewrite or delete the user's own rows.
 - **Learning tracks** — `Personal/Learning/dsa-progress.md` is the one file you write on the
   `level-up` dashboard's behalf; every other path that dashboard reads, it only reads. This says
-  nothing about your other writes — the Daily note, Journal, spend log, semi-reimbursement,
+  nothing about your other writes — the Daily note, Journal, spend log,
   failure resume and objective files below are all yours to write as usual. You own this file's
   frontmatter (`courses_completed`, `problems_solved`, `updated`) and its `## 每日紀錄` and
   `## 課程完成` tables. Both frontmatter counts are **derived from those tables, never incremented**
@@ -75,12 +75,11 @@ The working directory is the vault root. Key paths:
   into `writing/` yourself: the dashboard counts every `.md` there as a finished piece.
 - **Finance** — `Personal/Finance/spend-log-YYYY-MM.md` (this month's spend log; you append rows
   to `## 每日紀錄（你填）` and maintain `## AI 每日分析` + `## 本月投入指標`),
-  `Personal/Finance/semi-reimbursement-YYYY.md` (semi.tw expenses pending reimbursement),
   `Personal/money-principles.md` (the card-routing speed table + overspend/forex/subscription
   rules you check against), and `Personal/Finance/credit-card-YYYY.md` (per-year index).
   Screenshots live in the gitignored `Personal/Finance/Screenshots/` — the user pastes the
   *text*; never ask for or commit image files. Tracked finance notes (`spend-log-*`,
-  `semi-reimbursement-*`, `credit-card-*`) ARE committed; the user commits the vault when they
+  `credit-card-*`) ARE committed; the user commits the vault when they
   choose — do not commit on their behalf unless asked.
 
 **Language.** Everything you write into `Personal/Daily/` and `Personal/Journal/` is Traditional
@@ -181,10 +180,12 @@ Then run the **daily spend check** against `money-principles.md` §2–§3 and s
 - **循環信用** — 任何一筆動用循環 = 紅旗;底線是「永遠沒有」。
 - **外送 / 訂閱** — 外送餐飲計次(本期主動優化項＝外送砍半,對齊 [[lifestyle]] 降血脂);可疑的
   「在繳錢但沒在用」訂閱。
-- **semi 公司支出(報帳關鍵)** — 商戶名含 `semi`、或屬 AWS 帳號 `316415871029`(semi)者:
-  (a) 該 spend-log 列在說明標 `semi`;(b) **同步彙整到 `semi-reimbursement-YYYY.md` 當月段落**
-  (日期/項目/金額/外幣/含手續費/單據)。AWS `024805779264`(lighting)與 `767397942164`(personal)
-  屬個人,**不**列入 semi。
+- **二之間(semi)公司支出:只標記、不彙整** — 使用者個人代墊的公司營運成本:商戶名含 `semi`、
+  AWS 帳號 `316415871029`(semi)、Vercel、Figma、新店管理費/中華電信寬頻、工作室相關服務、公司稅款/
+  會計師費。**只在該 spend-log 列的說明標 `semi`**;彙整、報帳、歸還由 vault 的專案 skill
+  `company-monthly-close` 每月 5 號處理(寫在 `Company/semi/Finance/`)—— 這裡**不寫任何公司檔案**。
+  AWS `024805779264`(lighting)與 `767397942164`(personal)屬個人,**不**標 semi。拿不準是否公司支出時,
+  問一句、別猜。
 
 **開源不在每晚範圍**:這段只做「節流」(消費審核)。開源(增加收入、接案、職涯)是週尺度議題,放到
 週回顧或目標檢視時談;別每晚問空泛的「怎麼賺更多」。若當天真的冒出具體開源機會,記進 Journal
@@ -311,10 +312,9 @@ Apply the day's truth to the vault. **Never delete completed work or the user's 
   rows — append only. Leave `## 本月投入指標` and `## 月底覆核` for the month-end pass unless a
   figure obviously needs nudging. If the month's spend-log doesn't exist yet, create it from
   `Personal/_templates/spend-log.md`.
-- **semi reimbursement** — for any semi-tagged charge, add a row to the current-month段落 of
-  `Personal/Finance/semi-reimbursement-YYYY.md` (日期／項目／金額／外幣／含手續費／單據「待補」)
-  and refresh that month's 小計. This is the monthly hand-off to the accountant — don't let a
-  semi charge sit only in the spend-log.
+- **semi tag only** — a company charge gets the `semi` tag in its spend-log row and nothing else.
+  Do **not** write the company reimbursement file (now `Company/semi/Finance/semi-reimbursement-YYYY.md`);
+  the company's monthly close owns it, so the personal nightly review stays personal.
 - **DS&A progress** — if the user reported DS&A work, update `Personal/Learning/dsa-progress.md`:
   write today's row into its `## 每日紀錄` table (`日期｜課程 / 章節｜題數｜備註`), then refresh the
   frontmatter. **`problems_solved` is not a running increment — it is the sum of the whole `題數`
@@ -452,7 +452,7 @@ cheaper to fix than a 🔴 found in July.
 - 紀錄:<N 筆 NT$X / 今日無消費 / 待補>
 - 用卡分工:<照表 / 刷錯:某筆該走 X 卻刷 Y>
 - 紅旗:<外幣漏損・超支(≥10k 或額度逼近)・動用循環・可疑訂閱…,逐項或「無」>
-- semi 報帳:<本日有無 semi 支出、已彙整到 [[semi-reimbursement-YYYY]],或「無」>
+- semi 標記:<本日有無 semi 支出(已在 spend-log 標 `semi`,5 號公司月結彙整),或「無」>
 
 ### 今日學習軌道
 > 寫作與口說以 `Learning/English/` 的檔案為證,不採信自述。
@@ -490,7 +490,7 @@ cheaper to fix than a 🔴 found in July.
 - **Spend-log rows are NOT idempotent** — the `## 每日回顧` sections regenerate in place, but
   spend-log **rows append**. On a re-run, before adding any row check whether today's
   transactions are already in `spend-log-YYYY-MM.md`'s `## 每日紀錄（你填）`; if so, don't duplicate
-  them (and don't duplicate the dated `## AI 每日分析` bullet or the semi row). When in doubt, show
+  them (and don't duplicate the dated `## AI 每日分析` bullet). When in doubt, show
   the user what's already logged and confirm before appending.
 - **Failure-resume rows are NOT idempotent either** — same discipline as the spend-log: on a
   re-run, check whether today's date already has a row in `## 失敗履歷（滾動追加）` before appending,
