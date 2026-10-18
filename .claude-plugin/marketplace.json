@@ -33,39 +33,9 @@
       "strict": false
     },
     {
-      "name": "daily",
-      "description": "Personal daily-workflow bundle for an Obsidian vault: gmail-helper (multi-account inbox triage), daily-planner (morning plan via Eisenhower matrix), daily-reviewer (evening retrospective), and end-of-day (bedtime wind-down for sleep/stress/memory)",
-      "source": "./plugins/daily",
-      "strict": false
-    },
-    {
-      "name": "portfolio",
-      "description": "Personal investing portfolio bundle over an Obsidian tracker: portfolio-update (ingest broker screenshots, log trades) and portfolio-review (read-only thesis drift/anchoring/staleness review)",
-      "source": "./plugins/portfolio",
-      "strict": false
-    },
-    {
-      "name": "money",
-      "description": "Personal money-discipline bundle over an Obsidian vault: spend-audit (intercept a hesitant purchase with a structured Q&A audit — real frequency, real pain vs want, existing substitute, urge source, timing/opportunity-cost, money-principles checks — reaching a buy / don't / use-what-you-have / find-cheaper / cool-down verdict and logging it). Pre-purchase sibling of daily's daily-reviewer, which logs spends after the fact",
-      "source": "./plugins/money",
-      "strict": false
-    },
-    {
       "name": "gma2",
       "description": "grandMA2 lighting-console bundle (drives the gma2 MCP server over Telnet): connect (install/register the MCP and verify the console), presets (build Gobo/Color/Beam/Focus palettes from fixture XML with per-type DMX resolution), setlist (build a per-song macro/sequence/page/executor/view + artist-coloured master cuelist from a rundown, wired to the name-driven Song Change engine), cuelist (import a song's section CSV into its sequence as labelled empty cues), design (act as a professional concert lighting designer — design each song's looks from its audio energy, section map and MVR rig geometry, then program them into the cues as preset-referenced values with layered times, per-song effects on the BPM speed master, and a follow-spot sheet), and bpm (detect audio tempos via librosa and write them into song macros)",
       "source": "./plugins/gma2",
-      "strict": false
-    },
-    {
-      "name": "knowledge",
-      "description": "Personal knowledge & learning bundle over an Obsidian vault: read-article (digest pasted article URLs via a per-article sub-agent — summarize, fact-check, conclude, map to Objectives, file a reference note), watch-video (same for YouTube via transcript, led by a watch/skip verdict), and learning-coach (deliberate-practice coach — plan how to learn a goal, then verify absorption with active-recall Q&A against user-specified material)",
-      "source": "./plugins/knowledge",
-      "strict": false
-    },
-    {
-      "name": "health",
-      "description": "Personal health bundle over an Obsidian vault: nutritionist (acts as the user's dietitian — reviews meals from a photo or text, gives cluster-tuned diet advice grounded in his blood panel/fatty liver/HbA1c and target weight/body-fat, sets a daily calorie + protein target and self-calibrates it against the weekly weight trend, logs intake to a tracked food-log, writes a daily 飲食 rollup and updates the O4 objective; damage-control mode for meals he can't control)",
-      "source": "./plugins/health",
       "strict": false
     },
     {
